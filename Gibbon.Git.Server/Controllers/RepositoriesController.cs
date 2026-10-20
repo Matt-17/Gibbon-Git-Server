@@ -26,7 +26,7 @@ namespace Gibbon.Git.Server.Controllers;
 
 [Authorize]
 [TypeFilter(typeof(NormalizeRepositoryNameFilter))]
-public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory)
+public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService)
     : Controller
 {
     private readonly ServerSettings _serverSettings = serverSettings;
@@ -38,6 +38,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private readonly IRepositoryPermissionService _repositoryPermissionService = repositoryPermissionService;
     private readonly IRepositorySynchronizer _repositorySynchronizer = repositorySynchronizer;
     private readonly IRepositoryBrowserFactory _repositoryBrowserFactory = repositoryBrowserFactory;
+    private readonly IRepositoryLogoService _repositoryLogoService = repositoryLogoService;
     private const int _pageSize = 10;
 
     public IActionResult Index(string sortGroup = null, string searchString = null)
@@ -105,6 +106,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     [ValidateAntiForgeryToken]
     public IActionResult Edit(RepositoryDetailModel model)
     {
+        ProcessPostedLogo(model);
         if (!ModelState.IsValid)
         {
             PopulateCheckboxListData(ref model);
@@ -169,6 +171,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         }
 
         PopulateCheckboxListData(ref model);
+        ProcessPostedLogo(model);
         model.Name = StringHelper.RemoveWhiteSpace(model.Name);
 
         if (!_repositoryService.NameIsUnique(model.Name, model.Id))
@@ -506,6 +509,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
         ViewBag.Name = name;
         PopulateCheckboxListData(ref model);
+        ProcessPostedLogo(model);
         model.Name = StringHelper.RemoveWhiteSpace(model.Name);
 
         if (string.IsNullOrEmpty(model.Name))
@@ -728,6 +732,25 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         }
 
         return RepositoryDetailStatus.Valid;
+    }
+
+    private void ProcessPostedLogo(RepositoryDetailModel model)
+    {
+        var postedFile = model.Logo?.PostedFile;
+        if (postedFile == null)
+        {
+            return;
+        }
+
+        using (var stream = postedFile.OpenReadStream())
+        {
+            model.Logo.BinaryData = _repositoryLogoService.CreateLogo(stream);
+        }
+
+        if (model.Logo.BinaryData == null)
+        {
+            ModelState.AddModelError("Logo.PostedFile", string.Format(Resources.FileUploadAttribute_ErrorMessage, Resources.Repository_Detail_Logo_PostedFile, "png, jpg, jpeg, gif"));
+        }
     }
 
     private RepositoryModel ConvertRepositoryDetailModel(RepositoryDetailModel model)

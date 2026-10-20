@@ -100,6 +100,7 @@ services.AddScoped<IGitService, GitService>();
 services.AddScoped<IGitDownloadService, GitDownloadService>();
 
 services.AddScoped<IAvatarService, AvatarService>();
+services.AddSingleton<IRepositoryLogoService, RepositoryLogoService>();
 services.AddScoped<IRepositoryBrowserFactory, RepositoryBrowserFactory>();
 services.AddScoped<IAuthorizationHandler, RepositoryPermissionHandler>();
 

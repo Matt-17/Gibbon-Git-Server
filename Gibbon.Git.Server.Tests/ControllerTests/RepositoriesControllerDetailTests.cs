@@ -34,6 +34,7 @@ public class RepositoriesControllerDetailTests : ControllerTestBase<Repositories
         services.AddSingleton(new ServerSettings());
         _pathResolver = services.AddSubstitute<IPathResolver>();
         _browserFactory = services.AddSubstitute<IRepositoryBrowserFactory>();
+        services.AddSubstitute<IRepositoryLogoService>();
     }
 
     [TestMethod]
