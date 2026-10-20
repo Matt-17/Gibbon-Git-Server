@@ -1117,4 +1117,10 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   <data name="Settings_Global_TimeFormat_Hint" xml:space="preserve">
     <value>How times are displayed next to dates.</value>
   </data>
+  <data name="Settings_Global_DefaultRepositoryView" xml:space="preserve">
+    <value>Default repository view</value>
+  </data>
+  <data name="Settings_Global_DefaultRepositoryView_Hint" xml:space="preserve">
+    <value>Which page opens when a repository is selected.</value>
+  </data>
 </root>

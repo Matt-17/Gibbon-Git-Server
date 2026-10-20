@@ -57,7 +57,7 @@ public class RepositoryListViewComponent(IRepositoryPermissionService repoPermis
                 var selectListItem = new SelectListItem
                 {
                     Text = item.Name,
-                    Value = urlHelper.Action("Detail", "Repositories", new { name = item.Name }),
+                    Value = urlHelper.Action("Open", "Repositories", new { name = item.Name }),
                     Group = group,
                     Selected = item.Name == currentRepositoryName
                 };

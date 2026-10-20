@@ -26,7 +26,7 @@ namespace Gibbon.Git.Server.Controllers;
 
 [Authorize]
 [TypeFilter(typeof(NormalizeRepositoryNameFilter))]
-public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService, IRepositoryCopier repositoryCopier)
+public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService, IRepositoryCopier repositoryCopier, IUserSettingsService userSettingsService)
     : Controller
 {
     private readonly ServerSettings _serverSettings = serverSettings;
@@ -40,6 +40,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private readonly IRepositoryBrowserFactory _repositoryBrowserFactory = repositoryBrowserFactory;
     private readonly IRepositoryLogoService _repositoryLogoService = repositoryLogoService;
     private readonly IRepositoryCopier _repositoryCopier = repositoryCopier;
+    private readonly IUserSettingsService _userSettingsService = userSettingsService;
     private const int _pageSize = 10;
 
     public IActionResult Index(string sortGroup = null, string searchString = null)
@@ -69,6 +70,23 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}")]
+    [Authorize(Policy = Policies.RepositoryPull)]
+    public async Task<IActionResult> Open(string name)
+    {
+        var userSettings = await _userSettingsService.GetSettings(User.Id());
+        var view = userSettings.DefaultRepositoryView ?? _serverSettings.DefaultRepositoryView;
+        var action = view switch
+        {
+            RepositoryView.Tree => nameof(Tree),
+            RepositoryView.Commits => nameof(Commits),
+            RepositoryView.Tags => nameof(Tags),
+            _ => nameof(Detail)
+        };
+
+        return RedirectToAction(action, new { name });
+    }
+
+    [HttpGet("Repositories/{name}/Detail")]
     [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Detail(string name)
     {

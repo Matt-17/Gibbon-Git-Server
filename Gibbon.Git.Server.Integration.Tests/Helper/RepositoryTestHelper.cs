@@ -17,7 +17,7 @@ internal static class RepositoryTestHelper
             postData[key] = value;
         }
         var response = await client.PostAsync("/Repositories/Create", new FormUrlEncodedContent(postData));
-        response.EnsureSuccessStatusCode();
+        Assert.IsTrue(response.StatusCode is HttpStatusCode.OK or HttpStatusCode.Redirect, response.StatusCode.ToString());
 
         return name;
     }

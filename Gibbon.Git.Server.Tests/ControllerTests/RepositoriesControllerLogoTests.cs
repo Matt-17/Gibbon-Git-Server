@@ -38,6 +38,7 @@ public class RepositoriesControllerLogoTests : ControllerTestBase<RepositoriesCo
         services.AddSubstitute<IRepositoryBrowserFactory>();
         _logoService = services.AddSubstitute<IRepositoryLogoService>();
         services.AddSubstitute<IRepositoryCopier>();
+        services.AddSubstitute<IUserSettingsService>();
     }
 
     [TestMethod]

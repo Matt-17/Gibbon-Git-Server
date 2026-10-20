@@ -22,7 +22,7 @@ internal class RepositoriesPermissionTests : IntegrationTestBase
 
         string[] pages =
         [
-            "", "Tree", "Blob/readme.txt", "Raw/readme.txt", "Blame/readme.txt", "History/readme.txt",
+            "Detail", "Tree", "Blob/readme.txt", "Raw/readme.txt", "Blame/readme.txt", "History/readme.txt",
             "Download", "Tags", "Commits", $"Commit/{commit}"
         ];
         foreach (var page in pages)
@@ -30,6 +30,7 @@ internal class RepositoriesPermissionTests : IntegrationTestBase
             var response = await reader.GetAsync($"/Repositories/{name}/{page}");
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, page);
         }
+        Assert.AreEqual(HttpStatusCode.Redirect, (await reader.GetAsync($"/Repositories/{name}")).StatusCode);
     }
 
     [TestMethod]
@@ -54,7 +55,7 @@ internal class RepositoriesPermissionTests : IntegrationTestBase
         PushCommit(TestContext, GetRepositoryPath(TestContext, name), "master", "secret", "readme.txt");
         var reader = await CreateReaderClient(admin);
 
-        foreach (var page in new[] { "", "Tree", "Raw/readme.txt", "Commits", "Download", "Clone" })
+        foreach (var page in new[] { "", "Detail", "Tree", "Raw/readme.txt", "Commits", "Download", "Clone" })
         {
             var response = await reader.GetAsync($"/Repositories/{name}/{page}");
             Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode, page);

@@ -34,6 +34,9 @@ public class UserSettingsEntityConfiguration : IEntityTypeConfiguration<UserSett
         builder.Property(e => e.TimeFormat)
             .HasConversion<int?>();
 
+        builder.Property(e => e.DefaultRepositoryView)
+            .HasConversion<int?>();
+
         builder.Property(e => e.DefaultHomePage)
             .HasMaxLength(100);
 

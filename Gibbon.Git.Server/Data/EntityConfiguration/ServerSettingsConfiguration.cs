@@ -61,5 +61,9 @@ public class ServerSettingsConfiguration : IEntityTypeConfiguration<ServerSettin
         builder.Property(s => s.TimeFormat)
             .HasConversion<int>()
             .IsRequired();
+
+        builder.Property(s => s.DefaultRepositoryView)
+            .HasConversion<int>()
+            .IsRequired();
     }
 }

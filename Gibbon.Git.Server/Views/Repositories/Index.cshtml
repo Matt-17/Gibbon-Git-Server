@@ -42,7 +42,7 @@
 {
     <div class="summary-success">
         <p>@Resources.Repository_Create_Success</p>
-        <p>@Html.ActionLink(string.Format(Resources.Repository_Create_Success_Go_To, TempData["SuccessfullyCreatedRepositoryName"]), "Detail", new { name = TempData["SuccessfullyCreatedRepositoryName"]!.ToString() })</p>
+        <p>@Html.ActionLink(string.Format(Resources.Repository_Create_Success_Go_To, TempData["SuccessfullyCreatedRepositoryName"]), "Open", new { name = TempData["SuccessfullyCreatedRepositoryName"]!.ToString() })</p>
     </div>
 }
 @if (TempData["CloneSuccess"] as bool? == true)
@@ -119,7 +119,7 @@
                             </td>
                             <td>
 
-                                @Html.ActionLink(GetNameToDisplay(repo.Name, repo.Status), "Detail", new { name = repo.Name }, new { @class = "RepositoryName detail" + (repo.Logo.Exists ? " customLogo" : ""), @id = "repo_" + repo.Id })
+                                @Html.ActionLink(GetNameToDisplay(repo.Name, repo.Status), "Open", new { name = repo.Name }, new { @class = "RepositoryName detail" + (repo.Logo.Exists ? " customLogo" : ""), @id = "repo_" + repo.Id })
 
                             </td>
                             <td>

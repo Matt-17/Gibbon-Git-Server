@@ -45,6 +45,7 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         services.AddSubstitute<IRepositoryBrowserFactory>();
         services.AddSubstitute<IRepositoryLogoService>();
         _repositoryCopier = services.AddSubstitute<IRepositoryCopier>();
+        services.AddSubstitute<IUserSettingsService>();
 
         _repositoriesPath = Path.Combine(Path.GetTempPath(), "gibbon-create-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_repositoriesPath);
