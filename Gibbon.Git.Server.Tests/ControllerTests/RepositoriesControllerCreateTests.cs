@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 using Gibbon.Git.Server.Configuration;
 using Gibbon.Git.Server.Controllers;
@@ -28,6 +29,7 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
     private IRepositoryService _repositoryService = null!;
     private IUserService _userService = null!;
     private ITeamService _teamService = null!;
+    private IRepositoryCopier _repositoryCopier = null!;
     private string _repositoriesPath = null!;
 
     protected override void ConfigureServices(ServiceCollection services)
@@ -42,6 +44,7 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         var pathResolver = services.AddSubstitute<IPathResolver>();
         services.AddSubstitute<IRepositoryBrowserFactory>();
         services.AddSubstitute<IRepositoryLogoService>();
+        _repositoryCopier = services.AddSubstitute<IRepositoryCopier>();
 
         _repositoriesPath = Path.Combine(Path.GetTempPath(), "gibbon-create-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_repositoriesPath);
@@ -54,6 +57,7 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         _userService.GetAllUsers().Returns([]);
         _teamService.GetTeam(Arg.Any<int>()).Returns(x => new TeamModel { Id = x.Arg<int>(), Name = "team" + x.Arg<int>() });
         _teamService.GetAllTeams().Returns([]);
+        _repositoryCopier.CopyAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
     }
 
     [TestCleanup]
@@ -102,6 +106,39 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         Controller.Create(new RepositoryDetailModel { Name = "mine", PostedSelectedAdministrators = [5] });
 
         _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Administrators.Single().Id == 5));
+    }
+
+    [TestMethod]
+    public void Clone_SourceName_IsBoundFromRoute()
+    {
+        var method = typeof(RepositoriesController).GetMethods()
+            .Single(m => m.Name == nameof(RepositoriesController.Clone) && m.GetParameters().Length == 2);
+
+        Assert.IsTrue(method.GetParameters()[0].IsDefined(typeof(FromRouteAttribute), false));
+    }
+
+    [TestMethod]
+    public async Task Clone_CopiesSourceAndStoresMembers()
+    {
+        _repositoryService.GetRepository("source").Returns(new RepositoryModel { Name = "source" });
+
+        var result = await Controller.Clone("source", new RepositoryDetailModel { Name = "copy", PostedSelectedUsers = [2], PostedSelectedAdministrators = [1] });
+
+        Assert.IsInstanceOfType<RedirectToActionResult>(result);
+        await _repositoryCopier.Received(1).CopyAsync(Path.Combine(_repositoriesPath, "source"), Path.Combine(_repositoriesPath, "copy"));
+        _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Name == "copy" && r.Users.Single().Id == 2 && r.Administrators.Single().Id == 1));
+    }
+
+    [TestMethod]
+    public async Task Clone_CopyFails_DoesNotCreateRepository()
+    {
+        _repositoryService.GetRepository("source").Returns(new RepositoryModel { Name = "source" });
+        _repositoryCopier.CopyAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(false);
+
+        var result = await Controller.Clone("source", new RepositoryDetailModel { Name = "copy" });
+
+        Assert.IsInstanceOfType<ViewResult>(result);
+        _repositoryService.DidNotReceive().Create(Arg.Any<RepositoryModel>());
     }
 
     [TestMethod]

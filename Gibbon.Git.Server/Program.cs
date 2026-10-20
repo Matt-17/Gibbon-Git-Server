@@ -129,6 +129,7 @@ services.AddScoped<IGitDownloadService, GitDownloadService>();
 services.AddScoped<IAvatarService, AvatarService>();
 services.AddSingleton<IRepositoryLogoService, RepositoryLogoService>();
 services.AddScoped<IRepositoryBrowserFactory, RepositoryBrowserFactory>();
+services.AddScoped<IRepositoryCopier, RepositoryCopier>();
 services.AddScoped<IAuthorizationHandler, RepositoryPermissionHandler>();
 
 services.AddScoped<IUserOutputService, UserOutputService>();

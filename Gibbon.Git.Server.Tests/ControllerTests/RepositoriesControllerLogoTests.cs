@@ -37,6 +37,7 @@ public class RepositoriesControllerLogoTests : ControllerTestBase<RepositoriesCo
         services.AddSubstitute<IPathResolver>();
         services.AddSubstitute<IRepositoryBrowserFactory>();
         _logoService = services.AddSubstitute<IRepositoryLogoService>();
+        services.AddSubstitute<IRepositoryCopier>();
     }
 
     [TestMethod]

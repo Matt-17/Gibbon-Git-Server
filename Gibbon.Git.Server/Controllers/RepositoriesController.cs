@@ -1,4 +1,4 @@
-using System.Security.Principal;
+﻿using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace Gibbon.Git.Server.Controllers;
 
 [Authorize]
 [TypeFilter(typeof(NormalizeRepositoryNameFilter))]
-public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService)
+public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService, IRepositoryCopier repositoryCopier)
     : Controller
 {
     private readonly ServerSettings _serverSettings = serverSettings;
@@ -39,6 +39,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private readonly IRepositorySynchronizer _repositorySynchronizer = repositorySynchronizer;
     private readonly IRepositoryBrowserFactory _repositoryBrowserFactory = repositoryBrowserFactory;
     private readonly IRepositoryLogoService _repositoryLogoService = repositoryLogoService;
+    private readonly IRepositoryCopier _repositoryCopier = repositoryCopier;
     private const int _pageSize = 10;
 
     public IActionResult Index(string sortGroup = null, string searchString = null)
@@ -498,7 +499,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     [HttpPost("Repositories/{name}/Clone")]
     [ValidateAntiForgeryToken]
     [Authorize(Policy = Policies.RepositoryPush)]
-    public IActionResult Clone(string name, RepositoryDetailModel model)
+    public async Task<IActionResult> Clone([FromRoute] string name, RepositoryDetailModel model)
     {
         ArgumentNullException.ThrowIfNull(model, nameof(model));
 
@@ -536,30 +537,20 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             return View(model);
         }
 
-        var repoModel = ConvertRepositoryDetailModel(model);
-        if (!_repositoryService.Create(repoModel))
+        var sourceRepo = _repositoryService.GetRepository(name);
+        var sourceRepositoryPath = Path.Combine(_pathResolver.GetRepositories(), sourceRepo.Name);
+        if (!await _repositoryCopier.CopyAsync(sourceRepositoryPath, targetRepositoryPath))
         {
             ModelState.AddModelError("", Resources.Repository_Create_Failure);
             return View(model);
         }
 
-        var sourceRepo = _repositoryService.GetRepository(name);
-        var sourceRepositoryPath = Path.Combine(_pathResolver.GetRepositories(), sourceRepo.Name);
-
-        var options = new CloneOptions
+        var repoModel = ConvertRepositoryDetailModel(model);
+        if (!_repositoryService.Create(repoModel))
         {
-            IsBare = true,
-            Checkout = false
-        };
-
-        Repository.Clone(sourceRepositoryPath, targetRepositoryPath, options);
-
-        using (var repo = new Repository(targetRepositoryPath))
-        {
-            if (repo.Network.Remotes.Any(r => r.Name == "origin"))
-            {
-                repo.Network.Remotes.Remove("origin");
-            }
+            DeleteFileSystemInfo(new DirectoryInfo(targetRepositoryPath));
+            ModelState.AddModelError("", Resources.Repository_Create_Failure);
+            return View(model);
         }
 
         TempData["CloneSuccess"] = true;
