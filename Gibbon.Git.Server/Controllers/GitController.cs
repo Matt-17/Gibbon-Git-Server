@@ -119,7 +119,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
             return BadRequest("Repository name is required.");
         }
 
-        return RedirectToAction("Detail", "Repositories", new { name = repositoryName });
+        return RedirectToAction("Open", "Repositories", new { name = repositoryName });
     }
 
     /// <summary>
@@ -178,11 +178,19 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     }
 
     /// <summary>
-    /// Returns a plain text response with status code 403 (Forbidden).
+    /// Returns a plain text response with status code 401 for anonymous requests, otherwise 403 (Forbidden).
+    /// git only sends credentials after a 401, e.g. when pushing to a repository that allows anonymous pull.
     /// </summary>
-    /// <returns>A plain text response indicating the request is forbidden.</returns>
+    /// <returns>A plain text response indicating the request is not allowed.</returns>
     private IActionResult GitForbid()
     {
+        if (User.Id() == 0)
+        {
+            Response.Headers.Append("WWW-Authenticate", $"Basic realm=\"{GitAuthorizeAttribute.AuthenticateRealm}\"");
+            Response.StatusCode = 401;
+            return Content("Authentication required.", "text/plain; charset=UTF-8");
+        }
+
         Response.StatusCode = 403;
         return Content("Forbidden.", "text/plain; charset=UTF-8");
     }

@@ -129,6 +129,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("DefaultRepositoryView")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("DisplayNameFormat")
                         .HasColumnType("INTEGER");
 
@@ -266,6 +269,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                     b.Property<string>("DefaultHomePage")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<int?>("DefaultRepositoryView")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int?>("DisplayNameFormat")
                         .HasColumnType("INTEGER");

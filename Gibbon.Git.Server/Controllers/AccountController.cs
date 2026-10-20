@@ -145,6 +145,7 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
             SortNameFormat = settings.SortNameFormat,
             DateFormat = settings.DateFormat,
             TimeFormat = settings.TimeFormat,
+            DefaultRepositoryView = settings.DefaultRepositoryView,
             AvailableLanguages = cultureItems
         });
     }
@@ -173,7 +174,8 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
             DisplayNameFormat = settings.DisplayNameFormat,
             SortNameFormat = settings.SortNameFormat,
             DateFormat = settings.DateFormat,
-            TimeFormat = settings.TimeFormat
+            TimeFormat = settings.TimeFormat,
+            DefaultRepositoryView = settings.DefaultRepositoryView
         });
 
         return RedirectToAction("Settings");

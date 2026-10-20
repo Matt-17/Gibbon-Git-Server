@@ -52,5 +52,23 @@ public class EfSettingsDateFormatTests : DbTestBase<SqliteConnectionFactory>
         Assert.AreEqual(TimeFormat.Hours24, settings.TimeFormat);
     }
 
+    [TestMethod]
+    public async Task UserSettings_DefaultRepositoryView_IsStored()
+    {
+        await _userSettingsService.SaveSettings(1, new UserSettings { DefaultRepositoryView = RepositoryView.Commits });
+        ClearCache();
+
+        Assert.AreEqual(RepositoryView.Commits, (await _userSettingsService.GetSettings(1)).DefaultRepositoryView);
+    }
+
+    [TestMethod]
+    public async Task ServerSettings_DefaultRepositoryView_IsStored()
+    {
+        await _serverSettingsService.SaveSettings(new ServerSettings { DefaultLanguage = "en", DefaultRepositoryView = RepositoryView.Tree });
+        ClearCache();
+
+        Assert.AreEqual(RepositoryView.Tree, _serverSettingsService.GetSettings().DefaultRepositoryView);
+    }
+
     private void ClearCache() => ((MemoryCache)ServiceProvider.GetRequiredService<IMemoryCache>()).Clear();
 }

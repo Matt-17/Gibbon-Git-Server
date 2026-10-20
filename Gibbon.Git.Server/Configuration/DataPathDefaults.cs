@@ -9,6 +9,9 @@ internal static class DataPathDefaults
     public const string RepositoriesFolder = "Repositories";
     public const string GitFolder = "Git";
     public const string DataProtectionKeysFolder = "DataProtection-Keys";
+    public const string LogsFolder = "Logs";
+    public const string LogFileName = "gibbon-.log";
+    public const string LogFilePattern = "gibbon-*.log";
     public const string SqliteFileName = "Gibbon.Git.Server.db";
 
     public static void Apply(ApplicationSettings settings)
@@ -21,6 +24,11 @@ internal static class DataPathDefaults
         if (string.IsNullOrWhiteSpace(settings.RepositoryPath))
         {
             settings.RepositoryPath = Path.Combine(settings.DataPath, RepositoriesFolder);
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.LogPath))
+        {
+            settings.LogPath = Path.Combine(settings.DataPath, LogsFolder);
         }
     }
 

@@ -7,5 +7,6 @@ public sealed class UserSettings
     public NameFormat? SortNameFormat { get; set; }
     public DateFormat? DateFormat { get; set; }
     public TimeFormat? TimeFormat { get; set; }
+    public RepositoryView? DefaultRepositoryView { get; set; }
 
 }

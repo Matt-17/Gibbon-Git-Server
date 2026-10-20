@@ -7,4 +7,7 @@ public sealed record ApplicationSettings
 
     public string DataPath { get; set; } = DefaultDataPath;
     public string RepositoryPath { get; set; }
+    public bool LogToFile { get; set; } = true;
+    public string LogPath { get; set; }
+    public int LogRetainedFileCount { get; set; } = 31;
 }

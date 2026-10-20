@@ -14,7 +14,7 @@ namespace Gibbon.Git.Server.Middleware.Authorize;
 
 public class GitAuthorizeAttribute : Attribute, IAuthorizationFilter
 {
-    private const string AuthenticateRealm = "Gibbon Git Server";
+    internal const string AuthenticateRealm = "Gibbon Git Server";
 
     public void OnAuthorization(AuthorizationFilterContext context)
     {

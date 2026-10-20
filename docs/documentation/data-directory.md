@@ -12,6 +12,7 @@ The default is `App_Data` in the installation folder.
 | `Repositories` | The Git repositories |
 | `Gibbon.Git.Server.db` | The SQLite database (users, teams, permissions, settings) |
 | `DataProtection-Keys` | Keys for login cookies and form tokens |
+| `Logs` | Daily log files `gibbon-yyyyMMdd.log` |
 | `Git` | Optional Git download (Windows) |
 | `.gitconfig` | Git configuration created by Git itself, because `HOME` points to the data directory |
 
@@ -28,10 +29,29 @@ Set the data directory in `appsettings.json`:
 
 or with the environment variable `Application__DataPath`, e.g. `/data` in a container.
 
-- `Application:RepositoryPath`, `Git:HomePath`, `Git:BinaryPath` and a SQLite database without connection string follow `DataPath` unless they are set explicitly.
+- `Application:RepositoryPath`, `Application:LogPath`, `Git:HomePath`, `Git:BinaryPath` and a SQLite database without connection string follow `DataPath` unless they are set explicitly.
 - Relative paths are resolved against the installation folder. Existing configurations with explicit paths keep working unchanged.
 - The account running the server (e.g. the IIS application pool identity) needs write access to the data directory.
 - Each installation needs its own data directory. Two instances sharing one directory would share database and keys.
+
+## Log files
+
+The server writes its log to `Logs/gibbon-yyyyMMdd.log` in the data directory, a new file every day.
+This is useful for IIS and the Windows service, which have no console. The console output stays unchanged.
+
+```json
+"Application": {
+  "LogToFile": true,
+  "LogPath": "",
+  "LogRetainedFileCount": 31
+}
+```
+
+- `LogToFile`: set to `false` to write no log files, e.g. in a container that collects the console output.
+- `LogPath`: a different directory for the log files. Empty means `Logs` in the data directory.
+- `LogRetainedFileCount`: number of daily files to keep; older ones are deleted. `0` keeps all files.
+- What is logged is controlled by the usual `Logging:LogLevel` section. The default logs warnings and errors.
+- The diagnostics page (`/Home/Diagnostics`, administrators on the server itself) shows the end of the newest log file.
 
 ## Keys for login cookies
 

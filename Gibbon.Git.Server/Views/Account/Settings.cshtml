@@ -40,6 +40,11 @@
             @Html.DropDownListFor(m => m.TimeFormat, DateFormatter.GetTimeFormatOptions(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_TimeFormat_Hint"></i>
         </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.DefaultRepositoryView)
+            @Html.DropDownListFor(m => m.DefaultRepositoryView, Html.GetEnumSelectList<RepositoryView>(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultRepositoryView_Hint"></i>
+        </div>
 
         <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary">

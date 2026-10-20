@@ -30,7 +30,7 @@
         <span class="tag">
             @foreach (var stag in Model.Tags)
             {
-                <a href="@Url.Action("Commits", new { name = ViewBag.Name, version =  stag, path = string.Empty })">@stag</a>
+                <a href="@Url.Action("Commits", new { name = ViewBag.Name, branch = stag })">@stag</a>
             }
         </span>
 

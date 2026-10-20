@@ -2990,5 +2990,23 @@ namespace Gibbon.Git.Server.App_Resources {
                 return ResourceManager.GetString("Settings_Global_TimeFormat_Hint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default repository view.
+        /// </summary>
+        public static string Settings_Global_DefaultRepositoryView {
+            get {
+                return ResourceManager.GetString("Settings_Global_DefaultRepositoryView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Which page opens when a repository is selected..
+        /// </summary>
+        public static string Settings_Global_DefaultRepositoryView_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_DefaultRepositoryView_Hint", resourceCulture);
+            }
+        }
     }
 }

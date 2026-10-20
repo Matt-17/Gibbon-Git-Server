@@ -140,6 +140,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<int>("DefaultRepositoryView")
+                        .HasColumnType("int");
+
                     b.Property<int>("DisplayNameFormat")
                         .HasColumnType("int");
 
@@ -281,6 +284,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                     b.Property<string>("DefaultHomePage")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("DefaultRepositoryView")
+                        .HasColumnType("int");
 
                     b.Property<int?>("DisplayNameFormat")
                         .HasColumnType("int");

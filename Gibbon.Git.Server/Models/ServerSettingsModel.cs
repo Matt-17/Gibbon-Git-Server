@@ -33,6 +33,9 @@ public class ServerSettingsModel
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_TimeFormat")]
     public TimeFormat TimeFormat { get; set; }
 
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DefaultRepositoryView")]
+    public RepositoryView DefaultRepositoryView { get; set; }
+
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_SiteTitle")]
     public string SiteTitle { get; set; }
 
