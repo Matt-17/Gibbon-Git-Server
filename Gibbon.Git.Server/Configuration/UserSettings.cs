@@ -8,5 +8,6 @@ public sealed class UserSettings
     public DateFormat? DateFormat { get; set; }
     public TimeFormat? TimeFormat { get; set; }
     public RepositoryView? DefaultRepositoryView { get; set; }
+    public string PreferredCloneTool { get; set; }
 
 }

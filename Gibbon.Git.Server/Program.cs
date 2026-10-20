@@ -139,6 +139,7 @@ services.AddScoped<IUserSettingsService, UserSettingsService>();
 services.AddScoped<CurrentUserSettings>();
 services.AddScoped<IUserNameFormatter, UserNameFormatter>();
 services.AddScoped<IDateFormatter, DateFormatter>();
+services.AddScoped<ICloneToolService, CloneToolService>();
 
 services.AddScoped<IProcessService, ProcessService>();
 services.AddScoped<IGitService, GitService>();

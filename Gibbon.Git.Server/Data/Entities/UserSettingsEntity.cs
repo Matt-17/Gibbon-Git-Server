@@ -12,6 +12,7 @@ public class UserSettingsEntity
     public DateFormat? DateFormat { get; set; }
     public TimeFormat? TimeFormat { get; set; }
     public RepositoryView? DefaultRepositoryView { get; set; }
+    public string PreferredCloneTool { get; set; }
     public string DefaultHomePage { get; set; }
     public NameFormat? DisplayNameFormat { get; set; }
     public NameFormat? SortNameFormat { get; set; }

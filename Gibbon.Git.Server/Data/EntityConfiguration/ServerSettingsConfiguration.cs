@@ -65,5 +65,11 @@ public class ServerSettingsConfiguration : IEntityTypeConfiguration<ServerSettin
         builder.Property(s => s.DefaultRepositoryView)
             .HasConversion<int>()
             .IsRequired();
+
+        builder.Property(s => s.EnabledCloneTools)
+            .HasMaxLength(500);
+
+        builder.Property(s => s.CustomCloneTools)
+            .HasMaxLength(4000);
     }
 }

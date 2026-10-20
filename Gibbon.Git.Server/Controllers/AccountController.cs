@@ -146,6 +146,7 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
             DateFormat = settings.DateFormat,
             TimeFormat = settings.TimeFormat,
             DefaultRepositoryView = settings.DefaultRepositoryView,
+            PreferredCloneTool = settings.PreferredCloneTool,
             AvailableLanguages = cultureItems
         });
     }
@@ -175,7 +176,8 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
             SortNameFormat = settings.SortNameFormat,
             DateFormat = settings.DateFormat,
             TimeFormat = settings.TimeFormat,
-            DefaultRepositoryView = settings.DefaultRepositoryView
+            DefaultRepositoryView = settings.DefaultRepositoryView,
+            PreferredCloneTool = string.IsNullOrEmpty(settings.PreferredCloneTool) ? null : settings.PreferredCloneTool
         });
 
         return RedirectToAction("Settings");

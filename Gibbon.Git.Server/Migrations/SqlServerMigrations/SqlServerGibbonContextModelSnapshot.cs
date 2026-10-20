@@ -132,6 +132,10 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                     b.Property<bool>("AllowUserRepositoryCreation")
                         .HasColumnType("bit");
 
+                    b.Property<string>("CustomCloneTools")
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
                     b.Property<int>("DateFormat")
                         .HasColumnType("int");
 
@@ -145,6 +149,10 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
 
                     b.Property<int>("DisplayNameFormat")
                         .HasColumnType("int");
+
+                    b.Property<string>("EnabledCloneTools")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<bool>("IsCommitAuthorAvatarVisible")
                         .HasColumnType("bit");
@@ -290,6 +298,10 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
 
                     b.Property<int?>("DisplayNameFormat")
                         .HasColumnType("int");
+
+                    b.Property<string>("PreferredCloneTool")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PreferredLanguage")
                         .HasMaxLength(10)
