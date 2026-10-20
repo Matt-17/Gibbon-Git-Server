@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -52,6 +53,35 @@ public class GitVersionStartupServiceTests
         await CreateService("tools/git").RunAsync();
 
         _pathResolver.Received().ResolveExecutable("tools/git");
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.UnitTest)]
+    [DataRow("git version 2.43.0\n", "2.43.0")]
+    [DataRow("git version 2.47.1.windows.2", "2.47.1")]
+    [DataRow("git version 2.39.5 (Apple Git-154)", "2.39.5")]
+    [DataRow("git version 2.5.0.1", "2.5.0.1")]
+    [DataRow("git version 2.45", "2.45")]
+    [DataRow("git version 3", "3")]
+    [DataRow("unexpected", "unexpected")]
+    [DataRow("", "")]
+    [DataRow(null, "")]
+    public void StripVersion_ParsesTypicalOutputs(string output, string expected)
+    {
+        Assert.AreEqual(expected, GitVersionStartupService.StripVersion(output));
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.UnitTest)]
+    public async Task RunAsync_UnparsableVersion_StillMarksGitAvailable()
+    {
+        var processService = Substitute.For<IProcessService>();
+        processService.StartProcessAsync(Arg.Any<ProcessStartInfo>()).Returns(new ProcessResult { IsSuccess = true, Output = "git version" });
+        var options = Options.Create(new GitSettings { Executable = "git" });
+
+        await new GitVersionStartupService(NullLogger<GitVersionStartupService>.Instance, processService, _pathResolver, _gitVersionService, options).RunAsync();
+
+        Assert.IsTrue(_gitVersionService.IsGitAvailable);
     }
 
     private GitVersionStartupService CreateService(string executable)
