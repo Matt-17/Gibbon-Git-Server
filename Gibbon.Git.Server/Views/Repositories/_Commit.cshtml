@@ -1,5 +1,4 @@
-﻿@using System.Globalization
-@using Gibbon.Git.Server.Configuration
+﻿@using Gibbon.Git.Server.Configuration
 @using Gibbon.Git.Server.Extensions
 @inject ServerSettings ServerSettings
 @model RepositoryCommitModel
@@ -15,7 +14,7 @@
         </h2>
 
         <div class="commitdate">
-            @Model.Date.ToString(CultureInfo.CurrentCulture)
+            @DateFormatter.FormatDateTime(Model.Date)
         </div>
 
         @if (Model.Links.Any())

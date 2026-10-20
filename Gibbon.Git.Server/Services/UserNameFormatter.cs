@@ -1,22 +1,19 @@
 using Gibbon.Git.Server.Configuration;
-using Gibbon.Git.Server.Extensions;
 using Gibbon.Git.Server.Models;
 
 namespace Gibbon.Git.Server.Services;
 
-public class UserNameFormatter(IHttpContextAccessor httpContextAccessor, ServerSettings serverSettings, IUserSettingsService userSettingsService)
+public class UserNameFormatter(ServerSettings serverSettings, CurrentUserSettings currentUserSettings)
     : IUserNameFormatter
 {
-    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
     private readonly ServerSettings _serverSettings = serverSettings;
-    private readonly IUserSettingsService _userSettingsService = userSettingsService;
-    private UserSettings _userSettings;
+    private readonly CurrentUserSettings _currentUserSettings = currentUserSettings;
 
-    public string GetDisplayName(UserModel user) => Format(user, GetUserSettings().DisplayNameFormat ?? _serverSettings.DisplayNameFormat);
+    public string GetDisplayName(UserModel user) => Format(user, _currentUserSettings.Value.DisplayNameFormat ?? _serverSettings.DisplayNameFormat);
 
     public IEnumerable<UserModel> Sort(IEnumerable<UserModel> users)
     {
-        var format = GetUserSettings().SortNameFormat ?? _serverSettings.SortNameFormat;
+        var format = _currentUserSettings.Value.SortNameFormat ?? _serverSettings.SortNameFormat;
 
         return users
             .OrderBy(user => GetSortKey(user, format), StringComparer.CurrentCultureIgnoreCase)
@@ -51,19 +48,4 @@ public class UserNameFormatter(IHttpContextAccessor httpContextAccessor, ServerS
     }
 
     private static bool HasName(UserModel user) => !string.IsNullOrWhiteSpace(user.GivenName) || !string.IsNullOrWhiteSpace(user.Surname);
-
-    private UserSettings GetUserSettings()
-    {
-        if (_userSettings is not null)
-        {
-            return _userSettings;
-        }
-
-        var user = _httpContextAccessor.HttpContext?.User;
-        _userSettings = user?.Identity?.IsAuthenticated == true
-            ? _userSettingsService.GetSettings(user.Id()).GetAwaiter().GetResult()
-            : _userSettingsService.GetDefaultSettings();
-
-        return _userSettings;
-    }
 }

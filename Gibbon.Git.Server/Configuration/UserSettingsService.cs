@@ -26,6 +26,8 @@ public class UserSettingsService(IMemoryCache memoryCache, GibbonGitServerContex
         entity.PreferredLanguage = settings.PreferredLanguage;
         entity.DisplayNameFormat = settings.DisplayNameFormat;
         entity.SortNameFormat = settings.SortNameFormat;
+        entity.DateFormat = settings.DateFormat;
+        entity.TimeFormat = settings.TimeFormat;
 
         await _context.SaveChangesAsync();
 
@@ -47,7 +49,9 @@ public class UserSettingsService(IMemoryCache memoryCache, GibbonGitServerContex
             {
                 PreferredLanguage = entity.PreferredLanguage,
                 DisplayNameFormat = entity.DisplayNameFormat,
-                SortNameFormat = entity.SortNameFormat
+                SortNameFormat = entity.SortNameFormat,
+                DateFormat = entity.DateFormat,
+                TimeFormat = entity.TimeFormat
             })
             .SingleOrDefaultAsync();
 

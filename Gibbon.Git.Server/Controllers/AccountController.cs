@@ -143,6 +143,8 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
             PreferredLanguage = settings.PreferredLanguage,
             DisplayNameFormat = settings.DisplayNameFormat,
             SortNameFormat = settings.SortNameFormat,
+            DateFormat = settings.DateFormat,
+            TimeFormat = settings.TimeFormat,
             AvailableLanguages = cultureItems
         });
     }
@@ -169,7 +171,9 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
         {
             PreferredLanguage = settings.PreferredLanguage,
             DisplayNameFormat = settings.DisplayNameFormat,
-            SortNameFormat = settings.SortNameFormat
+            SortNameFormat = settings.SortNameFormat,
+            DateFormat = settings.DateFormat,
+            TimeFormat = settings.TimeFormat
         });
 
         return RedirectToAction("Settings");

@@ -2936,5 +2936,59 @@ namespace Gibbon.Git.Server.App_Resources {
                 return ResourceManager.GetString("Settings_Global_SortNameFormat_Hint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date format.
+        /// </summary>
+        public static string Settings_Global_DateFormat {
+            get {
+                return ResourceManager.GetString("Settings_Global_DateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How dates are displayed..
+        /// </summary>
+        public static string Settings_Global_DateFormat_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_DateFormat_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Language default.
+        /// </summary>
+        public static string Settings_Global_FormatLanguage {
+            get {
+                return ResourceManager.GetString("Settings_Global_FormatLanguage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time format.
+        /// </summary>
+        public static string Settings_Global_TimeFormat {
+            get {
+                return ResourceManager.GetString("Settings_Global_TimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not show.
+        /// </summary>
+        public static string Settings_Global_TimeFormat_Hidden {
+            get {
+                return ResourceManager.GetString("Settings_Global_TimeFormat_Hidden", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How times are displayed next to dates..
+        /// </summary>
+        public static string Settings_Global_TimeFormat_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_TimeFormat_Hint", resourceCulture);
+            }
+        }
     }
 }

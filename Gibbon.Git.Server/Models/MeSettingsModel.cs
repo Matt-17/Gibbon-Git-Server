@@ -15,6 +15,12 @@ public class MeSettingsModel
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_SortNameFormat")]
     public NameFormat? SortNameFormat { get; set; }
 
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DateFormat")]
+    public DateFormat? DateFormat { get; set; }
+
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_TimeFormat")]
+    public TimeFormat? TimeFormat { get; set; }
+
     /// <summary>
     /// This is the list of available languages for the user to choose from.
     /// </summary>

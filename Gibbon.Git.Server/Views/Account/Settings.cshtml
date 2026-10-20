@@ -30,6 +30,16 @@
             @Html.DropDownListFor(m => m.SortNameFormat, Html.GetEnumSelectList<NameFormat>(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_SortNameFormat_Hint"></i>
         </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.DateFormat)
+            @Html.DropDownListFor(m => m.DateFormat, DateFormatter.GetDateFormatOptions(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_DateFormat_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.TimeFormat)
+            @Html.DropDownListFor(m => m.TimeFormat, DateFormatter.GetTimeFormatOptions(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_TimeFormat_Hint"></i>
+        </div>
 
         <div class="pure-controls">
             <button type="submit" class="pure-button pure-button-primary">

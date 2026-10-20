@@ -30,7 +30,7 @@
                     <td>@await Html.PartialAsync("_Tag", commit)</td>
                     <td>@commit.Message</td>
                     <td>@commit.Author</td>
-                    <td>@commit.Date.ToString("yyyy-MM-dd")</td>
+                    <td>@DateFormatter.FormatDate(commit.Date)</td>
                 </tr>
             }
             </tbody>

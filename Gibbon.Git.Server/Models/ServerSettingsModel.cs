@@ -27,6 +27,12 @@ public class ServerSettingsModel
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_SortNameFormat")]
     public NameFormat SortNameFormat { get; set; }
 
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DateFormat")]
+    public DateFormat DateFormat { get; set; }
+
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_TimeFormat")]
+    public TimeFormat TimeFormat { get; set; }
+
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_SiteTitle")]
     public string SiteTitle { get; set; }
 

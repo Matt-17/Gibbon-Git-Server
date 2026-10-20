@@ -29,7 +29,10 @@ public class UserSettingsEntityConfiguration : IEntityTypeConfiguration<UserSett
             .HasMaxLength(50);
 
         builder.Property(e => e.DateFormat)
-            .HasMaxLength(20);
+            .HasConversion<int?>();
+
+        builder.Property(e => e.TimeFormat)
+            .HasConversion<int?>();
 
         builder.Property(e => e.DefaultHomePage)
             .HasMaxLength(100);

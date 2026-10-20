@@ -1040,4 +1040,22 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   <data name="Settings_Global_SortNameFormat_Hint" xml:space="preserve">
     <value>Wie Benutzer in Listen sortiert werden.</value>
   </data>
+  <data name="Settings_Global_DateFormat" xml:space="preserve">
+    <value>Datumsformat</value>
+  </data>
+  <data name="Settings_Global_DateFormat_Hint" xml:space="preserve">
+    <value>Wie Datumsangaben angezeigt werden.</value>
+  </data>
+  <data name="Settings_Global_FormatLanguage" xml:space="preserve">
+    <value>Sprachstandard</value>
+  </data>
+  <data name="Settings_Global_TimeFormat" xml:space="preserve">
+    <value>Uhrzeitformat</value>
+  </data>
+  <data name="Settings_Global_TimeFormat_Hidden" xml:space="preserve">
+    <value>Nicht anzeigen</value>
+  </data>
+  <data name="Settings_Global_TimeFormat_Hint" xml:space="preserve">
+    <value>Wie Uhrzeiten neben Datumsangaben angezeigt werden.</value>
+  </data>
 </root>
