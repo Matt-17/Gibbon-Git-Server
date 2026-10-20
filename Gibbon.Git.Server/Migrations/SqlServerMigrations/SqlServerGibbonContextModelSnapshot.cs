@@ -132,6 +132,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                     b.Property<bool>("AllowUserRepositoryCreation")
                         .HasColumnType("bit");
 
+                    b.Property<int>("DateFormat")
+                        .HasColumnType("int");
+
                     b.Property<string>("DefaultLanguage")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -164,6 +167,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("SortNameFormat")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TimeFormat")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -269,9 +275,8 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("DateFormat")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                    b.Property<int?>("DateFormat")
+                        .HasColumnType("int");
 
                     b.Property<string>("DefaultHomePage")
                         .HasMaxLength(100)
@@ -291,6 +296,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("SortNameFormat")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TimeFormat")
                         .HasColumnType("int");
 
                     b.Property<string>("TimeZone")

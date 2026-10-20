@@ -137,5 +137,5 @@ public class UserNameFormatterTests
         _userSettingsService.GetSettings(userId).Returns(Task.FromResult(settings));
     }
 
-    private UserNameFormatter CreateFormatter() => new(_httpContextAccessor, _serverSettings, _userSettingsService);
+    private UserNameFormatter CreateFormatter() => new(_serverSettings, new CurrentUserSettings(_httpContextAccessor, _userSettingsService));
 }

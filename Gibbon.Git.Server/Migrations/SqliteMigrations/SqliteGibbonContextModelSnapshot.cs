@@ -121,6 +121,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                     b.Property<bool>("AllowUserRepositoryCreation")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DateFormat")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("DefaultLanguage")
                         .IsRequired()
                         .HasMaxLength(10)
@@ -153,6 +156,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("SortNameFormat")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TimeFormat")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -254,9 +260,8 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                     b.Property<int>("UserId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("DateFormat")
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("DateFormat")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("DefaultHomePage")
                         .HasMaxLength(100)
@@ -276,6 +281,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("SortNameFormat")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("TimeFormat")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TimeZone")

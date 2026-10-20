@@ -1099,4 +1099,22 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   <data name="Settings_Global_SortNameFormat_Hint" xml:space="preserve">
     <value>How users are sorted in lists.</value>
   </data>
+  <data name="Settings_Global_DateFormat" xml:space="preserve">
+    <value>Date format</value>
+  </data>
+  <data name="Settings_Global_DateFormat_Hint" xml:space="preserve">
+    <value>How dates are displayed.</value>
+  </data>
+  <data name="Settings_Global_FormatLanguage" xml:space="preserve">
+    <value>Language default</value>
+  </data>
+  <data name="Settings_Global_TimeFormat" xml:space="preserve">
+    <value>Time format</value>
+  </data>
+  <data name="Settings_Global_TimeFormat_Hidden" xml:space="preserve">
+    <value>Do not show</value>
+  </data>
+  <data name="Settings_Global_TimeFormat_Hint" xml:space="preserve">
+    <value>How times are displayed next to dates.</value>
+  </data>
 </root>

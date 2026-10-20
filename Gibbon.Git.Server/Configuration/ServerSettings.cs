@@ -14,6 +14,8 @@ public sealed class ServerSettings
     public string LinksUrl { get; set; }
     public NameFormat DisplayNameFormat { get; set; }
     public NameFormat SortNameFormat { get; set; }
+    public DateFormat DateFormat { get; set; }
+    public TimeFormat TimeFormat { get; set; }
 
     public bool HasCustomSiteLogo() => !string.IsNullOrWhiteSpace(SiteLogoUrl);
 

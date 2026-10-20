@@ -62,7 +62,7 @@
                     @item.CommitMessage
                 </td>
                 <td class="date">
-                    @item.CommitDateString
+                    @DateFormatter.FormatDateTime(item.CommitDate)
                 </td>
             </tr>
         }

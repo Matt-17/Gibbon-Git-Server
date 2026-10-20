@@ -53,5 +53,13 @@ public class ServerSettingsConfiguration : IEntityTypeConfiguration<ServerSettin
         builder.Property(s => s.SortNameFormat)
             .HasConversion<int>()
             .IsRequired();
+
+        builder.Property(s => s.DateFormat)
+            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(s => s.TimeFormat)
+            .HasConversion<int>()
+            .IsRequired();
     }
 }
