@@ -41,6 +41,7 @@ internal class GibbonGitServerApplication : WebApplicationFactory<Program>
         {
             var inMemorySettings = new Dictionary<string, string?>
             {
+                { "Application:DataPath", Path.GetDirectoryName(_fileName) },
                 { "Database:Provider", "Memory" },
                 { "Database:AllowMigration", "true" },
                 { "Database:ConnectionStrings:Memory", $"Data Source={_fileName}" }

@@ -54,7 +54,7 @@ public class GitVersionStartupService(ILogger<GitVersionStartupService> logger, 
             RedirectStandardError = true,
             UseShellExecute = false,
             CreateNoWindow = true,
-            WorkingDirectory = _pathResolver.GetRepositories()
+            WorkingDirectory = _pathResolver.GetRoot()
         };
         return info;
     }

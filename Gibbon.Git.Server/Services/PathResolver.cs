@@ -24,14 +24,16 @@ internal class PathResolver(IWebHostEnvironment hostingEnvironment, IOptions<App
 
         return ResolveCore(_hostingEnvironment.ContentRootPath, [_appSettings.DataPath, .. path]);
     }
-    public string ResolveRoot(string path)
+    public string ResolveRoot(string path) => ResolveRoot(_hostingEnvironment.ContentRootPath, path);
+
+    internal static string ResolveRoot(string rootPath, string path)
     {
         if (Path.IsPathRooted(path))
         {
             return path;
         }
 
-        return ResolveCore(_hostingEnvironment.ContentRootPath, path);
+        return ResolveCore(rootPath, path);
     }
 
     public string ResolveExecutable(string executable)

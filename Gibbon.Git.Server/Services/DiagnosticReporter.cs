@@ -81,6 +81,8 @@ public class DiagnosticReporter(IPathResolver pathResolver, IConfiguration confi
     private void CheckRepositoryDirectory()
     {
         _report.AppendLine("Repo Directory");
+        QuotedReport(_applicationSettings.DataPath, "Configured data path");
+        QuotedReport(_pathResolver.ResolveRoot(_applicationSettings.DataPath), "Effective data path");
         QuotedReport(_applicationSettings.RepositoryPath, "Configured repo path");
         QuotedReport(_pathResolver.GetRepositories(), "Effective repo path");
         ReportDirectoryStatus("Repo dir", _pathResolver.GetRepositories());

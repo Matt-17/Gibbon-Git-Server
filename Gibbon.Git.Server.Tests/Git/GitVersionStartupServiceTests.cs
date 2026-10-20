@@ -23,7 +23,8 @@ public class GitVersionStartupServiceTests
     public void Setup()
     {
         _pathResolver = Substitute.For<IPathResolver>();
-        _pathResolver.GetRepositories().Returns(Path.GetTempPath());
+        _pathResolver.GetRoot().Returns(Path.GetTempPath());
+        _pathResolver.GetRepositories().Returns(Path.Combine(Path.GetTempPath(), "gibbon-missing-repositories"));
         _pathResolver.ResolveExecutable(Arg.Any<string>()).Returns(x => x.Arg<string>());
         _gitVersionService = new GitVersionService();
     }

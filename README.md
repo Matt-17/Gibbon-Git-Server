@@ -52,6 +52,21 @@ server solution. You can find the key changes [below](#key-changes-to-bonobo-git
 
 - Update **`appsettings.json`** to adjust application settings.
 - The default database is SQLite, but you can switch to another by updating the connection string.
+
+### Data directory
+
+All data (SQLite database, repositories, keys for login cookies) is stored below `Application:DataPath`, by default `App_Data` in the installation folder.
+To keep the data separate from the program files, point it to another folder, either in `appsettings.json` or with the environment variable `Application__DataPath`:
+
+```json
+"Application": {
+  "DataPath": "C:\\ProgramData\\Gibbon"
+}
+```
+
+- `Application:RepositoryPath`, `Git:HomePath` and a SQLite database without a connection string follow `DataPath` unless they are set explicitly.
+- Relative paths are resolved against the installation folder, so existing configurations keep working.
+- The account running the server needs write access to the data directory.
   
 ## Update
 

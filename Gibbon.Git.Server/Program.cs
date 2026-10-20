@@ -13,15 +13,18 @@ using Gibbon.Git.Server.Services.Hosted;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,8 +40,22 @@ config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
 var databaseSection = config.GetSection("Database");
 services.Configure<DatabaseSettings>(databaseSection);
 services.Configure<ApplicationSettings>(config.GetSection("Application"));
+services.PostConfigure<ApplicationSettings>(DataPathDefaults.Apply);
 services.Configure<GitSettings>(config.GetSection("Git"));
+services.AddOptions<GitSettings>().PostConfigure<IOptions<ApplicationSettings>>((git, application) => DataPathDefaults.Apply(git, application.Value));
 services.Configure<MailSettings>(config.GetSection("Mail"));
+
+var applicationSettings = config.GetSection("Application").Get<ApplicationSettings>() ?? new ApplicationSettings();
+DataPathDefaults.Apply(applicationSettings);
+var dataPath = PathResolver.ResolveRoot(env.ContentRootPath, applicationSettings.DataPath);
+
+var dataProtection = services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(dataPath, DataPathDefaults.DataProtectionKeysFolder)))
+    .SetApplicationName("Gibbon.Git.Server");
+if (OperatingSystem.IsWindows())
+{
+    dataProtection.ProtectKeysWithDpapi(protectToLocalMachine: true);
+}
 
 services.AddScoped(serviceProvider => serviceProvider.GetRequiredService<IServerSettingsService>().GetSettings());
 
@@ -60,9 +77,16 @@ switch (databaseProvider)
         });
         break;
     case DatabaseProviderTypes.Sqlite:
+        var sqliteConnectionString = DataPathDefaults.ResolveSqliteConnectionString(connectionString, env.ContentRootPath, dataPath);
+        var sqliteDirectory = Path.GetDirectoryName(new SqliteConnectionStringBuilder(sqliteConnectionString).DataSource);
+        if (!string.IsNullOrEmpty(sqliteDirectory))
+        {
+            Directory.CreateDirectory(sqliteDirectory);
+        }
+
         services.AddDbContext<GibbonGitServerContext, SqliteGibbonContext>(options =>
         {
-            ConfigureOptions(options).UseSqlite(connectionString);
+            ConfigureOptions(options).UseSqlite(sqliteConnectionString);
         });
         break;
     case DatabaseProviderTypes.SqlServer:
