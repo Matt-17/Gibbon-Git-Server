@@ -17,6 +17,8 @@ public class DiagnosticReporter(IPathResolver pathResolver, IConfiguration confi
     private readonly IUserService _userService = userService;
     private readonly IServerSettingsService _settingsService = settingsService;
     private readonly GitSettings _gitSettings = gitOptions.Value;
+    private const int LogTailLength = 10000;
+
     private readonly StringBuilder _report = new();
     private readonly ApplicationSettings _applicationSettings = applicationOptions.Value;
 
@@ -32,13 +34,13 @@ public class DiagnosticReporter(IPathResolver pathResolver, IConfiguration confi
         CheckRepositoryDirectory();
         CheckGitSettings();
         CheckInternalMembership();
-        ExceptionLog();
+        LogFile();
         DumpMachineVariables();
         DumpAppSettings();
     }
     private void DumpMachineVariables()
     {
-        var driveInfo = new DriveInfo(Environment.GetEnvironmentVariable("SystemDrive"));
+        var driveInfo = new DriveInfo(Path.GetPathRoot(_pathResolver.ResolveRoot(_applicationSettings.DataPath)));
         var totalMemoryInBytes = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
         QuotedReport(Environment.MachineName, "Machine Name");
         QuotedReport(Environment.OSVersion.ToString(), "OS Version");
@@ -56,8 +58,8 @@ public class DiagnosticReporter(IPathResolver pathResolver, IConfiguration confi
         QuotedReport(RuntimeInformation.FrameworkDescription, "Framework Description");
         QuotedReport(RuntimeInformation.OSArchitecture.ToString(), "OS Architecture");
         QuotedReport(RuntimeInformation.ProcessArchitecture.ToString(), "Process Architecture");
-        QuotedReport(driveInfo.TotalSize / (1024 * 1024 * 1024), "Total Disk Space (GB)");
-        QuotedReport(driveInfo.AvailableFreeSpace / (1024 * 1024 * 1024), "Free Disk Space (GB)");
+        QuotedReport(driveInfo.TotalSize / (1024 * 1024 * 1024), "Data Drive Total Space (GB)");
+        QuotedReport(driveInfo.AvailableFreeSpace / (1024 * 1024 * 1024), "Data Drive Free Space (GB)");
         QuotedReport(totalMemoryInBytes / (1024 * 1024 * 1024), "Total Physical Memory (GB)");
     }
 
@@ -155,32 +157,46 @@ public class DiagnosticReporter(IPathResolver pathResolver, IConfiguration confi
         }
     }
 
-    /// <summary>
-    /// Append the last 10K of the exception log to the report
-    /// </summary>
-    private void ExceptionLog()
+    private void LogFile()
     {
-        _report.AppendLine("**********************************************************************************");
-        _report.AppendLine("Exception Log");
+        _report.AppendLine("Log File");
+        if (!_applicationSettings.LogToFile)
+        {
+            Report("Not Enabled");
+            return;
+        }
+
+        var logPath = _pathResolver.ResolveRoot(_applicationSettings.LogPath);
+        QuotedReport(logPath, "Effective log path");
         SafelyRun(() =>
         {
-            //var nameFormat = MvcApplication.GetLogFileNameFormat();
-            //var todayLogFileName = nameFormat.Replace("{Date}", DateTime.Now.ToString("yyyyMMdd"));
-            //SafelyReport("LogFileName: ", () => todayLogFileName);
-            //var chunkSize = 10000;
-            //var length = new FileInfo(todayLogFileName).Length;
-            //Report("Log File total length", length);
+            var tail = ReadLogTail(logPath, LogTailLength);
+            if (tail is null)
+            {
+                Report("No log file found");
+                return;
+            }
 
-            //var startingPoint = Math.Max(0, length - chunkSize);
-            //Report("Starting log dump from ", startingPoint);
-
-            //using (var logText = File.Open(todayLogFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            //{
-            //    logText.Seek(startingPoint, SeekOrigin.Begin);
-            //    var reader = new StreamReader(logText);
-            //    _report.AppendLine(reader.ReadToEnd());
-            //}
+            Report("Log file", $"'{tail.Value.FileName}', {tail.Value.Length} bytes");
+            _report.AppendLine(tail.Value.Text);
         });
+    }
+
+    internal static (string FileName, long Length, string Text)? ReadLogTail(string directory, int maxBytes)
+    {
+        var file = Directory.Exists(directory)
+            ? new DirectoryInfo(directory).GetFiles(DataPathDefaults.LogFilePattern).MaxBy(f => f.LastWriteTimeUtc)
+            : null;
+        if (file is null)
+        {
+            return null;
+        }
+
+        using var stream = file.Open(FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+        stream.Seek(Math.Max(0, stream.Length - maxBytes), SeekOrigin.Begin);
+        using var reader = new StreamReader(stream);
+
+        return (file.Name, stream.Length, reader.ReadToEnd());
     }
 
     private void SafelyRun(Action action)

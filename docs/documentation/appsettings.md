@@ -57,6 +57,9 @@ This section contains the general configuration for the Gibbon Git Server.
 - **`IsPushAuditEnabled`**: If set to `true`, audits all push operations for detailed logging. Default is `false`.
 - **`AllowDbReset`**: Enables or disables the ability to reset the database. Default is `true`.
 - **`RepositoryPath`**: Specifies the directory where repositories are stored. Default is `"~\\App_Data\\Repositories"`.
+- **`LogToFile`**: Writes daily log files. Default is `true`. See [Data Directory](documentation/data-directory#log-files).
+- **`LogPath`**: Directory for the log files. Default is `Logs` in the data directory.
+- **`LogRetainedFileCount`**: Number of daily log files to keep, `0` keeps all. Default is `31`.
 
 ### 2. `GitSettings`
 This section configures Git-related settings, including the binary path, home path, version, and architecture.

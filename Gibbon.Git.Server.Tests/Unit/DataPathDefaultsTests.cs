@@ -47,6 +47,27 @@ public class DataPathDefaultsTests
     }
 
     [TestMethod]
+    public void Apply_OnlyDataPathConfigured_LogsFollowDataPath()
+    {
+        var settings = new ApplicationSettings { DataPath = DataPath };
+
+        DataPathDefaults.Apply(settings);
+
+        Assert.AreEqual(Path.Combine(DataPath, "Logs"), settings.LogPath);
+        Assert.IsTrue(settings.LogToFile);
+    }
+
+    [TestMethod]
+    public void Apply_ExplicitLogPath_IsKept()
+    {
+        var settings = new ApplicationSettings { DataPath = DataPath, LogPath = "custom-logs" };
+
+        DataPathDefaults.Apply(settings);
+
+        Assert.AreEqual("custom-logs", settings.LogPath);
+    }
+
+    [TestMethod]
     public void Apply_ExplicitRepositoryPath_IsKept()
     {
         var settings = new ApplicationSettings { DataPath = DataPath, RepositoryPath = "App_Data\\Repositories" };

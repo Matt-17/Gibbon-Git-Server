@@ -24,7 +24,11 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+
+using Serilog;
+using Serilog.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +52,20 @@ services.Configure<MailSettings>(config.GetSection("Mail"));
 var applicationSettings = config.GetSection("Application").Get<ApplicationSettings>() ?? new ApplicationSettings();
 DataPathDefaults.Apply(applicationSettings);
 var dataPath = PathResolver.ResolveRoot(env.ContentRootPath, applicationSettings.DataPath);
+
+if (applicationSettings.LogToFile)
+{
+    var logFile = Path.Combine(PathResolver.ResolveRoot(env.ContentRootPath, applicationSettings.LogPath), DataPathDefaults.LogFileName);
+    // AddSerilog() would bypass the Logging:LogLevel filters, so register the provider directly.
+    builder.Logging.AddProvider(new SerilogLoggerProvider(new LoggerConfiguration()
+        .MinimumLevel.Verbose()
+        .WriteTo.File(logFile,
+            outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
+            rollingInterval: RollingInterval.Day,
+            retainedFileCountLimit: applicationSettings.LogRetainedFileCount > 0 ? applicationSettings.LogRetainedFileCount : null,
+            shared: true)
+        .CreateLogger(), dispose: true));
+}
 
 var dataProtection = services.AddDataProtection()
     .PersistKeysToFileSystem(new DirectoryInfo(Path.Combine(dataPath, DataPathDefaults.DataProtectionKeysFolder)))

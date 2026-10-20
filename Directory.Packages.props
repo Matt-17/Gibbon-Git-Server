@@ -15,6 +15,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageVersion>
     <PackageVersion Include="MimeKit" Version="4.18.1" />
+    <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
+    <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
     <PackageVersion Include="SharpZipLib" Version="1.4.2" />
     <PackageVersion Include="LibGit2Sharp" Version="0.32.0" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.13" />

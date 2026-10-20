@@ -34,6 +34,8 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="MimeKit" />
+		<PackageReference Include="Serilog.Extensions.Logging" />
+		<PackageReference Include="Serilog.Sinks.File" />
 		<PackageReference Include="SharpZipLib" />
 		<PackageReference Include="LibGit2Sharp" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore" />
