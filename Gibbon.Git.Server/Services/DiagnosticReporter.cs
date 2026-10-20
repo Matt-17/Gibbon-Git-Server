@@ -89,9 +89,13 @@ public class DiagnosticReporter(IPathResolver pathResolver, IConfiguration confi
     private void CheckGitSettings()
     {
         _report.AppendLine("Git Exe");
-        var gitPath = _pathResolver.Resolve(_gitSettings.BinaryPath);
-        QuotedReport(gitPath, "Git path");
-        SafelyReport("Git.exe exists", () => File.Exists(gitPath));
+        QuotedReport(_gitSettings.Executable, "Configured git executable");
+        var gitExecutable = _pathResolver.ResolveExecutable(_gitSettings.Executable);
+        QuotedReport(gitExecutable, "Effective git executable");
+        if (Path.IsPathRooted(gitExecutable))
+        {
+            SafelyReport("Git executable exists", () => File.Exists(gitExecutable));
+        }
     }
 
     private void ReportDirectoryStatus(string text, string directory)

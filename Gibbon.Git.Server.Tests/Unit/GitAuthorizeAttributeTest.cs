@@ -58,4 +58,38 @@ public class PathResolverTests
         var expected = Path.Combine(RootPath, "Data", "test", "subdir");
         Assert.AreEqual(expected, path);
     }
+
+    [TestMethod]
+    [DataRow("App_Data\\Repositories")]
+    [DataRow("App_Data/Repositories")]
+    public void ResolveRoot_AcceptsBothSeparators(string configuredPath)
+    {
+        var path = _pathResolver.ResolveRoot(configuredPath);
+
+        Assert.AreEqual(Path.Combine(RootPath, "App_Data", "Repositories"), path);
+    }
+
+    [TestMethod]
+    [DataRow("git")]
+    [DataRow("git.exe")]
+    public void ResolveExecutable_CommandName_IsLeftForPathLookup(string executable)
+    {
+        Assert.AreEqual(executable, _pathResolver.ResolveExecutable(executable));
+    }
+
+    [TestMethod]
+    [DataRow("tools/git/bin/git")]
+    [DataRow("tools\\git\\bin\\git")]
+    public void ResolveExecutable_RelativePath_IsResolvedAgainstContentRoot(string executable)
+    {
+        Assert.AreEqual(Path.Combine(RootPath, "tools", "git", "bin", "git"), _pathResolver.ResolveExecutable(executable));
+    }
+
+    [TestMethod]
+    public void ResolveExecutable_AbsolutePath_IsUnchanged()
+    {
+        var executable = Path.Combine(RootPath, "usr", "bin", "git");
+
+        Assert.AreEqual(executable, _pathResolver.ResolveExecutable(executable));
+    }
 }

@@ -171,6 +171,29 @@ public class GitServiceExecutorTests
         ), inStream, outStream, options.EndStreamWithClose);
     }
 
+    [TestMethod]
+    public async Task ExecuteServiceByName_StartsConfiguredExecutableWithResolvedHome()
+    {
+        _gitSettings.Executable = "/opt/git/bin/git";
+        _executor = new GitService(Options.Create(_gitSettings), _processService, _pathResolver, _teamService, _roleProvider, _userService);
+        _pathResolver.ResolveExecutable("/opt/git/bin/git").Returns("/opt/git/bin/git");
+        _pathResolver.ResolveRoot("/fakeHomePath").Returns("/resolved/home");
+        _pathResolver.GetRepositoryPath(Arg.Any<string>()).Returns("/fakeRepoDir/repo");
+
+        await _executor.ExecuteServiceByName("repo", "upload-pack", new ExecutionOptions(true, true), new MemoryStream(), new MemoryStream(), 0);
+
+        await _processService.Received(1).StartProcessWithStreamAsync(Arg.Is<ProcessStartInfo>(p =>
+            p.FileName == "/opt/git/bin/git" &&
+            p.EnvironmentVariables["HOME"] == "/resolved/home"
+        ), Arg.Any<Stream>(), Arg.Any<Stream>(), true);
+    }
+
+    [TestMethod]
+    public void GitSettings_DefaultExecutable_IsGitOnPath()
+    {
+        Assert.AreEqual("git", new GitSettings().Executable);
+    }
+
     private void SetupInfo(string teamName, int userId, string userName, params string[] roleName)
     {
         List<TeamModel> teams = [

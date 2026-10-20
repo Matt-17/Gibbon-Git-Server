@@ -16,7 +16,7 @@ public class GitService(IOptions<GitSettings> options, IProcessService processSe
     : IGitService
 {
     private static readonly HashSet<string> PermittedServiceNames = ["upload-pack", "receive-pack"];
-    private readonly string _gitPath = options.Value.BinaryPath;
+    private readonly string _gitExecutable = options.Value.Executable;
     private readonly string _gitHomePath = options.Value.HomePath;
     private readonly IProcessService _processService = processService;
     private readonly IPathResolver _pathResolver = pathResolver;
@@ -32,7 +32,7 @@ public class GitService(IOptions<GitSettings> options, IProcessService processSe
         }
 
         var args = BuildArgs(repositoryName, serviceName, options);
-        var info = CreateProcessStartInfo("git.exe", args);
+        var info = CreateProcessStartInfo(_pathResolver.ResolveExecutable(_gitExecutable), args);
 
         SetEnvironmentVariables(userId, info.EnvironmentVariables);
 
@@ -69,7 +69,7 @@ public class GitService(IOptions<GitSettings> options, IProcessService processSe
 
     private void SetEnvironmentVariables(int userId, StringDictionary environmentVariables)
     {
-        environmentVariables["HOME"] = _gitHomePath;
+        environmentVariables["HOME"] = _pathResolver.ResolveRoot(_gitHomePath);
 
         var teamsstr = string.Empty;
         var rolesstr = string.Empty;

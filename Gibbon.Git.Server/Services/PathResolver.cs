@@ -34,6 +34,18 @@ internal class PathResolver(IWebHostEnvironment hostingEnvironment, IOptions<App
         return ResolveCore(_hostingEnvironment.ContentRootPath, path);
     }
 
+    public string ResolveExecutable(string executable)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(executable);
+
+        if (executable.IndexOfAny(['/', '\\']) < 0)
+        {
+            return executable;
+        }
+
+        return ResolveRoot(NormalizeSeparators(executable));
+    }
+
     public string GetRepositories() => ResolveRoot(_appSettings.RepositoryPath);
 
     public string GetRepoPath(string path, string applicationPath)
@@ -74,7 +86,7 @@ internal class PathResolver(IWebHostEnvironment hostingEnvironment, IOptions<App
             return rootPath;
         }
 
-        var appendPath = paths[0];
+        var appendPath = NormalizeSeparators(paths[0]);
 
         appendPath = appendPath.TrimStart('~', '/', '\\');
 
@@ -90,5 +102,12 @@ internal class PathResolver(IWebHostEnvironment hostingEnvironment, IOptions<App
         rootPath = ResolveCore(rootPath, paths[1..]);
 
         return rootPath;
+    }
+
+    // Configured paths often use Windows separators; on Linux a backslash would become part of the file name.
+    private static string NormalizeSeparators(string path)
+    {
+        var foreignSeparator = Path.DirectorySeparatorChar == '\\' ? '/' : '\\';
+        return path?.Replace(foreignSeparator, Path.DirectorySeparatorChar);
     }
 }

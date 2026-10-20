@@ -38,7 +38,7 @@ public class ServerController(IOptions<ApplicationSettings> options, IGitDownloa
             ApplicationPath = Path.GetDirectoryName(Environment.CommandLine),
             DataPath = _applicationSettings.DataPath,
             RepositoryPath = _applicationSettings.RepositoryPath,
-            GitPath = _gitSettings.BinaryPath,
+            GitPath = _gitSettings.Executable,
             GitHomePath = _gitSettings.HomePath
         };
         return View(model);

@@ -2,6 +2,7 @@
 
 public sealed record GitSettings
 {
+    public string Executable { get; set; } = "git";
     public string BinaryPath { get; set; }
     public string HomePath { get; set; }
     public string Version { get; set; }
