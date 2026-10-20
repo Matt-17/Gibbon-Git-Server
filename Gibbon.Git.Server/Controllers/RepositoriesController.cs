@@ -399,7 +399,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
     [HttpGet("Repositories/{name}/Commits/")]
     [Authorize(Policy = Policies.RepositoryPush)]
-    public IActionResult Commits(string name, [FromQuery] string branch = "master", [FromQuery] int page = 1)
+    public IActionResult Commits(string name, [FromQuery] string branch = null, [FromQuery] int page = 1)
     {
         page = page >= 1 ? page : 1;
         ViewBag.Page = page;

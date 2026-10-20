@@ -5,13 +5,13 @@
 <div class="tag" style="margin-top: 0.5em">
     @foreach (var stag in Model.Tags)
     {
-        @Html.ActionLink(stag, "Commits", new { name = Model.Name, version =  stag, path = string.Empty })
+        @Html.ActionLink(stag, "Commits", new { name = (string)ViewBag.Name, branch = stag })
     }
 </div>
 <div class="commit pure-g">
     <div class="pure-u-3-5">
         <h2>
-            <a class="commit-url" href="@Url.Action("Commit", new { name = Model.Name, commit = Model.ID })">@Model.Message</a>
+            <a class="commit-url" href="@Url.Action("Commit", new { name = (string)ViewBag.Name, commit = Model.ID })">@Model.Message</a>
             @if (!string.IsNullOrEmpty(Model.MessageShort))
             {
                 <a class="more-commit-info-toggler" onclick="$('#more@(Html.Encode(Model.ID))').toggle();">&hellip;</a>
@@ -51,15 +51,15 @@
         }
         <div>
             <h4>@Model.Author</h4>
-            <p>@Model.GetType().GetDisplayValue("ID"): @Html.ActionLink(Model.ID[..7], "Commit", new { name = Model.Name, commit = Model.ID })</p>
-            <p>@Model.GetType().GetDisplayValue("TreeID"): @Html.ActionLink(Model.TreeID[..7], "Tree", new { name = Model.Name, version =  Model.TreeID })</p>
+            <p>@Model.GetType().GetDisplayValue("ID"): @Html.ActionLink(Model.ID[..7], "Commit", new { name = (string)ViewBag.Name, commit = Model.ID })</p>
+            <p>@Model.GetType().GetDisplayValue("TreeID"): @Html.ActionLink(Model.TreeID[..7], "Tree", new { name = (string)ViewBag.Name, version =  Model.TreeID })</p>
             @if (Model.Parents != null && Model.Parents.Any())
             {
                 <p>
                     @Model.GetType().GetDisplayValue("Parents"):
                     @foreach (var parent in Model.Parents)
                     {
-                        @Html.ActionLink(parent[..7], "Commit", new { name = Model.Name, commit = parent })
+                        @Html.ActionLink(parent[..7], "Commit", new { name = (string)ViewBag.Name, commit = parent })
 
                         <br />
                     }
