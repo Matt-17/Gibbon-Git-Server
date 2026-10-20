@@ -713,9 +713,6 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         {
             model.Administrators = model.PostedSelectedAdministrators.Select(x => _userService.GetUserModel(x)).ToArray();
         }
-        model.PostedSelectedAdministrators = [];
-        model.PostedSelectedUsers = [];
-        model.PostedSelectedTeams = [];
     }
 
     private RepositoryDetailStatus GetRepositoryStatus(RepositoryModel model)
