@@ -3,23 +3,23 @@ title: FAQ
 ---
 
 ## Table of Contents
-1. [How to support Gibbon Git Server](#how-to-support-gibbon-git-server)
-2. [Repository Management](#repository-management)
-   - [How do I clone a repository?](#how-do-i-clone-a-repository)
-   - [How to change repositories folder?](#how-to-change-repositories-folder)
-   - [Why is it no longer possible to change the repository folder in the UI?](#why-is-it-no-longer-possible-to-change-the-repository-folder-in-the-ui)
-   - [Can I allow anonymous access to a repository?](#can-i-allow-anonymous-access-to-a-repository)
-3. [Password and Account](#password-and-account)
-   - [How do I change the password?](#how-do-i-change-the-password)
-4. [Server Issues](#server-issues)
-   - [How do I back up my data?](#how-do-i-back-up-my-data)
-   - [Gibbon Git Server doesn’t serve CSS](#gibbon-git-server-doesnt-serve-css)
-   - [SSL and large repositories](#ssl-and-large-repositories)
-   - [Error 500.19 and file execution issues on IIS 8](#error-50019-and-file-execution-issues-on-iis-8)
-5. [Common Errors](#common-errors)
-   - [fatal: http: /info/refs not valid: is this a git repository?](#fatal-http-inforefs-not-valid-is-this-a-git-repository)
-   - [Cloning Error - RPC failed](#cloning-error---rpc-failed)
-6. [Git Hooks and Username](#git-hooks-and-username)
+1. [How to support Gibbon Git Server](questions#how-to-support-gibbon-git-server)
+2. [Repository Management](questions#repository-management)
+   - [How do I clone a repository?](questions#how-do-i-clone-a-repository)
+   - [How to change repositories folder?](questions#how-to-change-repositories-folder)
+   - [Why is it no longer possible to change the repository folder in the UI?](questions#why-is-it-no-longer-possible-to-change-the-repository-folder-in-the-ui)
+   - [Can I allow anonymous access to a repository?](questions#can-i-allow-anonymous-access-to-a-repository)
+3. [Password and Account](questions#password-and-account)
+   - [How do I change the password?](questions#how-do-i-change-the-password)
+4. [Server Issues](questions#server-issues)
+   - [How do I back up my data?](questions#how-do-i-back-up-my-data)
+   - [Gibbon Git Server doesn’t serve CSS](questions#gibbon-git-server-doesnt-serve-css)
+   - [SSL and large repositories](questions#ssl-and-large-repositories)
+   - [Error 500.19 and file execution issues on IIS 8](questions#error-50019-and-file-execution-issues-on-iis-8)
+5. [Common Errors](questions#common-errors)
+   - [fatal: http: /info/refs not valid: is this a git repository?](questions#fatal-http-inforefs-not-valid-is-this-a-git-repository)
+   - [Cloning Error - RPC failed](questions#cloning-error---rpc-failed)
+6. [Git Hooks and Username](questions#git-hooks-and-username)
 
 ---
 
@@ -130,7 +130,7 @@ To resolve these issues, run the following commands:
 
 This error occurs when the git client doesn’t receive a proper git stream as a response from the server. This typically indicates a server-side issue.
 
-To diagnose the error, check the log file located at `App_Data/Bonobo.Git.Server.Errors.log`.
+To diagnose the error, check the server log. With Kestrel it is written to the console; on IIS enable `stdoutLogEnabled="true"` in `web.config` and look in the `logs` folder of the installation.
 
 ---
 
@@ -144,30 +144,7 @@ This error often relates to the size of the request. To resolve this, try increa
 - In your `web.config`, increase:  
   `<requestLimits maxAllowedContentLength="[desired size]">`, try `1073741824` (1GB).
   
-- Also in `web.config`, increase:  
-  `<httpRuntime maxRequestLength="[desired size]">`, try `1024000` (1GB).
-
-**Note:** On IIS 8.0, `maxRequestLength` may not need to be limited. If you experience issues, try removing this line from the `web.config`.
-
----
-
-### SSL and large repositories
-
-If you're encountering issues while using SSL and pushing large repositories, follow the steps described in the "Cloning Error - RPC failed" section to increase the size limits.
-
-If the problem persists, apply the Microsoft patch: **(KB2634328)**.
-
----
-
-### Error 500.19 and file execution issues on IIS 8
-
-To resolve this issue, execute the following commands in the command prompt:
-
-```bash
-%windir%\system32\inetsrv\appcmd unlock config -section:system.webServer/handlers
-%windir%\system32\inetsrv\appcmd unlock config -section:system.webServer/modules
-```
-This will unlock the configuration sections for handlers and modules in IIS 8.
+**Note:** The server itself accepts requests up to 100 MB.
 
 ---
 
@@ -175,7 +152,7 @@ This will unlock the configuration sections for handlers and modules in IIS 8.
 
 ### I'd like to use git hooks to restrict access. How do I access the web frontend username?
 
-Bonobo provides the following environment variables to help manage access via git hooks:
+Gibbon Git Server provides the following environment variables to help manage access via git hooks:
 
 - **`AUTH_USER`**: The username used to log in. This variable will be empty if the operation (e.g., clone, push, pull) was done anonymously.
 - **`REMOTE_USER`**: Same as `AUTH_USER`.

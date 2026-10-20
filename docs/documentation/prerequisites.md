@@ -14,15 +14,15 @@ To successfully run Gibbon Git Server on Windows, you need to meet the following
 
 Gibbon Git Server is built using **ASP.NET Core**, so you need the appropriate runtime installed.
 
-- Download and install the latest **ASP.NET Core Runtime** (version 8 or higher) from the [official .NET download page](https://dotnet.microsoft.com/download/dotnet/8.0).
-- Ensure the runtime is available in your system’s environment variables. You can check this by opening a terminal and running:
+- Download and install the **ASP.NET Core Runtime 10** from the [official .NET download page](https://dotnet.microsoft.com/download/dotnet/10.0). For IIS, install the **Hosting Bundle**, which contains the runtime.
+- You can check the installed runtimes by opening a terminal and running:
   ```bash
-  dotnet --version
+  dotnet --list-runtimes
   ```
 
-You should see something like `8.x.x` if the runtime is properly installed.
+You should see `Microsoft.AspNetCore.App 10.x.x` if the runtime is properly installed.
 
-### 3a. IIS (Internet Information Services)
+#### 3a. IIS (Internet Information Services)
 
 If you want to host Gibbon Git Server on IIS (Internet Information Services), follow these steps:
 
@@ -31,19 +31,18 @@ If you want to host Gibbon Git Server on IIS (Internet Information Services), fo
 - Select **Web Server (IIS)** and proceed with the installation, making sure the following features are enabled:
     
     - **Web Server** > **Common HTTP Features** (Static Content, Default Document, etc.)
-    - **Application Development** > **.NET Core Hosting Bundle** and **ASP.NET 4.x** (needed for IIS integration with ASP.NET Core)
     - **Management Tools** > **IIS Management Console**
     
-    After installing IIS, download and install the **.NET Core Hosting Bundle** from [Microsoft](https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-aspnetcore-8.0-windows-hosting-bundle-installer).
+    After installing IIS, download and install the **ASP.NET Core 10 Hosting Bundle** from the [official .NET download page](https://dotnet.microsoft.com/download/dotnet/10.0). It adds the IIS module for ASP.NET Core; ASP.NET 4.x is not needed.
 
-### 3b. Kestrel (Optional)
+#### 3b. Kestrel (Optional)
 
 For lightweight or cross-platform hosting, Gibbon Git Server can also be hosted with **Kestrel**, a web server that runs natively in .NET Core. Kestrel comes built-in with ASP.NET Core, so no extra installation is required if you're using it instead of IIS.
 
 - By default, Gibbon Git Server will use Kestrel if no IIS is configured.
 - Kestrel is optimal for scenarios where you don't need a full IIS setup or for testing/development purposes.
 
-### 5. Git Command-Line Tools
+#### 4. Git Command-Line Tools
 
 Ensure the **Git command-line tools** are installed on the machine for proper Git operations (clone, push, pull, etc.).
 
@@ -55,15 +54,16 @@ git --version
 ```
 
 - You should see something like `git version 2.x.x`.
+- Gibbon Git Server uses `git` from the `PATH`. To use another installation, set `Git:Executable` in `appsettings.json`.
 
-### 6. Database
+#### 5. Database
 
-Gibbon Git Server requires a database for storing configuration and user data. On Windows, the default configuration uses **SQLite**, but you can switch to another supported database if needed. If you're using the default SQLite:
+Gibbon Git Server requires a database for storing configuration and user data. Use **SQLite** for a simple setup (set `Database:Provider` to `Sqlite`; the shipped configuration still uses an in-memory database). If you're using SQLite:
 
 - No additional setup is required for SQLite as it is embedded.
 
-If you want to use **SQL Server** (although it’s not officially supported anymore), you would need an active SQL Server instance and adjust the connection strings in `appsettings.json` accordingly.
+If you want to use **SQL Server**, you need an active SQL Server instance; set `Database:Provider` to `SqlServer` and adjust the connection string in `appsettings.json` accordingly.
 
 ---
 
-Once all prerequisites are installed, you can proceed with the [installation steps](#installation-steps) to set up and run Gibbon Git Server on your Windows machine.
+Once all prerequisites are installed, you can proceed with the [installation steps](documentation/installation) to set up and run Gibbon Git Server on your Windows machine.

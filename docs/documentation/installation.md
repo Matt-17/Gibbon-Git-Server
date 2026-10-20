@@ -11,7 +11,7 @@ First, you'll need to clone the Gibbon Git Server repository to your local machi
 
 1. Open a terminal (Command Prompt or PowerShell).
 2. Run the following command to clone the repository:  
-   `git clone https://github.com/Code-iX/Gibbon-Git-Server.git`{:.bash}
+   `git clone https://github.com/Matt-17/Gibbon-Git-Server.git`{:.bash}
  3. Navigate into the project directory:  
     `cd Gibbon-Git-Server`{:.bash}
 ### 2. Publish the Application
@@ -22,27 +22,27 @@ Once you have the code on your machine, you need to publish the application. Thi
    `dotnet --version`).
    
 2. Run the following command to publish the application:
-	`dotnet publish -c Release -o ./publish`  
+	`dotnet publish Gibbon.Git.Server -c Release -o ./publish`  
 	This command compiles the project in release mode and outputs the files to a folder named `publish`.
 
-### 3. Configure the Application*
+### 3. Configure the Application
 
 Now that the application is published, you'll need to adjust the configuration settings to match your environment.
 
 1. Open the `appsettings.json` file in the `publish` folder.
     
-2. Update the **connection string** to point to your preferred database. By default, **SQLite** is configured, so you can leave this as-is for a simple setup.
-    
-    Example of the default SQLite configuration:
-    
-```
-{
+2. Configure the database. For a simple setup use **SQLite**; with an empty connection string the database is stored in the [data directory](documentation/data-directory):
+
+```json
+"Database": {
+  "Provider": "Sqlite",
   "ConnectionStrings": {
-    "DefaultConnection": "Data Source=app_data/GibbonGit.db"
+    "Default": ""
   }
 }
 ```
-3. Optionally, adjust other configuration settings such as port, logging levels, etc.
+
+3. Optionally, adjust other configuration settings such as the data directory, logging levels, etc.
     
 ### 4. Deploy the Application
 
@@ -62,10 +62,10 @@ Now that the application is published and configured, it's time to deploy it.
 For simpler setups, you can run Gibbon Git Server directly using the **Kestrel** web server, which comes built-in with ASP.NET Core.
 
 1. Navigate to the `publish` folder in your terminal.
-2. Run the following command to start the server: 
-3. ```
+2. Run the following command to start the server:
+
 ```
-4. dotnet Gibbon-Git-Server.dll
+dotnet Gibbon.Git.Server.dll
 ```
 
 3. By default, Kestrel will host the application on port `5000`. You can access the web interface at `http://localhost:5000` (or the configured port).

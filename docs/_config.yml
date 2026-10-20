@@ -1,7 +1,7 @@
 title: Gibbon Git Server
 email: m.voigt@code-ix.de
 description: >- 
-  Bonobo Git Server for Windows is a web application you can install on your IIS. It provides an easy management tool and access to your git repositories that are self hosted on your server.
+  Gibbon Git Server is a self-hosted Git server for Windows (IIS) and Linux. It provides an easy management tool and access to your git repositories that are self hosted on your server.
 baseurl: "/Gibbon-Git-Server"
 url: "https://matt-17.github.io"
 
@@ -11,7 +11,6 @@ plugins:
   - jekyll-sitemap
   - jekyll-seo-tag
 
-currentVersion: 1.0.0
 
 defaults:
   - scope:

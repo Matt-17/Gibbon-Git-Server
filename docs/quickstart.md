@@ -9,12 +9,13 @@ Welcome to the Gibbon Git Server! Follow these steps to get your server up and r
 ### Prerequisites:
 - Windows Server or Windows 10/11
 - IIS (Internet Information Services) installed
-- .NET 8.0 Runtime installed
+- ASP.NET Core 10 Hosting Bundle installed
+- Git for Windows installed
 
 ### Steps:
 
 1. **Download the Latest Release**: 
-   Download the latest version of Gibbon Git Server from [here](https://github.com/Code-iX/Gibbon-Git-Server/releases).
+   Download the latest version of Gibbon Git Server from [here](https://github.com/Matt-17/Gibbon-Git-Server/releases). Until the first release is published, build it from source as described in the [installation guide](documentation/installation).
 
 2. **Extract Files**: 
    Extract the contents of the downloaded zip file to your desired directory.
@@ -28,7 +29,7 @@ Welcome to the Gibbon Git Server! Follow these steps to get your server up and r
    Ensure that the application pool has the necessary permissions to read/write to the directory where the repositories and configuration files are stored.
 
 5. **Database Setup**:
-   - Gibbon Git Server uses a lightweight SQLite database by default.
+   - Set `Database:Provider` to `Sqlite` in `appsettings.json` for a lightweight SQLite database.
    - Run the server for the first time to automatically set up the database using EF Migrations.
 
 6. **Update `appsettings.json`**:
@@ -39,13 +40,13 @@ Welcome to the Gibbon Git Server! Follow these steps to get your server up and r
 1. **Open the Web Interface**: 
    Navigate to the URL where your Gibbon Git Server is hosted (e.g., `http://localhost`).
 
-2. **Create Admin User**:
-   - The first time you access the server, you'll be prompted to create an admin user.
-   - Provide the necessary details and create your admin account.
+2. **Log In as Administrator**:
+   - Log in with the default account `admin` and password `admin`.
+   - Change the password right away in your account settings.
 
-3. **Set Up User Roles**:
-   - After logging in, navigate to the **User Management** section.
-   - Create additional users and assign them appropriate roles (Admin, Member, Viewer).
+3. **Set Up Users**:
+   - Navigate to the **Users** section.
+   - Create additional users and assign them a role (Administrator or Member).
 
 ## 3. Create Your First Repository
 
@@ -74,19 +75,18 @@ Welcome to the Gibbon Git Server! Follow these steps to get your server up and r
 ## 4. Manage Users and Permissions
 
 1. **User Management**:
-   - In the **User Management** section, add new users to the system.
-   - Assign roles such as Admin, Member, or Viewer, depending on their access needs.
+   - In the **Users** section, add new users to the system.
+   - Assign the role Administrator or Member, depending on their access needs.
 
 2. **Repository Permissions**:
-   - Define user-specific permissions for each repository (e.g., Read-only, Write access).
-   - You can also set up branch-specific permissions for tighter control.
+   - Grant users and teams pull, push or administration rights for each repository.
+   - Repositories can allow anonymous access if needed.
 
 ## 5. Explore Additional Features
 
-- **Post-Commit Actions**: Set up plugins to automate tasks after each commit.
-- **Branch Visualization**: Use the graphical branch view to track the development flow.
-- **Advanced Search**: Utilize the built-in search functionality to find repositories, commits, and more.
-- **Custom Configurations**: Modify server settings directly through the admin interface or via the database.
+- **Teams**: Group users and grant repository permissions to the whole team.
+- **Repository Browser**: Browse files, commits, branches and tags in the web interface.
+- **Server Settings**: Adjust settings such as the default language through the admin interface.
 
 For more detailed documentation, check out the [full user guide](documentation).
 

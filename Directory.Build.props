@@ -9,9 +9,9 @@
 	<PropertyGroup>
 		<Authors>Code-iX</Authors>
 		<Company>$(Authors)</Company>
-		<RepositoryUrl>https://github.com/Code-iX/Gibbon-Git-Server</RepositoryUrl>
+		<RepositoryUrl>https://github.com/Matt-17/Gibbon-Git-Server</RepositoryUrl>
 		<AssemblyTitle>Gibbon Git Server</AssemblyTitle>
-		<AssemblyDescription>Git server for IIS.</AssemblyDescription>
+		<AssemblyDescription>Self-hosted Git server for Windows (IIS) and Linux.</AssemblyDescription>
 		<AssemblyCompany>Matthias Voigt</AssemblyCompany>
 		<AssemblyProduct>Gibbon Git Server</AssemblyProduct>
 		<AssemblyCopyright>Copyright © Matthias Voigt 2024-2026</AssemblyCopyright>

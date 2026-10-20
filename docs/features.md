@@ -33,9 +33,6 @@ Gibbon Git Server is a web-based application designed for easy self-hosting on y
 - **Easily extensible**: Add new translations with minimal effort.
 
 ### Demo
-You can try a live demo of Gibbon Git Server, hosted on a Windows Azure virtual machine [here](#).  
-Use the following credentials to log in:  
-**Username**: `admin`  
-**Password**: `admin`
+There is no public live demo at the moment. See the [screenshots](screenshots) for an impression of the interface.
 
 Please be respectful and refrain from any inappropriate usage. Thank you!
