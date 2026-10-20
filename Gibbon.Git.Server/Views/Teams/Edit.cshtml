@@ -9,7 +9,7 @@
 }
 <h1>@Model.Name</h1>
 
-@if (ViewBag.UpdateSuccess != null && ViewBag.UpdateSuccess)
+@if (TempData["UpdateSuccess"] != null && (bool)TempData["UpdateSuccess"])
 {
     <div class="summary-success">
         <p>@Resources.Team_Edit_UpdateSuccess</p>

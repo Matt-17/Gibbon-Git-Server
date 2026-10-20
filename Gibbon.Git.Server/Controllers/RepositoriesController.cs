@@ -20,7 +20,6 @@ using LibGit2Sharp;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Logging;
 
 namespace Gibbon.Git.Server.Controllers;
@@ -75,11 +74,14 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         ViewBag.Name = name;
 
         var model = ConvertRepositoryModel(repository, User);
-        if (model != null)
+        if (model == null)
         {
-            model.IsCurrentUserAdministrator = _repositoryPermissionService.HasPermission(User.Id(), model.Id, RepositoryAccessLevel.Administer);
-            SetGitUrls(model);
+            return View(model);
         }
+
+        model.IsCurrentUserAdministrator = _repositoryPermissionService.HasPermission(User.Id(), model.Id, RepositoryAccessLevel.Administer);
+        SetGitUrls(model);
+
         using (var browser = _repositoryBrowserFactory.Create(model.Name))
         {
             browser.BrowseTree(null, null, out var defaultReferenceName);

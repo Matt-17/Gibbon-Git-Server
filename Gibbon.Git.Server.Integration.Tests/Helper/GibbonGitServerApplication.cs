@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 
 using Gibbon.Git.Server.Git.GitDownloadService;
 using Gibbon.Git.Server.Services;
-
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

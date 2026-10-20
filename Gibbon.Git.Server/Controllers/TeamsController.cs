@@ -37,6 +37,11 @@ public class TeamsController(IUserService userService, IRepositoryService reposi
     public IActionResult Detail(string teamname)
     {
         var team = _teamRepository.GetTeam(teamname);
+        if (team == null)
+        {
+            return NotFound();
+        }
+
         var model = new TeamDetailModel
         {
             Id = team.Id,
@@ -59,14 +64,22 @@ public class TeamsController(IUserService userService, IRepositoryService reposi
     [ValidateAntiForgeryToken]
     public IActionResult Edit(TeamEditModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid)
         {
-            TeamModel detailModel = ConvertTeamDetailModel(model);
-            _teamRepository.Update(detailModel);
-            ViewBag.UpdateSuccess = true;
+            model.AllUsers = _userService.GetAllUsers().ToArray();
+            model.SelectedUsers = model.AllUsers.Where(x => model.PostedSelectedUsers?.Contains(x.Id) == true).ToArray();
+            return View(model);
         }
-        model = ConvertEditTeamModel(_teamRepository.GetTeam(model.Id));
-        return RedirectToAction("Edit");
+
+        _teamRepository.Update(ConvertTeamDetailModel(model));
+        var team = _teamRepository.GetTeam(model.Id);
+        if (team == null)
+        {
+            return NotFound();
+        }
+
+        TempData["UpdateSuccess"] = true;
+        return RedirectToAction("Edit", new { teamname = team.Name });
     }
 
     [HttpGet("Teams/Create")]
