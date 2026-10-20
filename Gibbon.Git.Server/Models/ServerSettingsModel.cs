@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Gibbon.Git.Server.Configuration;
 using Gibbon.Git.Server.Middleware.Attributes;
 
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,12 @@ public class ServerSettingsModel
 
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DefaultLanguage")]
     public string DefaultLanguage { get; set; }
+
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DisplayNameFormat")]
+    public NameFormat DisplayNameFormat { get; set; }
+
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_SortNameFormat")]
+    public NameFormat SortNameFormat { get; set; }
 
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_SiteTitle")]
     public string SiteTitle { get; set; }

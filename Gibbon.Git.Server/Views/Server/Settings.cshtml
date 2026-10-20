@@ -1,4 +1,5 @@
 @using Gibbon.Git.Server.Extensions
+@using Gibbon.Git.Server.Configuration
 @model Gibbon.Git.Server.Models.ServerSettingsModel
 @{
     Layout = "_ServerLayout";
@@ -33,6 +34,16 @@
             @Html.LabelFor(m => m.DefaultLanguage)
             @Html.DropDownListFor(m => m.DefaultLanguage, Model.AvailableLanguages, new { @class = "medium", autofocus = "" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultLanguage_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.DisplayNameFormat)
+            @Html.DropDownListFor(m => m.DisplayNameFormat, Html.GetEnumSelectList<NameFormat>(), new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_DisplayNameFormat_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.SortNameFormat)
+            @Html.DropDownListFor(m => m.SortNameFormat, Html.GetEnumSelectList<NameFormat>(), new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_SortNameFormat_Hint"></i>
         </div>
         <div class="pure-controls">
             <label for="AllowAnonymousRegistration" class="pure-checkbox">@Html.CheckBoxFor(m => m.AllowAnonymousRegistration) @Model.GetType().GetDisplayValue("AllowAnonymousRegistration") <i class="fa fa-info-circle" title="@Resources.Settings_Global_AllowAnonymousRegistration_Hint"></i></label>

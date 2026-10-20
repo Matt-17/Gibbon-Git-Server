@@ -33,6 +33,8 @@ public class ServerSettingsService(IMemoryCache memoryCache, GibbonGitServerCont
         entity.IsCommitAuthorAvatarVisible = settings.IsCommitAuthorAvatarVisible;
         entity.LinksRegex = settings.LinksRegex;
         entity.LinksUrl = settings.LinksUrl;
+        entity.DisplayNameFormat = settings.DisplayNameFormat;
+        entity.SortNameFormat = settings.SortNameFormat;
 
         await _context.SaveChangesAsync();
 
@@ -53,7 +55,9 @@ public class ServerSettingsService(IMemoryCache memoryCache, GibbonGitServerCont
                 SiteCssUrl = entity.SiteCssUrl,
                 IsCommitAuthorAvatarVisible = entity.IsCommitAuthorAvatarVisible,
                 LinksRegex = entity.LinksRegex,
-                LinksUrl = entity.LinksUrl
+                LinksUrl = entity.LinksUrl,
+                DisplayNameFormat = entity.DisplayNameFormat,
+                SortNameFormat = entity.SortNameFormat
             })
             .SingleOrDefault();
 

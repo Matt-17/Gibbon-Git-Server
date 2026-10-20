@@ -118,6 +118,7 @@ services.AddScoped<IRepositorySynchronizer, RepositorySynchronizer>();
 services.AddScoped<IMailService, MailService>();
 services.AddScoped<IServerSettingsService, ServerSettingsService>();
 services.AddScoped<IUserSettingsService, UserSettingsService>();
+services.AddScoped<IUserNameFormatter, UserNameFormatter>();
 
 services.AddScoped<IProcessService, ProcessService>();
 services.AddScoped<IGitService, GitService>();

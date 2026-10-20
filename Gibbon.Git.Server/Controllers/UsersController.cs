@@ -5,6 +5,7 @@ using Gibbon.Git.Server.Extensions;
 using Gibbon.Git.Server.Models;
 using Gibbon.Git.Server.Provider;
 using Gibbon.Git.Server.Security;
+using Gibbon.Git.Server.Services;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,18 +14,19 @@ using Microsoft.Extensions.Options;
 namespace Gibbon.Git.Server.Controllers;
 
 [Authorize(Roles = Roles.Admin)]
-public class UsersController(IAuthenticationProvider authenticationProvider, IRoleProvider roleProvider, IUserService userService, IOptions<ApplicationSettings> options, ServerSettings serverSettings)
+public class UsersController(IAuthenticationProvider authenticationProvider, IRoleProvider roleProvider, IUserService userService, IOptions<ApplicationSettings> options, ServerSettings serverSettings, IUserNameFormatter nameFormatter)
     : Controller
 {
     private readonly ServerSettings _serverSettings = serverSettings;
     private readonly IUserService _userService = userService;
     private readonly IRoleProvider _roleProvider = roleProvider;
     private readonly IAuthenticationProvider _authenticationProvider = authenticationProvider;
+    private readonly IUserNameFormatter _nameFormatter = nameFormatter;
 
     public IActionResult Index()
     {
-        var users = _userService
-            .GetAllUsers()
+        var users = _nameFormatter
+            .Sort(_userService.GetAllUsers())
             .Select(user => new UserDetailModel
             {
                 Id = user.Id,

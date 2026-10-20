@@ -4,7 +4,7 @@
 }
 <h1>@Resources.Confirm</h1>
 <div>
-    <p class="summary-error">@Resources.Delete_ConfirmationText.Replace("{0}", Model.DisplayName)</p>
+    <p class="summary-error">@Resources.Delete_ConfirmationText.Replace("{0}", NameFormatter.GetDisplayName(Model))</p>
 </div>
 
 @using (Html.BeginForm("Delete", "Users", FormMethod.Post, new { @class = "pure-form" }))

@@ -14,7 +14,7 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.10");
+            modelBuilder.HasAnnotation("ProductVersion", "10.0.13");
 
             modelBuilder.Entity("Gibbon.Git.Server.Data.Entities.Repository", b =>
                 {
@@ -126,6 +126,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("DisplayNameFormat")
+                        .HasColumnType("INTEGER");
+
                     b.Property<bool>("IsCommitAuthorAvatarVisible")
                         .HasColumnType("INTEGER");
 
@@ -148,6 +151,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                     b.Property<string>("SiteTitle")
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("SortNameFormat")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
@@ -256,6 +262,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<int?>("DisplayNameFormat")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("PreferredLanguage")
                         .HasMaxLength(10)
                         .HasColumnType("TEXT");
@@ -264,6 +273,9 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasColumnType("INTEGER");
 
                     b.Property<bool>("ReceiveEmailNotifications")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SortNameFormat")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("TimeZone")
