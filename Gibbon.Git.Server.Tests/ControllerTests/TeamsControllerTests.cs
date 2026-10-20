@@ -1,9 +1,13 @@
+using System.Linq;
+using System.Reflection;
+
 using Gibbon.Git.Server.Controllers;
 using Gibbon.Git.Server.Data;
 using Gibbon.Git.Server.Models;
 using Gibbon.Git.Server.Security;
 using Gibbon.Git.Server.Tests.TestHelper;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -102,5 +106,37 @@ public class TeamsControllerTests : ControllerTestBase<TeamsController>
         Assert.AreEqual(2, viewModel.AllUsers.Length);
         CollectionAssert.AreEqual(new[] { bob }, viewModel.SelectedUsers);
         _teamService.DidNotReceive().Update(Arg.Any<TeamModel>());
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.UnitTest)]
+    [DataRow(nameof(TeamsController.Create))]
+    [DataRow(nameof(TeamsController.Edit))]
+    [DataRow(nameof(TeamsController.Delete))]
+    public void ModifyingActions_RequireAdminRole(string actionName)
+    {
+        var actions = typeof(TeamsController).GetMethods().Where(m => m.Name == actionName).ToList();
+
+        Assert.AreEqual(2, actions.Count);
+        foreach (var action in actions)
+        {
+            var authorize = action.GetCustomAttribute<AuthorizeAttribute>();
+            Assert.IsNotNull(authorize, $"{actionName}({string.Join(", ", action.GetParameters().Select(p => p.ParameterType.Name))}) has no [Authorize]");
+            Assert.AreEqual(Roles.Admin, authorize.Roles);
+        }
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.UnitTest)]
+    public void Delete_Post_TeamNotFound_RedirectsWithoutDeleting()
+    {
+        _teamService.GetTeam(Arg.Any<int>()).Returns((TeamModel)null!);
+
+        var result = Controller.Delete(new TeamEditModel { Id = 42 }) as RedirectToActionResult;
+
+        Assert.IsNotNull(result);
+        Assert.AreEqual("Index", result.ActionName);
+        _teamService.DidNotReceive().Delete(Arg.Any<int>());
+        Assert.IsNull(Controller.TempData["DeleteSuccess"]);
     }
 }

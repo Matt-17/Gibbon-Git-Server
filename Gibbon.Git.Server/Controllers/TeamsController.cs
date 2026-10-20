@@ -54,6 +54,7 @@ public class TeamsController(IUserService userService, IRepositoryService reposi
     }
 
     [HttpGet("Teams/{teamname}/Edit")]
+    [Authorize(Roles = Roles.Admin)]
     public IActionResult Edit(string teamname)
     {
         var model = ConvertEditTeamModel(_teamRepository.GetTeam(teamname));
@@ -62,6 +63,7 @@ public class TeamsController(IUserService userService, IRepositoryService reposi
 
     [HttpPost("Teams/{teamname}/Edit")]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = Roles.Admin)]
     public IActionResult Edit(TeamEditModel model)
     {
         if (!ModelState.IsValid)
@@ -133,12 +135,11 @@ public class TeamsController(IUserService userService, IRepositoryService reposi
     [Authorize(Roles = Roles.Admin)]
     public IActionResult Delete(TeamEditModel model)
     {
-        if (model != null && model.Id != default)
+        var team = model != null && model.Id != default ? _teamRepository.GetTeam(model.Id) : null;
+        if (team != null)
         {
-            var team = _teamRepository.GetTeam(model.Id);
             _teamRepository.Delete(team.Id);
             TempData["DeleteSuccess"] = true;
-            return RedirectToAction("Index");
         }
         return RedirectToAction("Index");
     }
