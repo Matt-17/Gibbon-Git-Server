@@ -106,6 +106,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         {
             browser.BrowseTree(null, null, out var defaultReferenceName);
             RouteData.Values.Add("version", defaultReferenceName);
+            model.Clone = CreateCloneModel(model.Name, defaultReferenceName);
         }
 
         return View(model);
@@ -285,7 +286,8 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             Path = path,
             Readme = readmeTxt,
             Logo = new RepositoryLogoDetailModel(repo.Logo),
-            Files = files.OrderByDescending(i => i.IsTree).ThenBy(i => i.Name)
+            Files = files.OrderByDescending(i => i.IsTree).ThenBy(i => i.Name),
+            Clone = string.IsNullOrEmpty(path) ? CreateCloneModel(repo.Name, version ?? referenceName) : null
         };
 
         if (isApiRequest)
@@ -645,6 +647,17 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     /// </summary>
     private void SetGitUrls(RepositoryDetailModel model)
     {
+        (model.GitUrl, model.PersonalGitUrl) = GetGitUrls(model.Name);
+    }
+
+    private RepositoryCloneModel CreateCloneModel(string name, string branch)
+    {
+        var (gitUrl, personalGitUrl) = GetGitUrls(name);
+        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch };
+    }
+
+    private (string GitUrl, string PersonalGitUrl) GetGitUrls(string name)
+    {
         var request = HttpContext.Request;
 
         // Use IConfiguration to read the GitServerPath from the appsettings
@@ -660,15 +673,14 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             serverAddress = $"{request.Scheme}://{request.Host.Host}{port}{request.PathBase}/";
         }
 
-        // Set the public Git URL for the repository
-        model.GitUrl = string.Concat(serverAddress, model.Name, ".git");
-
-        // Set the personal Git URL if the user is authenticated
-        if (User.Identity.IsAuthenticated)
+        var gitUrl = string.Concat(serverAddress, name, ".git");
+        if (User.Identity?.IsAuthenticated != true)
         {
-            var username = Uri.EscapeDataString(User.Identity.Name);
-            model.PersonalGitUrl = string.Concat(serverAddress.Replace("://", "://" + username + "@"), model.Name, ".git");
+            return (gitUrl, null);
         }
+
+        var username = Uri.EscapeDataString(User.Identity.Name);
+        return (gitUrl, string.Concat(serverAddress.Replace("://", "://" + username + "@"), name, ".git"));
     }
 
     private void PopulateAddressBarData(string path)

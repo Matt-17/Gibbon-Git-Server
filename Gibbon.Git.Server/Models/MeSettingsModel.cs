@@ -24,6 +24,9 @@ public class MeSettingsModel
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DefaultRepositoryView")]
     public RepositoryView? DefaultRepositoryView { get; set; }
 
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_PreferredCloneTool")]
+    public string PreferredCloneTool { get; set; }
+
     /// <summary>
     /// This is the list of available languages for the user to choose from.
     /// </summary>

@@ -1,5 +1,6 @@
 ﻿@model Gibbon.Git.Server.Models.MeSettingsModel
 @using Gibbon.Git.Server.Configuration
+@inject Gibbon.Git.Server.Services.ICloneToolService CloneToolService
 @{
     Layout = "~/Views/Account/_Layout.cshtml";
     ViewBag.Title = Resources.Settings_Index_Title;
@@ -44,6 +45,11 @@
             @Html.LabelFor(m => m.DefaultRepositoryView)
             @Html.DropDownListFor(m => m.DefaultRepositoryView, Html.GetEnumSelectList<RepositoryView>(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultRepositoryView_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.PreferredCloneTool)
+            @Html.DropDownListFor(m => m.PreferredCloneTool, CloneToolService.GetAvailableTools().Select(t => new SelectListItem(t.Name, t.Key)), Resources.Settings_Global_PreferredCloneTool_None, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_PreferredCloneTool_Hint"></i>
         </div>
 
         <div class="pure-controls">

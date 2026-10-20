@@ -1064,4 +1064,61 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   <data name="Settings_Global_DefaultRepositoryView_Hint" xml:space="preserve">
     <value>Welche Seite sich öffnet, wenn ein Repository ausgewählt wird.</value>
   </data>
+  <data name="Repository_ClonePanel_Title" xml:space="preserve">
+    <value>Klonen</value>
+  </data>
+  <data name="Repository_ClonePanel_Command" xml:space="preserve">
+    <value>git clone-Befehl kopieren</value>
+  </data>
+  <data name="Repository_ClonePanel_OpenWith" xml:space="preserve">
+    <value>Öffnen mit</value>
+  </data>
+  <data name="Repository_ClonePanel_OpenIn" xml:space="preserve">
+    <value>In {0} öffnen</value>
+  </data>
+  <data name="Repository_Empty_Title" xml:space="preserve">
+    <value>Dieses Repository ist leer.</value>
+  </data>
+  <data name="Repository_Empty_Hint" xml:space="preserve">
+    <value>Ein vorhandenes Repository von der Kommandozeile pushen:</value>
+  </data>
+  <data name="Settings_Global_CloneTools" xml:space="preserve">
+    <value>Öffnen mit</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Hint" xml:space="preserve">
+    <value>Programme, die im Klon-Bereich eines Repositorys angeboten werden.</value>
+  </data>
+  <data name="Settings_Global_CustomCloneTools" xml:space="preserve">
+    <value>Weitere Programme</value>
+  </data>
+  <data name="Settings_Global_CustomCloneTools_Hint" xml:space="preserve">
+    <value>Ein Programm pro Zeile als Name|URL-Vorlage. {url} wird durch die kodierte Clone-URL ersetzt, z. B. MeinTool|meintool://clone?url={url}</value>
+  </data>
+  <data name="Settings_Global_CloneTools_InvalidLine" xml:space="preserve">
+    <value>Weitere Programme, Zeile {0}: {1}</value>
+  </data>
+  <data name="Settings_Global_CloneTools_TooMany" xml:space="preserve">
+    <value>Höchstens {0} weitere Programme sind erlaubt.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Format" xml:space="preserve">
+    <value>erwartet wird Name|URL-Vorlage.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Duplicate" xml:space="preserve">
+    <value>der Name kommt doppelt vor.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Placeholder" xml:space="preserve">
+    <value>die Vorlage muss {url} genau einmal enthalten.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Scheme" xml:space="preserve">
+    <value>die Vorlage braucht ein gültiges URL-Schema; javascript:, data:, file: und ähnliche sind nicht erlaubt.</value>
+  </data>
+  <data name="Settings_Global_PreferredCloneTool" xml:space="preserve">
+    <value>Bevorzugtes Programm</value>
+  </data>
+  <data name="Settings_Global_PreferredCloneTool_Hint" xml:space="preserve">
+    <value>Wird im Klon-Bereich eines Repositorys als Hauptknopf angezeigt.</value>
+  </data>
+  <data name="Settings_Global_PreferredCloneTool_None" xml:space="preserve">
+    <value>Keines</value>
+  </data>
 </root>

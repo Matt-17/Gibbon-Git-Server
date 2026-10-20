@@ -29,6 +29,7 @@ public class UserSettingsService(IMemoryCache memoryCache, GibbonGitServerContex
         entity.DateFormat = settings.DateFormat;
         entity.TimeFormat = settings.TimeFormat;
         entity.DefaultRepositoryView = settings.DefaultRepositoryView;
+        entity.PreferredCloneTool = settings.PreferredCloneTool;
 
         await _context.SaveChangesAsync();
 
@@ -53,7 +54,8 @@ public class UserSettingsService(IMemoryCache memoryCache, GibbonGitServerContex
                 SortNameFormat = entity.SortNameFormat,
                 DateFormat = entity.DateFormat,
                 TimeFormat = entity.TimeFormat,
-                DefaultRepositoryView = entity.DefaultRepositoryView
+                DefaultRepositoryView = entity.DefaultRepositoryView,
+                PreferredCloneTool = entity.PreferredCloneTool
             })
             .SingleOrDefaultAsync();
 

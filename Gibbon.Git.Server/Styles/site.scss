@@ -754,3 +754,91 @@ img.repo-logo {
     color: #F03C2E;
     font-weight: 100;
 }
+
+.clone-panel {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0.8em 1em;
+    margin: 0 0 1em 0;
+    background: #fafafa;
+
+    .clone-url {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+        margin-bottom: 0.5em;
+
+        label {
+            color: silver;
+            min-width: 9em;
+        }
+
+        input {
+            flex: 1;
+            max-width: 40em;
+            font-family: monospace;
+        }
+
+        .pure-button {
+            margin: 0;
+        }
+    }
+
+    .clone-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: 0.5em;
+
+        .pure-button {
+            margin: 0;
+        }
+    }
+
+    .clone-tools {
+        position: relative;
+
+        summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        ul {
+            position: absolute;
+            z-index: 10;
+            margin: 0.2em 0 0 0;
+            padding: 0.3em 0;
+            min-width: 14em;
+            list-style: none;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        li a {
+            display: block;
+            padding: 0.3em 1em;
+            white-space: nowrap;
+        }
+
+        li a:hover {
+            background: #eee;
+        }
+    }
+}
+
+.empty-repository pre {
+    background: #f5f5f5;
+    padding: 0.8em 1em;
+    border-radius: 5px;
+}
+
+.clone-tool-list .pure-checkbox {
+    display: inline-block;
+    margin-right: 1.2em;
+}

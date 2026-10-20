@@ -13,6 +13,23 @@
     @await Html.PartialAsync("_BranchSwitcher")
     @await Html.PartialAsync("_AddressBar")
 
+    @if (Model.Clone != null)
+    {
+        @await Html.PartialAsync("_ClonePanel", Model.Clone)
+    }
+
+    @if (Model.Clone != null && !Model.Files.Any())
+    {
+        var pushUrl = Model.Clone.PersonalGitUrl ?? Model.Clone.GitUrl;
+        <div class="empty-repository">
+            <p><strong>@Resources.Repository_Empty_Title</strong></p>
+            <p>@Resources.Repository_Empty_Hint</p>
+            <pre>git remote add origin @pushUrl
+git push -u origin @(Model.Clone.Branch ?? "master")</pre>
+        </div>
+    }
+    else
+    {
     <table id="files" class="pure-table">
         <thead>
         <tr>
@@ -83,6 +100,7 @@
             </li>
         </ul>
     </div>
+    }
 </div>
 
 

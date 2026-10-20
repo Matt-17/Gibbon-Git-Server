@@ -1123,4 +1123,61 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   <data name="Settings_Global_DefaultRepositoryView_Hint" xml:space="preserve">
     <value>Which page opens when a repository is selected.</value>
   </data>
+  <data name="Repository_ClonePanel_Title" xml:space="preserve">
+    <value>Clone</value>
+  </data>
+  <data name="Repository_ClonePanel_Command" xml:space="preserve">
+    <value>Copy git clone command</value>
+  </data>
+  <data name="Repository_ClonePanel_OpenWith" xml:space="preserve">
+    <value>Open with</value>
+  </data>
+  <data name="Repository_ClonePanel_OpenIn" xml:space="preserve">
+    <value>Open in {0}</value>
+  </data>
+  <data name="Repository_Empty_Title" xml:space="preserve">
+    <value>This repository is empty.</value>
+  </data>
+  <data name="Repository_Empty_Hint" xml:space="preserve">
+    <value>Push an existing repository from the command line:</value>
+  </data>
+  <data name="Settings_Global_CloneTools" xml:space="preserve">
+    <value>Open with</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Hint" xml:space="preserve">
+    <value>Programs offered in the clone panel of a repository.</value>
+  </data>
+  <data name="Settings_Global_CustomCloneTools" xml:space="preserve">
+    <value>Additional programs</value>
+  </data>
+  <data name="Settings_Global_CustomCloneTools_Hint" xml:space="preserve">
+    <value>One program per line as Name|URL template. {url} is replaced by the encoded clone URL, e.g. MyTool|mytool://clone?url={url}</value>
+  </data>
+  <data name="Settings_Global_CloneTools_InvalidLine" xml:space="preserve">
+    <value>Additional programs, line {0}: {1}</value>
+  </data>
+  <data name="Settings_Global_CloneTools_TooMany" xml:space="preserve">
+    <value>At most {0} additional programs are allowed.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Format" xml:space="preserve">
+    <value>expected Name|URL template.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Duplicate" xml:space="preserve">
+    <value>the name is used twice.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Placeholder" xml:space="preserve">
+    <value>the template must contain {url} exactly once.</value>
+  </data>
+  <data name="Settings_Global_CloneTools_Scheme" xml:space="preserve">
+    <value>the template needs a valid URL scheme; javascript:, data:, file: and similar are not allowed.</value>
+  </data>
+  <data name="Settings_Global_PreferredCloneTool" xml:space="preserve">
+    <value>Preferred program</value>
+  </data>
+  <data name="Settings_Global_PreferredCloneTool_Hint" xml:space="preserve">
+    <value>Shown as the main button in the clone panel of a repository.</value>
+  </data>
+  <data name="Settings_Global_PreferredCloneTool_None" xml:space="preserve">
+    <value>None</value>
+  </data>
 </root>

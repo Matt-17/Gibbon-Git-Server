@@ -10,6 +10,11 @@
     return;
 }
 
+@if (Model.Clone != null)
+{
+    @await Html.PartialAsync("_ClonePanel", Model.Clone)
+}
+
 <div class="pure-form pure-form-aligned detail">
     <fieldset>
         <div class="pure-control-group">
@@ -28,25 +33,6 @@
                     break;
             }
         </div>
-        <div class="pure-control-group">
-            <label>@Resources.Repository_Detail_Location</label>
-            <button class="pure-button copy-to-clip-button" data-clipboard-text="@Model.GitUrl">
-                <i class="fa fa-copy"></i>
-            </button>
-            <span class="git-url-text">@Model.GitUrl</span>
-        </div>
-
-        @if (User.Identity.IsAuthenticated)
-        {
-            <div class="pure-control-group">
-                <label>@Resources.Repository_Detail_Location_Personal</label>
-                <button class="pure-button copy-to-clip-button" data-clipboard-text="@Model.PersonalGitUrl">
-                    <i class="fa fa-copy"></i>
-                </button>
-                <span class="personal-url-text">@Model.PersonalGitUrl</span>
-            </div>
-        }
-
         <div class="pure-control-group">
             @Html.LabelFor(m => m.Group)
             @Model.Group

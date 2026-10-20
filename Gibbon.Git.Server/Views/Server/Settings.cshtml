@@ -60,6 +60,21 @@
             @Html.DropDownListFor(m => m.DefaultRepositoryView, Html.GetEnumSelectList<RepositoryView>(), new { @class = "medium" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultRepositoryView_Hint"></i>
         </div>
+        <div class="pure-control-group checkboxlist clone-tool-list">
+            @Html.LabelFor(m => m.EnabledCloneTools)
+            <input type="hidden" name="EnabledCloneTools" value="" />
+            @foreach (var tool in CloneTools.BuiltIn)
+            {
+                <label class="pure-checkbox"><input type="checkbox" name="EnabledCloneTools" value="@tool.Key" checked="@(Model.EnabledCloneTools?.Contains(tool.Key) == true)" /> @tool.Name</label>
+            }
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_CloneTools_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.CustomCloneTools)
+            @Html.TextAreaFor(m => m.CustomCloneTools, new { @class = "medium", rows = 4, placeholder = "MyTool|mytool://clone?url={url}" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_CustomCloneTools_Hint"></i>
+            @Html.ValidationMessageFor(m => m.CustomCloneTools)
+        </div>
         <div class="pure-controls">
             <label for="AllowAnonymousRegistration" class="pure-checkbox">@Html.CheckBoxFor(m => m.AllowAnonymousRegistration) @Model.GetType().GetDisplayValue("AllowAnonymousRegistration") <i class="fa fa-info-circle" title="@Resources.Settings_Global_AllowAnonymousRegistration_Hint"></i></label>
             <label for="AllowUserRepositoryCreation" class="pure-checkbox">@Html.CheckBoxFor(m => m.AllowUserRepositoryCreation) @Model.GetType().GetDisplayValue("AllowUserRepositoryCreation") <i class="fa fa-info-circle" title="@Resources.Settings_Global_AllowUserRepositoryCreation_Hint"></i></label>

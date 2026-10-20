@@ -121,6 +121,10 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                     b.Property<bool>("AllowUserRepositoryCreation")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CustomCloneTools")
+                        .HasMaxLength(4000)
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("DateFormat")
                         .HasColumnType("INTEGER");
 
@@ -134,6 +138,10 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
 
                     b.Property<int>("DisplayNameFormat")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("EnabledCloneTools")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
 
                     b.Property<bool>("IsCommitAuthorAvatarVisible")
                         .HasColumnType("INTEGER");
@@ -275,6 +283,10 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
 
                     b.Property<int?>("DisplayNameFormat")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("PreferredCloneTool")
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("PreferredLanguage")
                         .HasMaxLength(10)

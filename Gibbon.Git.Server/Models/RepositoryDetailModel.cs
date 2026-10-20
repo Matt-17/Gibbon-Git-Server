@@ -55,6 +55,7 @@ public class RepositoryDetailModel
     public RepositoryLogoDetailModel Logo { get; set; }
     public string GitUrl { get; set; }
     public string PersonalGitUrl { get; set; }
+    public RepositoryCloneModel Clone { get; set; }
 
     [Remote("IsValidRegex", "Validation")]
     [IsValidRegex]

@@ -3008,5 +3008,176 @@ namespace Gibbon.Git.Server.App_Resources {
                 return ResourceManager.GetString("Settings_Global_DefaultRepositoryView_Hint", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone.
+        /// </summary>
+        public static string Repository_ClonePanel_Title {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy git clone command.
+        /// </summary>
+        public static string Repository_ClonePanel_Command {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_Command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open with.
+        /// </summary>
+        public static string Repository_ClonePanel_OpenWith {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_OpenWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open in {0}.
+        /// </summary>
+        public static string Repository_ClonePanel_OpenIn {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_OpenIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This repository is empty..
+        /// </summary>
+        public static string Repository_Empty_Title {
+            get {
+                return ResourceManager.GetString("Repository_Empty_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push an existing repository from the command line:.
+        /// </summary>
+        public static string Repository_Empty_Hint {
+            get {
+                return ResourceManager.GetString("Repository_Empty_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open with.
+        /// </summary>
+        public static string Settings_Global_CloneTools {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Programs offered in the clone panel of a repository..
+        /// </summary>
+        public static string Settings_Global_CloneTools_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additional programs.
+        /// </summary>
+        public static string Settings_Global_CustomCloneTools {
+            get {
+                return ResourceManager.GetString("Settings_Global_CustomCloneTools", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to One program per line as Name|URL template. {url} is replaced by the encoded clone URL, e.g. MyTool|mytool://clone?url={url}.
+        /// </summary>
+        public static string Settings_Global_CustomCloneTools_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_CustomCloneTools_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Additional programs, line {0}: {1}.
+        /// </summary>
+        public static string Settings_Global_CloneTools_InvalidLine {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_InvalidLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to At most {0} additional programs are allowed..
+        /// </summary>
+        public static string Settings_Global_CloneTools_TooMany {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_TooMany", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to expected Name|URL template..
+        /// </summary>
+        public static string Settings_Global_CloneTools_Format {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the name is used twice..
+        /// </summary>
+        public static string Settings_Global_CloneTools_Duplicate {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_Duplicate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the template must contain {url} exactly once..
+        /// </summary>
+        public static string Settings_Global_CloneTools_Placeholder {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_Placeholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the template needs a valid URL scheme; javascript:, data:, file: and similar are not allowed..
+        /// </summary>
+        public static string Settings_Global_CloneTools_Scheme {
+            get {
+                return ResourceManager.GetString("Settings_Global_CloneTools_Scheme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preferred program.
+        /// </summary>
+        public static string Settings_Global_PreferredCloneTool {
+            get {
+                return ResourceManager.GetString("Settings_Global_PreferredCloneTool", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Shown as the main button in the clone panel of a repository..
+        /// </summary>
+        public static string Settings_Global_PreferredCloneTool_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_PreferredCloneTool_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to None.
+        /// </summary>
+        public static string Settings_Global_PreferredCloneTool_None {
+            get {
+                return ResourceManager.GetString("Settings_Global_PreferredCloneTool_None", resourceCulture);
+            }
+        }
     }
 }

@@ -131,6 +131,8 @@ public class ServerController(IOptions<ApplicationSettings> options, IGitDownloa
             DateFormat = settings.DateFormat,
             TimeFormat = settings.TimeFormat,
             DefaultRepositoryView = settings.DefaultRepositoryView,
+            EnabledCloneTools = CloneTools.GetEnabledKeys(settings.EnabledCloneTools).ToList(),
+            CustomCloneTools = settings.CustomCloneTools,
             SiteTitle = settings.SiteTitle,
             SiteLogoUrl = settings.SiteLogoUrl,
             SiteCssUrl = settings.SiteCssUrl,
@@ -155,6 +157,13 @@ public class ServerController(IOptions<ApplicationSettings> options, IGitDownloa
         if (_applicationSettings.DemoModeActive)
         {
             return Unauthorized();
+        }
+
+        var cloneToolErrors = new List<string>();
+        CloneTools.ParseCustom(model.CustomCloneTools, cloneToolErrors);
+        foreach (var error in cloneToolErrors)
+        {
+            ModelState.AddModelError(nameof(model.CustomCloneTools), error);
         }
 
         if (!ModelState.IsValid)
@@ -182,6 +191,8 @@ public class ServerController(IOptions<ApplicationSettings> options, IGitDownloa
             DateFormat = model.DateFormat,
             TimeFormat = model.TimeFormat,
             DefaultRepositoryView = model.DefaultRepositoryView,
+            EnabledCloneTools = model.EnabledCloneTools is null ? null : CloneTools.JoinEnabledKeys(model.EnabledCloneTools),
+            CustomCloneTools = string.IsNullOrWhiteSpace(model.CustomCloneTools) ? null : model.CustomCloneTools.Trim(),
             SiteTitle = model.SiteTitle,
             SiteLogoUrl = model.SiteLogoUrl,
             SiteCssUrl = model.SiteCssUrl,
