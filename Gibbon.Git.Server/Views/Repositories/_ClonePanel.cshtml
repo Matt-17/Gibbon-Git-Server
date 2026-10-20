@@ -1,4 +1,5 @@
 @model RepositoryCloneModel
+@using Gibbon.Git.Server.Configuration
 @inject Gibbon.Git.Server.Services.ICloneToolService CloneToolService
 @{
     var tools = CloneToolService.GetAvailableTools();
@@ -7,36 +8,48 @@
 }
 <div class="clone-panel">
     <div class="clone-url">
-        <label>@Resources.Repository_Detail_Location</label>
-        <input type="text" readonly="readonly" value="@Model.GitUrl" class="git-url-text" onclick="this.select()" />
-        <button type="button" class="pure-button copy-to-clip-button" data-clipboard-text="@Model.GitUrl"><i class="fa fa-copy"></i></button>
+        <label for="clone-url">@Resources.Repository_ClonePanel_Url</label>
+        <div class="input-group">
+            <input id="clone-url" type="text" readonly="readonly" value="@Model.GitUrl" class="git-url-text" onclick="this.select()" />
+            <button type="button" class="pure-button copy-button" data-clipboard-text="@Model.GitUrl" title="@Resources.Repository_ClonePanel_Copy"><i class="fa fa-copy"></i></button>
+        </div>
     </div>
     @if (Model.PersonalGitUrl != null)
     {
         <div class="clone-url">
-            <label>@Resources.Repository_Detail_Location_Personal</label>
-            <input type="text" readonly="readonly" value="@Model.PersonalGitUrl" class="personal-url-text" onclick="this.select()" />
-            <button type="button" class="pure-button copy-to-clip-button" data-clipboard-text="@Model.PersonalGitUrl"><i class="fa fa-copy"></i></button>
+            <label for="clone-personal-url">@Resources.Repository_ClonePanel_PersonalUrl</label>
+            <div class="input-group">
+                <input id="clone-personal-url" type="text" readonly="readonly" value="@Model.PersonalGitUrl" class="personal-url-text" onclick="this.select()" />
+                <button type="button" class="pure-button copy-button" data-clipboard-text="@Model.PersonalGitUrl" title="@Resources.Repository_ClonePanel_Copy"><i class="fa fa-copy"></i></button>
+            </div>
         </div>
     }
     <div class="clone-actions">
         @if (preferred != null)
         {
-            <a class="pure-button pure-button-primary clone-preferred" href="@preferred.BuildUrl(toolUrl)">@string.Format(Resources.Repository_ClonePanel_OpenIn, preferred.Name)</a>
+            <a class="pure-button pure-button-primary clone-preferred" href="@preferred.BuildUrl(toolUrl)"><i class="fa fa-external-link"></i> @string.Format(Resources.Repository_ClonePanel_OpenIn, preferred.Name)</a>
         }
         @if (tools.Count > 0)
         {
-            <details class="clone-tools">
-                <summary class="pure-button"><i class="fa fa-external-link"></i> @Resources.Repository_ClonePanel_OpenWith</summary>
-                <ul>
-                    @foreach (var tool in tools)
+            <details class="dropdown clone-tools">
+                <summary class="pure-button">@Resources.Repository_ClonePanel_OpenWith <i class="fa fa-caret-down"></i></summary>
+                <div class="dropdown-menu">
+                    @foreach (var group in tools.GroupBy(t => t.Group))
                     {
-                        <li><a href="@tool.BuildUrl(toolUrl)">@tool.Name</a></li>
+                        <div class="dropdown-header">@CloneTools.GetGroupName(group.Key)</div>
+                        @foreach (var tool in group)
+                        {
+                            <a href="@tool.BuildUrl(toolUrl)">@tool.Name</a>
+                        }
+                        @if (group.Key == CloneToolGroup.JetBrains)
+                        {
+                            <div class="dropdown-hint">@Resources.Repository_ClonePanel_JetBrainsHint</div>
+                        }
                     }
-                </ul>
+                </div>
             </details>
         }
-        <button type="button" class="pure-button copy-to-clip-button" data-clipboard-text="git clone @toolUrl"><i class="fa fa-terminal"></i> @Resources.Repository_ClonePanel_Command</button>
-        <a class="pure-button" href="@Url.Action("Download", "Repositories", new { name = Model.Name })" download><i class="fa fa-download"></i> @Resources.Repository_Tree_Zip</a>
+        <button type="button" class="pure-button" data-clipboard-text="git clone @toolUrl"><i class="fa fa-terminal"></i> @Resources.Repository_ClonePanel_Command</button>
+        <a class="pure-button" href="@Url.Action("Download", "Repositories", new { name = Model.Name })" download><i class="fa fa-download"></i> @Resources.Repository_ClonePanel_Download</a>
     </div>
 </div>

@@ -9,7 +9,8 @@ function initClipboard() {
             const textToCopy = button.getAttribute('data-clipboard-text');
             navigator.clipboard.writeText(textToCopy)
                 .then(() => {
-                    // Success
+                    button.classList.add('copied');
+                    setTimeout(() => button.classList.remove('copied'), 1500);
                 })
                 .catch(err => {
                     console.error('Failed to copy!', err);

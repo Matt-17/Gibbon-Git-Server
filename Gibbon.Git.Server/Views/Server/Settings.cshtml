@@ -60,13 +60,21 @@
             @Html.DropDownListFor(m => m.DefaultRepositoryView, Html.GetEnumSelectList<RepositoryView>(), new { @class = "medium" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultRepositoryView_Hint"></i>
         </div>
-        <div class="pure-control-group checkboxlist clone-tool-list">
+        <div class="pure-control-group clone-tool-settings">
             @Html.LabelFor(m => m.EnabledCloneTools)
             <input type="hidden" name="EnabledCloneTools" value="" />
-            @foreach (var tool in CloneTools.BuiltIn)
-            {
-                <label class="pure-checkbox"><input type="checkbox" name="EnabledCloneTools" value="@tool.Key" checked="@(Model.EnabledCloneTools?.Contains(tool.Key) == true)" /> @tool.Name</label>
-            }
+            <div class="clone-tool-groups">
+                @foreach (var group in CloneTools.BuiltIn.GroupBy(t => t.Group))
+                {
+                    <div class="clone-tool-group">
+                        <div class="clone-tool-group-title">@CloneTools.GetGroupName(group.Key)</div>
+                        @foreach (var tool in group)
+                        {
+                            <label class="pure-checkbox"><input type="checkbox" name="EnabledCloneTools" value="@tool.Key" checked="@(Model.EnabledCloneTools?.Contains(tool.Key) == true)" /> @tool.Name</label>
+                        }
+                    </div>
+                }
+            </div>
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_CloneTools_Hint"></i>
         </div>
         <div class="pure-control-group">

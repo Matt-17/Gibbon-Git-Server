@@ -10,22 +10,22 @@ public static class CloneTools
     // Only schemes verified against the vendors' sources or documentation.
     public static readonly IReadOnlyList<CloneTool> BuiltIn =
     [
-        new("vscode", "Visual Studio Code", "vscode://vscode.git/clone?url={url}"),
-        new("visualstudio", "Visual Studio", "git-client://clone?repo={url}"),
-        new("cursor", "Cursor", "cursor://vscode.git/clone?url={url}"),
-        new("windsurf", "Windsurf", "windsurf://vscode.git/clone?url={url}"),
-        new("vscodium", "VSCodium", "vscodium://vscode.git/clone?url={url}"),
-        new("idea", "IntelliJ IDEA", string.Format(JetBrains, "idea")),
-        new("rider", "Rider", string.Format(JetBrains, "rd")),
-        new("webstorm", "WebStorm", string.Format(JetBrains, "web-storm")),
-        new("pycharm", "PyCharm", string.Format(JetBrains, "pycharm")),
-        new("phpstorm", "PhpStorm", string.Format(JetBrains, "php-storm")),
-        new("goland", "GoLand", string.Format(JetBrains, "goland")),
-        new("clion", "CLion", string.Format(JetBrains, "clion")),
-        new("rubymine", "RubyMine", string.Format(JetBrains, "rubymine")),
-        new("rustrover", "RustRover", string.Format(JetBrains, "rustrover")),
-        new("tower", "Tower", "gittower://openRepo/{url}"),
-        new("sourcetree", "Sourcetree / Fork", "sourcetree://cloneRepo?cloneUrl={url}")
+        new("vscode", "Visual Studio Code", "vscode://vscode.git/clone?url={url}", CloneToolGroup.Editor),
+        new("visualstudio", "Visual Studio", "git-client://clone?repo={url}", CloneToolGroup.Editor),
+        new("cursor", "Cursor", "cursor://vscode.git/clone?url={url}", CloneToolGroup.Editor),
+        new("windsurf", "Windsurf", "windsurf://vscode.git/clone?url={url}", CloneToolGroup.Editor),
+        new("vscodium", "VSCodium", "vscodium://vscode.git/clone?url={url}", CloneToolGroup.Editor),
+        new("idea", "IntelliJ IDEA", string.Format(JetBrains, "idea"), CloneToolGroup.JetBrains),
+        new("rider", "Rider", string.Format(JetBrains, "rd"), CloneToolGroup.JetBrains),
+        new("webstorm", "WebStorm", string.Format(JetBrains, "web-storm"), CloneToolGroup.JetBrains),
+        new("pycharm", "PyCharm", string.Format(JetBrains, "pycharm"), CloneToolGroup.JetBrains),
+        new("phpstorm", "PhpStorm", string.Format(JetBrains, "php-storm"), CloneToolGroup.JetBrains),
+        new("goland", "GoLand", string.Format(JetBrains, "goland"), CloneToolGroup.JetBrains),
+        new("clion", "CLion", string.Format(JetBrains, "clion"), CloneToolGroup.JetBrains),
+        new("rubymine", "RubyMine", string.Format(JetBrains, "rubymine"), CloneToolGroup.JetBrains),
+        new("rustrover", "RustRover", string.Format(JetBrains, "rustrover"), CloneToolGroup.JetBrains),
+        new("tower", "Tower", "gittower://openRepo/{url}", CloneToolGroup.GitClient),
+        new("sourcetree", "Sourcetree / Fork", "sourcetree://cloneRepo?cloneUrl={url}", CloneToolGroup.GitClient)
     ];
 
     public static readonly IReadOnlyList<string> DefaultEnabledKeys = ["vscode", "visualstudio", "cursor", "idea", "rider"];
@@ -33,6 +33,14 @@ public static class CloneTools
     private static readonly HashSet<string> ForbiddenSchemes = new(StringComparer.OrdinalIgnoreCase)
     {
         "javascript", "data", "vbscript", "file", "blob", "filesystem", "about"
+    };
+
+    public static string GetGroupName(CloneToolGroup group) => group switch
+    {
+        CloneToolGroup.Editor => Resources.CloneToolGroup_Editor,
+        CloneToolGroup.JetBrains => Resources.CloneToolGroup_JetBrains,
+        CloneToolGroup.GitClient => Resources.CloneToolGroup_GitClient,
+        _ => Resources.CloneToolGroup_Custom
     };
 
     public static IReadOnlyList<string> GetEnabledKeys(string enabledCloneTools)
