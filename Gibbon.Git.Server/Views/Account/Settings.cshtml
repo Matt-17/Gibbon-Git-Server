@@ -1,4 +1,5 @@
 ﻿@model Gibbon.Git.Server.Models.MeSettingsModel
+@using Gibbon.Git.Server.Configuration
 @{
     Layout = "~/Views/Account/_Layout.cshtml";
     ViewBag.Title = Resources.Settings_Index_Title;
@@ -18,6 +19,16 @@
             @Html.LabelFor(m => m.PreferredLanguage)
             @Html.DropDownListFor(m => m.PreferredLanguage, Model.AvailableLanguages, new { @class = "medium", autofocus = "" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultLanguage_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.DisplayNameFormat)
+            @Html.DropDownListFor(m => m.DisplayNameFormat, Html.GetEnumSelectList<NameFormat>(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_DisplayNameFormat_Hint"></i>
+        </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.SortNameFormat)
+            @Html.DropDownListFor(m => m.SortNameFormat, Html.GetEnumSelectList<NameFormat>(), Resources.MeController_Settings_UseServerSetting, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_SortNameFormat_Hint"></i>
         </div>
 
         <div class="pure-controls">

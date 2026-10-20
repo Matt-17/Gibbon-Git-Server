@@ -141,6 +141,8 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
         return View(new MeSettingsModel
         {
             PreferredLanguage = settings.PreferredLanguage,
+            DisplayNameFormat = settings.DisplayNameFormat,
+            SortNameFormat = settings.SortNameFormat,
             AvailableLanguages = cultureItems
         });
     }
@@ -165,7 +167,9 @@ public class AccountController(IUserService userService, IRoleProvider roleProvi
 
         await _userSettingsService.SaveSettings(UserModel.Id, new UserSettings
         {
-            PreferredLanguage = settings.PreferredLanguage
+            PreferredLanguage = settings.PreferredLanguage,
+            DisplayNameFormat = settings.DisplayNameFormat,
+            SortNameFormat = settings.SortNameFormat
         });
 
         return RedirectToAction("Settings");

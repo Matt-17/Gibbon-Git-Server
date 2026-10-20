@@ -2864,6 +2864,77 @@ namespace Gibbon.Git.Server.App_Resources {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
             }
+        }        
+        /// <summary>
+        ///   Looks up a localized string similar to Use server setting.
+        /// </summary>
+        public static string MeController_Settings_UseServerSetting {
+            get {
+                return ResourceManager.GetString("MeController_Settings_UseServerSetting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First name Last name.
+        /// </summary>
+        public static string NameFormat_FirstLast {
+            get {
+                return ResourceManager.GetString("NameFormat_FirstLast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last name, First name.
+        /// </summary>
+        public static string NameFormat_LastCommaFirst {
+            get {
+                return ResourceManager.GetString("NameFormat_LastCommaFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last name First name.
+        /// </summary>
+        public static string NameFormat_LastFirst {
+            get {
+                return ResourceManager.GetString("NameFormat_LastFirst", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name display.
+        /// </summary>
+        public static string Settings_Global_DisplayNameFormat {
+            get {
+                return ResourceManager.GetString("Settings_Global_DisplayNameFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How the names of users are displayed..
+        /// </summary>
+        public static string Settings_Global_DisplayNameFormat_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_DisplayNameFormat_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name sorting.
+        /// </summary>
+        public static string Settings_Global_SortNameFormat {
+            get {
+                return ResourceManager.GetString("Settings_Global_SortNameFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How users are sorted in lists..
+        /// </summary>
+        public static string Settings_Global_SortNameFormat_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Global_SortNameFormat_Hint", resourceCulture);
+            }
         }
     }
 }

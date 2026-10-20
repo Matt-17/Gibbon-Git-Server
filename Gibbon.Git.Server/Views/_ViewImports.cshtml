@@ -3,6 +3,8 @@
 @using Gibbon.Git.Server.Helpers.HtmlHelpers
 @using static Gibbon.Git.Server.Helpers.AttributeHelper
 
+@inject Gibbon.Git.Server.Services.IUserNameFormatter NameFormatter
+
 @namespace Gibbon.Git.Server.Views
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Gibbon.Git.Server

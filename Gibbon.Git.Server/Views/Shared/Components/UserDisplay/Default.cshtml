@@ -5,7 +5,7 @@
 
 @if (User.Identity.IsAuthenticated)
 {
-    <li class="separator"><a href="@Url.Action("Index", "Account")"><i class="fa fa-male"></i> @Model?.GivenName @Model?.Surname</a></li>
+    <li class="separator"><a href="@Url.Action("Index", "Account")"><i class="fa fa-male"></i> @(Model is null ? "" : NameFormatter.GetDisplayName(Model))</a></li>
 
     @if (!User.IsWindowsAuthenticated())
     {

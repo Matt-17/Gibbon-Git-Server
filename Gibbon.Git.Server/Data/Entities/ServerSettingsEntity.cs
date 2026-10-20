@@ -1,4 +1,6 @@
-﻿namespace Gibbon.Git.Server.Data.Entities;
+﻿using Gibbon.Git.Server.Configuration;
+
+namespace Gibbon.Git.Server.Data.Entities;
 
 public sealed class ServerSettingsEntity
 {
@@ -14,4 +16,6 @@ public sealed class ServerSettingsEntity
     public bool IsCommitAuthorAvatarVisible { get; set; }
     public string LinksRegex { get; set; }
     public string LinksUrl { get; set; }
+    public NameFormat DisplayNameFormat { get; set; }
+    public NameFormat SortNameFormat { get; set; }
 }

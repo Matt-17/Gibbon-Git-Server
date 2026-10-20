@@ -45,5 +45,13 @@ public class ServerSettingsConfiguration : IEntityTypeConfiguration<ServerSettin
 
         builder.Property(s => s.LinksUrl)
             .HasMaxLength(250);
+
+        builder.Property(s => s.DisplayNameFormat)
+            .HasConversion<int>()
+            .IsRequired();
+
+        builder.Property(s => s.SortNameFormat)
+            .HasConversion<int>()
+            .IsRequired();
     }
 }

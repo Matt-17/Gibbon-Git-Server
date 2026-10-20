@@ -16,7 +16,7 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "10.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -137,6 +137,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
+                    b.Property<int>("DisplayNameFormat")
+                        .HasColumnType("int");
+
                     b.Property<bool>("IsCommitAuthorAvatarVisible")
                         .HasColumnType("bit");
 
@@ -159,6 +162,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                     b.Property<string>("SiteTitle")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("SortNameFormat")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -271,6 +277,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<int?>("DisplayNameFormat")
+                        .HasColumnType("int");
+
                     b.Property<string>("PreferredLanguage")
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
@@ -280,6 +289,9 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
 
                     b.Property<bool>("ReceiveEmailNotifications")
                         .HasColumnType("bit");
+
+                    b.Property<int?>("SortNameFormat")
+                        .HasColumnType("int");
 
                     b.Property<string>("TimeZone")
                         .HasMaxLength(50)

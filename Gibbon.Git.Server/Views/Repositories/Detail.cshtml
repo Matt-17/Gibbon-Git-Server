@@ -96,19 +96,20 @@
         <div class="pure-control-group">
             @Html.LabelFor(m => m.Users)
             <span>
-                @foreach (var user in Model.Users)
+                @{ var sortedUsers = NameFormatter.Sort(Model.Users).ToList(); }
+                @foreach (var user in sortedUsers)
                 {
-                    @Html.ActionLink(user.DisplayName, "Detail", "Users", new
+                    if (user != sortedUsers.First())
+                    {
+                        @Html.Raw(" &bull; ")
+                    }
+                    @Html.ActionLink(NameFormatter.GetDisplayName(user), "Detail", "Users", new
                         {
                             username = user.Username
                         }, new
                         {
                             title = user.Username
                         })
-                    if (user != Model.Users.Last())
-                    {
-                        @:,
-                    }
                 }
             </span>
         </div>
@@ -116,19 +117,20 @@
         <div class="pure-control-group">
             @Html.LabelFor(m => m.Administrators)
             <span>
-                @foreach (var admin in Model.Administrators)
+                @{ var sortedAdministrators = NameFormatter.Sort(Model.Administrators).ToList(); }
+                @foreach (var admin in sortedAdministrators)
                 {
-                    @Html.ActionLink(admin.DisplayName, "Detail", "Users", new
+                    if (admin != sortedAdministrators.First())
+                    {
+                        @Html.Raw(" &bull; ")
+                    }
+                    @Html.ActionLink(NameFormatter.GetDisplayName(admin), "Detail", "Users", new
                         {
                             username = admin.Username
                         }, new
                         {
                             title = admin.Username
                         })
-                    if (admin != Model.Administrators.Last())
-                    {
-                        @:,
-                    }
                 }
             </span>
         </div>
@@ -138,14 +140,14 @@
             <span>
                 @foreach (var team in Model.Teams)
                 {
+                    if (team != Model.Teams.First())
+                    {
+                        @Html.Raw(" &bull; ")
+                    }
                     @Html.ActionLink(team.DisplayName, "Detail", "Teams", new
                         {
                             teamname = team.Name
                         }, null)
-                    if (team != Model.Teams.Last())
-                    {
-                        @:,
-                    }
                 }
             </span>
         </div>

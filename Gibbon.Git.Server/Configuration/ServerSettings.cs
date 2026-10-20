@@ -12,6 +12,8 @@ public sealed class ServerSettings
     public bool IsCommitAuthorAvatarVisible { get; set; }
     public string LinksRegex { get; set; }
     public string LinksUrl { get; set; }
+    public NameFormat DisplayNameFormat { get; set; }
+    public NameFormat SortNameFormat { get; set; }
 
     public bool HasCustomSiteLogo() => !string.IsNullOrWhiteSpace(SiteLogoUrl);
 

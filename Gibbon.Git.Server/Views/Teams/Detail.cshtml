@@ -23,15 +23,14 @@
         <div class="pure-control-group">
             @Html.LabelFor(m => m.Members)
             <span>
-                @foreach (var member in Model.Members)
+                @{ var sortedMembers = NameFormatter.Sort(Model.Members).ToList(); }
+                @foreach (var member in sortedMembers)
                 {
-                    @Html.ActionLink(member.DisplayName, "Detail", "Users", new { username = member.Username }, new { title = member.Username })
-                    if (member != Model.Members.Last())
+                    if (member != sortedMembers.First())
                     {
-                        @:,
-                         
-                             
+                        @Html.Raw(" &bull; ")
                     }
+                    @Html.ActionLink(NameFormatter.GetDisplayName(member), "Detail", "Users", new { username = member.Username }, new { title = member.Username })
                 }
             </span>
         </div>
@@ -40,13 +39,11 @@
             <span>
                 @foreach (var repository in Model.Repositories)
                 {
-                    @Html.ActionLink(repository.Name, "Detail", "Repositories", new { name = repository.Name }, null)
-                    if (repository != Model.Repositories.Last())
+                    if (repository != Model.Repositories.First())
                     {
-                        @:,
-                         
-                             
+                        @Html.Raw(" &bull; ")
                     }
+                    @Html.ActionLink(repository.Name, "Detail", "Repositories", new { name = repository.Name }, null)
                 }
             </span>
         </div>

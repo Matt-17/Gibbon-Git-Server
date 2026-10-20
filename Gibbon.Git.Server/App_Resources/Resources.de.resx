@@ -1016,4 +1016,28 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   <data name="Error_Forbidden_Text" xml:space="preserve">
     <value>Der Zugriff auf die Ressource wurde verweigert.</value>
   </data>
+  <data name="MeController_Settings_UseServerSetting" xml:space="preserve">
+    <value>Servereinstellung verwenden</value>
+  </data>
+  <data name="NameFormat_FirstLast" xml:space="preserve">
+    <value>Vorname Nachname</value>
+  </data>
+  <data name="NameFormat_LastCommaFirst" xml:space="preserve">
+    <value>Nachname, Vorname</value>
+  </data>
+  <data name="NameFormat_LastFirst" xml:space="preserve">
+    <value>Nachname Vorname</value>
+  </data>
+  <data name="Settings_Global_DisplayNameFormat" xml:space="preserve">
+    <value>Namensanzeige</value>
+  </data>
+  <data name="Settings_Global_DisplayNameFormat_Hint" xml:space="preserve">
+    <value>Wie die Namen von Benutzern angezeigt werden.</value>
+  </data>
+  <data name="Settings_Global_SortNameFormat" xml:space="preserve">
+    <value>Namenssortierung</value>
+  </data>
+  <data name="Settings_Global_SortNameFormat_Hint" xml:space="preserve">
+    <value>Wie Benutzer in Listen sortiert werden.</value>
+  </data>
 </root>

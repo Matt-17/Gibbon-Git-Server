@@ -114,11 +114,11 @@
         <div class="pure-control-group checkboxlist">
             @Html.LabelFor(m => m.Users)
             <span>
-                @foreach (var user in Model.AllUsers)
+                @foreach (var user in NameFormatter.Sort(Model.AllUsers))
                 {
                     <div>
                         <input type="checkbox" name="PostedSelectedUsers" value="@user.Id" checked="@Model.Users.Any(u => u.Id == user.Id)" />
-                        <label>@user.DisplayName</label>
+                        <label>@NameFormatter.GetDisplayName(user)</label>
                     </div>
                 }
             </span>
@@ -129,11 +129,11 @@
         <div class="pure-control-group checkboxlist">
             @Html.LabelFor(m => m.Administrators)
             <span>
-                @foreach (var admin in Model.AllAdministrators)
+                @foreach (var admin in NameFormatter.Sort(Model.AllAdministrators))
                 {
                     <div>
                         <input type="checkbox" name="PostedSelectedAdministrators" value="@admin.Id" checked="@Model.Administrators.Any(a => a.Id == admin.Id)" />
-                        <label>@admin.DisplayName</label>
+                        <label>@NameFormatter.GetDisplayName(admin)</label>
                     </div>
                 }
             </span>
