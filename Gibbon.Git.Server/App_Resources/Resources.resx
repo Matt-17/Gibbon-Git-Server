@@ -1127,7 +1127,7 @@ The regular C# string formatting rules apply: To get {} in your link you need to
     <value>Clone</value>
   </data>
   <data name="Repository_ClonePanel_Command" xml:space="preserve">
-    <value>Copy git clone command</value>
+    <value>Copy git clone</value>
   </data>
   <data name="Repository_ClonePanel_OpenWith" xml:space="preserve">
     <value>Open with</value>
@@ -1179,5 +1179,32 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   </data>
   <data name="Settings_Global_PreferredCloneTool_None" xml:space="preserve">
     <value>None</value>
+  </data>
+  <data name="Repository_ClonePanel_Url" xml:space="preserve">
+    <value>Clone URL</value>
+  </data>
+  <data name="Repository_ClonePanel_PersonalUrl" xml:space="preserve">
+    <value>With user name</value>
+  </data>
+  <data name="Repository_ClonePanel_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="Repository_ClonePanel_Download" xml:space="preserve">
+    <value>Download ZIP</value>
+  </data>
+  <data name="Repository_ClonePanel_JetBrainsHint" xml:space="preserve">
+    <value>Requires JetBrains Toolbox or a running IDE.</value>
+  </data>
+  <data name="CloneToolGroup_Editor" xml:space="preserve">
+    <value>Editors</value>
+  </data>
+  <data name="CloneToolGroup_JetBrains" xml:space="preserve">
+    <value>JetBrains</value>
+  </data>
+  <data name="CloneToolGroup_GitClient" xml:space="preserve">
+    <value>Git clients</value>
+  </data>
+  <data name="CloneToolGroup_Custom" xml:space="preserve">
+    <value>More</value>
   </data>
 </root>

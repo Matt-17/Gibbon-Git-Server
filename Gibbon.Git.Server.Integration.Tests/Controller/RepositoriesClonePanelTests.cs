@@ -22,6 +22,8 @@ internal class RepositoriesClonePanelTests : IntegrationTestBase
             Assert.Contains($"jetbrains://rd/checkout/git?checkout.repo={encodedUrl}&amp;idea.required.plugins.id=Git4Idea", content, page);
             Assert.Contains($"data-clipboard-text=\"git clone http://admin@localhost/{name}.git\"", content, page);
             Assert.DoesNotContain("gittower://", content, page);
+            Assert.MatchesRegex("""<div class="dropdown-header">Editors</div>\s*<a href="vscode://""", content, page);
+            Assert.MatchesRegex("""<div class="dropdown-header">JetBrains</div>\s*<a href="jetbrains://idea/""", content, page);
         }
     }
 
@@ -72,7 +74,7 @@ internal class RepositoriesClonePanelTests : IntegrationTestBase
 
         var content = await client.GetStringAsync($"/Repositories/{name}/Detail");
 
-        Assert.MatchesRegex("""class="pure-button pure-button-primary clone-preferred" href="jetbrains://rd/checkout/git[^"]*">Open in Rider</a>""", content);
+        Assert.MatchesRegex("""class="pure-button pure-button-primary clone-preferred" href="jetbrains://rd/checkout/git[^"]*"><i class="fa fa-external-link"></i> Open in Rider</a>""", content);
     }
 
     [TestMethod]

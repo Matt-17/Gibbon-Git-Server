@@ -87,14 +87,16 @@
         <script src="~/lib/js/jquery.validate.js"></script>
         <script src="~/lib/js/jquery.validate.unobtrusive.js"></script>
         <script src="~/lib/js/highlight.pack.js"></script>
-        <script src="~/js/clipboard.js"></script>
+        <script src="~/js/clipboard.js" asp-append-version="true"></script>
+        <script src="~/js/dropdown.js" asp-append-version="true"></script>
     </environment>
     <environment include="Production">
         <script src="~/lib/js/jquery.min.js"></script>
         <script src="~/lib/js/jquery.validate.min.js"></script>
         <script src="~/lib/js/jquery.validate.unobtrusive.min.js"></script>
         <script src="~/lib/js/highlight.pack.js"></script>
-        <script src="~/js/clipboard.js"></script>
+        <script src="~/js/clipboard.js" asp-append-version="true"></script>
+        <script src="~/js/dropdown.js" asp-append-version="true"></script>
     </environment>
     @await RenderSectionAsync("scripts", required: false)
 </body>

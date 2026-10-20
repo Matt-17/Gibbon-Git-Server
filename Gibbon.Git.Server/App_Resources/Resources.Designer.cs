@@ -3019,7 +3019,7 @@ namespace Gibbon.Git.Server.App_Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy git clone command.
+        ///   Looks up a localized string similar to Copy git clone.
         /// </summary>
         public static string Repository_ClonePanel_Command {
             get {
@@ -3177,6 +3177,87 @@ namespace Gibbon.Git.Server.App_Resources {
         public static string Settings_Global_PreferredCloneTool_None {
             get {
                 return ResourceManager.GetString("Settings_Global_PreferredCloneTool_None", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clone URL.
+        /// </summary>
+        public static string Repository_ClonePanel_Url {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_Url", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With user name.
+        /// </summary>
+        public static string Repository_ClonePanel_PersonalUrl {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_PersonalUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy.
+        /// </summary>
+        public static string Repository_ClonePanel_Copy {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_Copy", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download ZIP.
+        /// </summary>
+        public static string Repository_ClonePanel_Download {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_Download", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Requires JetBrains Toolbox or a running IDE..
+        /// </summary>
+        public static string Repository_ClonePanel_JetBrainsHint {
+            get {
+                return ResourceManager.GetString("Repository_ClonePanel_JetBrainsHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editors.
+        /// </summary>
+        public static string CloneToolGroup_Editor {
+            get {
+                return ResourceManager.GetString("CloneToolGroup_Editor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to JetBrains.
+        /// </summary>
+        public static string CloneToolGroup_JetBrains {
+            get {
+                return ResourceManager.GetString("CloneToolGroup_JetBrains", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Git clients.
+        /// </summary>
+        public static string CloneToolGroup_GitClient {
+            get {
+                return ResourceManager.GetString("CloneToolGroup_GitClient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More.
+        /// </summary>
+        public static string CloneToolGroup_Custom {
+            get {
+                return ResourceManager.GetString("CloneToolGroup_Custom", resourceCulture);
             }
         }
     }

@@ -1068,7 +1068,7 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
     <value>Klonen</value>
   </data>
   <data name="Repository_ClonePanel_Command" xml:space="preserve">
-    <value>git clone-Befehl kopieren</value>
+    <value>git clone kopieren</value>
   </data>
   <data name="Repository_ClonePanel_OpenWith" xml:space="preserve">
     <value>Öffnen mit</value>
@@ -1120,5 +1120,32 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   </data>
   <data name="Settings_Global_PreferredCloneTool_None" xml:space="preserve">
     <value>Keines</value>
+  </data>
+  <data name="Repository_ClonePanel_Url" xml:space="preserve">
+    <value>Clone-URL</value>
+  </data>
+  <data name="Repository_ClonePanel_PersonalUrl" xml:space="preserve">
+    <value>Mit Benutzername</value>
+  </data>
+  <data name="Repository_ClonePanel_Copy" xml:space="preserve">
+    <value>Kopieren</value>
+  </data>
+  <data name="Repository_ClonePanel_Download" xml:space="preserve">
+    <value>ZIP herunterladen</value>
+  </data>
+  <data name="Repository_ClonePanel_JetBrainsHint" xml:space="preserve">
+    <value>Benötigt die JetBrains Toolbox oder eine laufende IDE.</value>
+  </data>
+  <data name="CloneToolGroup_Editor" xml:space="preserve">
+    <value>Editoren</value>
+  </data>
+  <data name="CloneToolGroup_JetBrains" xml:space="preserve">
+    <value>JetBrains</value>
+  </data>
+  <data name="CloneToolGroup_GitClient" xml:space="preserve">
+    <value>Git-Clients</value>
+  </data>
+  <data name="CloneToolGroup_Custom" xml:space="preserve">
+    <value>Weitere</value>
   </data>
 </root>
