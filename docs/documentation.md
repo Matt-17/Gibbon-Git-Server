@@ -10,6 +10,7 @@ Contains links to all the resources for installing, updating, and configuring Bo
   - [Installation](documentation/installation)
   - [Authentication](documentation/authentication)
   - [appsettings.json Documentation](documentation/appsettings)
+  - [Data Directory](documentation/data-directory)
 - [Update Guide](documentation/update)
 - [Compatibility Information](documentation/compatibility)
 - [Changelog](changelog)

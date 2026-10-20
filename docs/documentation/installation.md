@@ -81,4 +81,4 @@ You should see the Gibbon Git Server login page. From here, you can start managi
 
 ---
 
-That’s it! With just a few simple steps, you can have Gibbon Git Server running on your Windows machine. For more detailed configuration options or deployment strategies, refer to the official documentation on our [website](https://code-ix.github.io/Gibbon-Git-Server/).
+That’s it! With just a few simple steps, you can have Gibbon Git Server running on your Windows machine. For more detailed configuration options or deployment strategies, refer to the official documentation on our [website](https://matt-17.github.io/Gibbon-Git-Server/).

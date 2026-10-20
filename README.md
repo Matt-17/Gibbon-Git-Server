@@ -4,7 +4,7 @@
 
 **Gibbon Git Server** is a self-hosted Git server built with **ASP.NET Core**. This fork is currently under heavy development, and branch squashing will occur soon. Feel free to explore, but please refrain from forking for development purposes at this time.
 
-For further information and documentation, please visit the [official website](https://code-ix.github.io/Gibbon-Git-Server/).
+For further information and documentation, please visit the [official website](https://matt-17.github.io/Gibbon-Git-Server/).
 
 This is a fork of the original [Bonobo Git Server](https://github.com/jakubgarfield/Bonobo-Git-Server), which was last 
 updated in 2019. The original project was built on .NET Framework, which is now outdated. This fork aims to modernize 
@@ -52,25 +52,10 @@ server solution. You can find the key changes [below](#key-changes-to-bonobo-git
 
 - Update **`appsettings.json`** to adjust application settings.
 - The default database is SQLite, but you can switch to another by updating the connection string.
-
-### Data directory
-
-All data (SQLite database, repositories, keys for login cookies) is stored below `Application:DataPath`, by default `App_Data` in the installation folder.
-To keep the data separate from the program files, point it to another folder, either in `appsettings.json` or with the environment variable `Application__DataPath`:
-
-```json
-"Application": {
-  "DataPath": "C:\\ProgramData\\Gibbon"
-}
-```
-
-- `Application:RepositoryPath`, `Git:HomePath` and a SQLite database without a connection string follow `DataPath` unless they are set explicitly.
-- Relative paths are resolved against the installation folder, so existing configurations keep working.
-- The account running the server needs write access to the data directory.
   
 ## Update
 
-Before each update please read carefully the information about **compatibility issues** between your version and the latest one in [changelog](https://code-ix.github.io/Gibbon-Git-Server/changelog).
+Before each update please read carefully the information about **compatibility issues** between your version and the latest one in [changelog](https://matt-17.github.io/Gibbon-Git-Server/changelog).
 
 - **Backup** your data.
 - **Stop the server**.
@@ -80,7 +65,7 @@ Before each update please read carefully the information about **compatibility i
 
 ## Changelog
 
-Stay updated with the latest changes by visiting the [Changelog](https://code-ix.github.io/Gibbon-Git-Server/changelog) on our website.  
+Stay updated with the latest changes by visiting the [Changelog](https://matt-17.github.io/Gibbon-Git-Server/changelog) on our website.  
 You can also view the legacy Bonobo Git Server changelog [here](https://github.com/Code-iX/Gibbon-Git-Server/blob/40135135d314ef25b9f82a9e5664366bc6995c4d/changelog.md).
 
 ## Contributing
@@ -93,7 +78,7 @@ This project is licensed under the MIT License.
 
 ## Still have questions?
 
-If you have any further questions, feel free to check out [Questions](https://code-ix.github.io/Gibbon-Git-Server/questions) on our website.
+If you have any further questions, feel free to check out [Questions](https://matt-17.github.io/Gibbon-Git-Server/questions) on our website.
 
 ## Key changes to Bonobo Git Server
 
