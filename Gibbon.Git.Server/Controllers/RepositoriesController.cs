@@ -241,7 +241,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Tree/{**path}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Tree(string name, string version, string path)
     {
         var isApiRequest = HttpContext.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
@@ -281,7 +281,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Blob/{**path}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Blob(string name, string version, string path)
     {
         ViewBag.Name = name;
@@ -296,7 +296,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Raw/{**path}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Raw(string name, string version, string path, bool display = false)
     {
         var repo = _repositoryService.GetRepository(name);
@@ -329,7 +329,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Blame/{**path}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Blame(string name, string version, string path)
     {
         ViewBag.Name = name;
@@ -345,7 +345,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Download/{**path}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public async Task<IActionResult> Download(string name, string version, string path)
     {
         var repo = _repositoryService.GetRepository(name);
@@ -377,7 +377,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Tags/{branch?}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Tags(string name, string branch, int page = 1)
     {
         page = page >= 1 ? page : 1;
@@ -398,7 +398,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Commits/")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Commits(string name, [FromQuery] string branch = null, [FromQuery] int page = 1)
     {
         page = page >= 1 ? page : 1;
@@ -468,7 +468,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Commit/{commit}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Commit(string name, string commit)
     {
         ViewBag.Name = name;
@@ -482,6 +482,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/Clone")]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult Clone(string name)
     {
         if (!_repositoryPermissionService.HasCreatePermission(User.Id()))
@@ -498,7 +499,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
     [HttpPost("Repositories/{name}/Clone")]
     [ValidateAntiForgeryToken]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public async Task<IActionResult> Clone([FromRoute] string name, RepositoryDetailModel model)
     {
         ArgumentNullException.ThrowIfNull(model, nameof(model));
@@ -558,7 +559,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     }
 
     [HttpGet("Repositories/{name}/History/{**path}")]
-    [Authorize(Policy = Policies.RepositoryPush)]
+    [Authorize(Policy = Policies.RepositoryPull)]
     public IActionResult History(string name, string version, string path)
     {
         ViewBag.Name = name;

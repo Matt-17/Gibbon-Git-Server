@@ -32,7 +32,7 @@ internal class IntegrationTestBase
         return client;
     }
 
-    private static async Task AuthenticateUserAsync(HttpClient client, string username = "admin", string password = "admin")
+    protected static async Task AuthenticateUserAsync(HttpClient client, string username = "admin", string password = "admin")
     {
         const string requestUri = "/Login";
         var loginData = new Dictionary<string, string>(await GetAntiForgeryToken(client, requestUri))

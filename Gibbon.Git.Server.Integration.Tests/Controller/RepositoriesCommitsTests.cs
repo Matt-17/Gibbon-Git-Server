@@ -1,4 +1,4 @@
-using System.Diagnostics;
+using static Gibbon.Git.Server.Integration.Tests.Helper.RepositoryTestHelper;
 
 namespace Gibbon.Git.Server.Integration.Tests.Controller;
 
@@ -35,9 +35,9 @@ internal class RepositoriesCommitsTests : IntegrationTestBase
     {
         var client = await CreateClientAsync(true);
         var name = await CreateRepository(client);
-        var repositoryPath = Path.Combine(TestContext.TestRunDirectory!, "Databases", "Repositories", name);
+        var repositoryPath = GetRepositoryPath(TestContext, name);
         RunGit(repositoryPath, "symbolic-ref", "HEAD", "refs/heads/main");
-        PushCommit(repositoryPath, "main", "first commit on main");
+        PushCommit(TestContext, repositoryPath, "main", "first commit on main");
 
         var response = await client.GetAsync($"/Repositories/{name}/Commits");
         var content = await response.Content.ReadAsStringAsync();
@@ -52,48 +52,12 @@ internal class RepositoriesCommitsTests : IntegrationTestBase
     {
         var client = await CreateClientAsync(true);
         var name = await CreateRepository(client);
-        PushCommit(Path.Combine(TestContext.TestRunDirectory!, "Databases", "Repositories", name), "master", "tagged");
+        PushCommit(TestContext, GetRepositoryPath(TestContext, name), "master", "tagged");
 
         var content = await client.GetStringAsync($"/Repositories/{name}/Tags");
 
         Assert.Contains($"href=\"/Repositories/{name}/Commits?branch=v1\"", content);
         Assert.Contains($"href=\"/Repositories/{name}/Commit/", content);
         Assert.DoesNotContain("href=\"/Repositories/Commit", content);
-    }
-
-    private static async Task<string> CreateRepository(HttpClient client)
-    {
-        var name = "repo" + Guid.NewGuid().ToString("N")[..8];
-        var postData = new Dictionary<string, string>(await GetAntiForgeryToken(client, "/Repositories/Create"))
-        {
-            { "Name", name },
-            { "PostedSelectedAdministrators", "1" }
-        };
-        var response = await client.PostAsync("/Repositories/Create", new FormUrlEncodedContent(postData));
-        response.EnsureSuccessStatusCode();
-
-        return name;
-    }
-
-    private void PushCommit(string repositoryPath, string branch, string message)
-    {
-        var workingDirectory = Path.Combine(TestContext.TestRunDirectory!, "work-" + Guid.NewGuid().ToString("N"));
-        RunGit(TestContext.TestRunDirectory!, "init", "-q", "-b", branch, workingDirectory);
-        RunGit(workingDirectory, "-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "-q", "--allow-empty", "-m", message);
-        RunGit(workingDirectory, "tag", "v1");
-        RunGit(workingDirectory, "push", "-q", repositoryPath, branch, "v1");
-    }
-
-    private static void RunGit(string workingDirectory, params string[] arguments)
-    {
-        using var process = Process.Start(new ProcessStartInfo("git", arguments)
-        {
-            WorkingDirectory = workingDirectory,
-            RedirectStandardError = true,
-            UseShellExecute = false
-        })!;
-        var error = process.StandardError.ReadToEnd();
-        process.WaitForExit();
-        Assert.AreEqual(0, process.ExitCode, error);
     }
 }
