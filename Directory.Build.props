@@ -7,15 +7,14 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<Authors>Code-iX</Authors>
-		<Company>$(Authors)</Company>
-		<RepositoryUrl>https://github.com/Matt-17/Gibbon-Git-Server</RepositoryUrl>
+		<Version>0.5.0</Version>
+		<Authors>Matthias Voigt</Authors>
+		<Company>Code-iX</Company>
+		<Product>Gibbon Git Server</Product>
 		<AssemblyTitle>Gibbon Git Server</AssemblyTitle>
-		<AssemblyDescription>Self-hosted Git server for Windows (IIS) and Linux.</AssemblyDescription>
-		<AssemblyCompany>Matthias Voigt</AssemblyCompany>
-		<AssemblyProduct>Gibbon Git Server</AssemblyProduct>
-		<AssemblyCopyright>Copyright © Matthias Voigt 2024-2026</AssemblyCopyright>
-		<AssemblyVersion>0.5.0.0</AssemblyVersion>
+		<Description>Self-hosted Git server for Windows (IIS) and Linux.</Description>
+		<Copyright>Copyright © Matthias Voigt 2024-2026</Copyright>
+		<RepositoryUrl>https://github.com/Matt-17/Gibbon-Git-Server</RepositoryUrl>
 	</PropertyGroup>
 	<PropertyGroup Condition="$(MSBuildProjectName.EndsWith('.Tests'))">
 		<IsTestProject>true</IsTestProject>

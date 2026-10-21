@@ -1,14 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<PreserveCompilationContext>true</PreserveCompilationContext>		
-	</PropertyGroup>
-	<ItemGroup>
-	  <Compile Remove="IntegrationTests\*" />
-	</ItemGroup>
-	<ItemGroup>
-	  <None Include="IntegrationTests\*" />
-	</ItemGroup>
-
 	<ItemGroup>
 		<ProjectReference Include="..\Gibbon.Git.Server\Gibbon.Git.Server.csproj" />
 	</ItemGroup>

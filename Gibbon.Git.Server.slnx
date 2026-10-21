@@ -4,8 +4,6 @@
     <BuildType Name="Release" />
     <BuildType Name="Test" />
     <Platform Name="Any CPU" />
-    <Platform Name="Mixed Platforms" />
-    <Platform Name="x86" />
   </Configurations>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
@@ -18,9 +16,7 @@
   <Project Path="Gibbon.Git.Server.Integration.Tests/Gibbon.Git.Server.Integration.Tests.csproj">
     <BuildType Solution="Test|*" Project="Debug" />
   </Project>
-  <Project Path="Gibbon.Git.Server.Tests/Gibbon.Git.Server.Tests.csproj">
-    <Build Solution="*|x86" Project="false" />
-  </Project>
+  <Project Path="Gibbon.Git.Server.Tests/Gibbon.Git.Server.Tests.csproj" />
   <Project Path="Gibbon.Git.Server/Gibbon.Git.Server.csproj">
     <BuildType Solution="Test|*" Project="Debug" />
   </Project>

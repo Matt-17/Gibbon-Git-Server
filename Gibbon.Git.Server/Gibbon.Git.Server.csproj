@@ -1,28 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-	<PropertyGroup>
-		<Title>Gibbon Git Server</Title>
-		<ServerGarbageCollection>true</ServerGarbageCollection>
-		<RazorCompileOnBuild>true</RazorCompileOnBuild>
-		<RazorCompileOnPublish>true</RazorCompileOnPublish>
-		<PreserveCompilationContext>true</PreserveCompilationContext>
-	</PropertyGroup>
-
 	<ItemGroup>
 		<InternalsVisibleTo Include="Gibbon.Git.Server.Tests" />
 		<InternalsVisibleTo Include="Gibbon.Git.Server.Integration.Tests" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Remove="App_Data\.gitconfig" />
-		<None Remove="App_Data\Git\*" />
-		<None Remove="App_Data\Repositories\note.txt" />
-		<None Remove="Monikers.imagemanifest" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="Styles\fonts.scss" />
-		<Content Include="Styles\site.scss" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,7 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<!-- The Resources class is generated during the build, so no Designer.cs is checked in. -->
 		<EmbeddedResource Update="App_Resources\Resources.resx">
 			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
 			<StronglyTypedNamespace>Gibbon.Git.Server.App_Resources</StronglyTypedNamespace>
@@ -62,29 +41,11 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Styles\site.scss" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="wwwroot\lib\css\font-awesome.css">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	  <Content Update="wwwroot\lib\css\font-awesome.css.map">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	  <Content Update="wwwroot\lib\css\font-awesome.min.css">
-	    <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-	    <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <None Update="App_Data\note.txt">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </None>
-	</ItemGroup>
+	<!-- Native packages such as SkiaSharp ship debug symbols of about 90 MB per platform; they are not needed at runtime. -->
+	<Target Name="RemoveNativeDebugSymbolsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
+		<ItemGroup>
+			<ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.pdb' And $([System.String]::Copy('%(RelativePath)').StartsWith('runtimes'))" />
+		</ItemGroup>
+	</Target>
 
 </Project>
