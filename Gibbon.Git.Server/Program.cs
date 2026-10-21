@@ -30,7 +30,14 @@ using Microsoft.Extensions.Options;
 using Serilog;
 using Serilog.Extensions.Logging;
 
-var builder = WebApplication.CreateBuilder(args);
+// ASP.NET Core uses the working directory as content root. Use the installation folder instead, so starting
+// "dotnet <path>/Gibbon.Git.Server.dll" from any directory reads the server's own appsettings.json and wwwroot.
+// An explicit content root and "dotnet run" in development keep the default.
+var contentRootIsConfigured = Environment.GetEnvironmentVariable("ASPNETCORE_CONTENTROOT") is not null
+    || args.Any(a => a.StartsWith("--contentRoot", StringComparison.OrdinalIgnoreCase));
+var isDevelopment = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT"), Environments.Development, StringComparison.OrdinalIgnoreCase);
+var contentRoot = contentRootIsConfigured || isDevelopment ? null : AppContext.BaseDirectory;
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args, ContentRootPath = contentRoot });
 
 var services = builder.Services;
 var config = builder.Configuration;
