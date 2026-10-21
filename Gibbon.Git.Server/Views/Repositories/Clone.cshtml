@@ -1,3 +1,4 @@
+@using Gibbon.Git.Server.Repositories
 @model RepositoryDetailModel
 @{
     ViewBag.Title = Resources.Repository_Clone_Title;
@@ -37,6 +38,7 @@
                     <div>
                         <input type="checkbox" name="PostedSelectedUsers" value="@user.Id" checked="@Model.Users.Any(u => u.Id == user.Id)" />
                         <label>@NameFormatter.GetDisplayName(user)</label>
+                        @await Html.PartialAsync("_AccessLevelSelect", new AccessLevelSelectModel($"UserAccessLevels[{user.Id}]", Model.UserAccessLevels.GetValueOrDefault(user.Id, RepositoryAccessLevel.Push)))
                     </div>
                 }
             </span>
@@ -66,6 +68,7 @@
                     <div>
                         <input type="checkbox" name="PostedSelectedTeams" value="@team.Id" checked="@Model.Teams.Any(t => t.Id == team.Id)" />
                         <label>@team.DisplayName</label>
+                        @await Html.PartialAsync("_AccessLevelSelect", new AccessLevelSelectModel($"TeamAccessLevels[{team.Id}]", Model.TeamAccessLevels.GetValueOrDefault(team.Id, RepositoryAccessLevel.Push)))
                     </div>
                 }
             </span>

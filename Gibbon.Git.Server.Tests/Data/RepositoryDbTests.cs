@@ -235,8 +235,8 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
 
         var remainingAdminRelation = Context.Set<Dictionary<string, object>>("UserRepository_Administrator")
             .FirstOrDefault(relation => relation["User_Id"].Equals(admin.Id));
-        var remainingTeamRelation = Context.Set<Dictionary<string, object>>("TeamRepository_Permission")
-            .FirstOrDefault(relation => relation["Team_Id"].Equals(team.Id));
+        var remainingTeamRelation = Context.Set<RepositoryTeamPermission>("TeamRepository_Permission")
+            .FirstOrDefault(relation => relation.TeamId == team.Id);
 
         Assert.IsNull(remainingAdminRelation);
         Assert.IsNull(remainingTeamRelation);
@@ -266,10 +266,10 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         var remainingRepo = Context.Repositories.FirstOrDefault(r => r.Name == "TestRepo");
         Assert.IsNotNull(remainingRepo);
 
-        var remainingUserRelation = Context.Set<Dictionary<string, object>>("UserRepository_Permission")
-            .FirstOrDefault(relation => relation["User_Id"].Equals(user.Id));
-        var remainingTeamRelation = Context.Set<Dictionary<string, object>>("TeamRepository_Permission")
-            .FirstOrDefault(relation => relation["Team_Id"].Equals(team.Id));
+        var remainingUserRelation = Context.Set<RepositoryUserPermission>("UserRepository_Permission")
+            .FirstOrDefault(relation => relation.UserId == user.Id);
+        var remainingTeamRelation = Context.Set<RepositoryTeamPermission>("TeamRepository_Permission")
+            .FirstOrDefault(relation => relation.TeamId == team.Id);
 
         Assert.IsNull(remainingUserRelation);
         Assert.IsNull(remainingTeamRelation);

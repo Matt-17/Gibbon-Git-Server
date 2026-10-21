@@ -1,4 +1,5 @@
-﻿@model RepositoryDetailModel
+﻿@using Gibbon.Git.Server.Repositories
+@model RepositoryDetailModel
 @{
     Layout = "~/Views/Repositories/_RepositoriesLayout.cshtml";
     ViewBag.Title = Resources.Repository_Detail_Title;
@@ -96,6 +97,10 @@
                         {
                             title = user.Username
                         })
+                    @if (Model.UserAccessLevels.GetValueOrDefault(user.Id, RepositoryAccessLevel.Push) == RepositoryAccessLevel.Pull)
+                    {
+                        <span class="access-badge">@Resources.Repository_AccessLevel_ReadOnly</span>
+                    }
                 }
             </span>
         </div>
@@ -134,6 +139,10 @@
                         {
                             teamname = team.Name
                         }, null)
+                    @if (Model.TeamAccessLevels.GetValueOrDefault(team.Id, RepositoryAccessLevel.Push) == RepositoryAccessLevel.Pull)
+                    {
+                        <span class="access-badge">@Resources.Repository_AccessLevel_ReadOnly</span>
+                    }
                 }
             </span>
         </div>

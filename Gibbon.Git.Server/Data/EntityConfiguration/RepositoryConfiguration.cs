@@ -50,10 +50,17 @@ public class RepositoryConfiguration : IEntityTypeConfiguration<Repository>
 
         builder.HasMany(t => t.Teams)
             .WithMany(t => t.Repositories)
-            .UsingEntity<Dictionary<string, object>>(
+            .UsingEntity<RepositoryTeamPermission>(
                 "TeamRepository_Permission",
-                j => j.HasOne<Team>().WithMany().HasForeignKey("Team_Id").OnDelete(DeleteBehavior.Cascade), 
-                j => j.HasOne<Repository>().WithMany().HasForeignKey("Repository_Id").OnDelete(DeleteBehavior.Cascade)); 
+                j => j.HasOne<Team>().WithMany().HasForeignKey(p => p.TeamId).OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Repository>().WithMany(r => r.TeamPermissions).HasForeignKey(p => p.RepositoryId).OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey(p => new { p.RepositoryId, p.TeamId });
+                    j.Property(p => p.RepositoryId).HasColumnName("Repository_Id");
+                    j.Property(p => p.TeamId).HasColumnName("Team_Id");
+                    j.Property(p => p.AccessLevel).HasColumnName("AccessLevel");
+                });
 
         builder.HasMany(t => t.Administrators)
             .WithMany(t => t.AdministratedRepositories)
@@ -64,9 +71,16 @@ public class RepositoryConfiguration : IEntityTypeConfiguration<Repository>
 
         builder.HasMany(t => t.Users)
             .WithMany(t => t.Repositories)
-            .UsingEntity<Dictionary<string, object>>(
+            .UsingEntity<RepositoryUserPermission>(
                 "UserRepository_Permission",
-                j => j.HasOne<User>().WithMany().HasForeignKey("User_Id").OnDelete(DeleteBehavior.Cascade), 
-                j => j.HasOne<Repository>().WithMany().HasForeignKey("Repository_Id").OnDelete(DeleteBehavior.Cascade)); 
+                j => j.HasOne<User>().WithMany().HasForeignKey(p => p.UserId).OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Repository>().WithMany(r => r.UserPermissions).HasForeignKey(p => p.RepositoryId).OnDelete(DeleteBehavior.Cascade),
+                j =>
+                {
+                    j.HasKey(p => new { p.RepositoryId, p.UserId });
+                    j.Property(p => p.RepositoryId).HasColumnName("Repository_Id");
+                    j.Property(p => p.UserId).HasColumnName("User_Id");
+                    j.Property(p => p.AccessLevel).HasColumnName("AccessLevel");
+                });
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Gibbon.Git.Server.Data;
 using Gibbon.Git.Server.Middleware.Attributes;
+using Gibbon.Git.Server.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Gibbon.Git.Server.Models;
@@ -28,11 +29,13 @@ public class RepositoryDetailModel
     public UserModel[] Users { get; set; } = [];
     public int[] PostedSelectedUsers { get; set; } = [];
     public UserModel[] AllUsers { get; set; } = [];
+    public Dictionary<int, RepositoryAccessLevel> UserAccessLevels { get; set; } = [];
 
     [Display(ResourceType = typeof(Resources), Name = "Repository_Detail_Teams")]
     public TeamModel[] Teams { get; set; } = [];
     public int[] PostedSelectedTeams { get; set; } = [];
     public TeamModel[] AllTeams { get; set; } = [];
+    public Dictionary<int, RepositoryAccessLevel> TeamAccessLevels { get; set; } = [];
 
     [Display(ResourceType = typeof(Resources), Name = "Repository_Detail_Administrators")]
     public UserModel[] Administrators { get; set; } = [];

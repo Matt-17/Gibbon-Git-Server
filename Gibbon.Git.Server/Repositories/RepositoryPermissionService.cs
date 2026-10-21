@@ -99,12 +99,15 @@ public class RepositoryPermissionService(IRepositoryService repository, IRolePro
 
         _logger.LogTrace("Checking user {UserId} has permission {Permission} on repo {RepositoryName}", userId, requiredLevel, repository.Name);
 
-        return requiredLevel is RepositoryAccessLevel.Push or RepositoryAccessLevel.Pull && UserHasAccess(userId, userTeams, repository);
+        return requiredLevel is RepositoryAccessLevel.Push or RepositoryAccessLevel.Pull && GetMemberAccessLevel(userId, userTeams, repository) >= requiredLevel;
     }
 
-    private static bool UserHasAccess(int userId, List<TeamModel> userTeams, RepositoryModel repository)
+    private static RepositoryAccessLevel? GetMemberAccessLevel(int userId, List<TeamModel> userTeams, RepositoryModel repository)
     {
-        return repository.Users.Any(x => x.Id == userId) || userTeams.Any(team => repository.Teams.Any(t => t.Id == team.Id));
+        var levels = repository.Users.Where(x => x.Id == userId).Select(x => repository.GetUserAccessLevel(x.Id))
+            .Concat(repository.Teams.Where(t => userTeams.Any(team => team.Id == t.Id)).Select(t => repository.GetTeamAccessLevel(t.Id)))
+            .ToList();
+        return levels.Count == 0 ? null : levels.Max();
     }
 
     private bool IsSystemAdministrator(int userId)

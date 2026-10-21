@@ -571,10 +571,10 @@
     <value>Name sollte nicht nur Leerzeichen beinhalten.</value>
   </data>
   <data name="Repository_TeamsHint" xml:space="preserve">
-    <value>Teams haben Zugriff auf das Repository. Sie können clone, push und pull ausführen. Alle Benutzer des Teams haben Zugriff auf das Repository.</value>
+    <value>Teams haben Zugriff auf das Repository. Alle Benutzer des Teams erhalten die gewählte Stufe: Lesen (clone, pull, durchsuchen) oder Schreiben (zusätzlich push).</value>
   </data>
   <data name="Repository_UsersHint" xml:space="preserve">
-    <value>Benutzer haben Zugriff auf das Repository. Sie können clone, push und pull ausführen.</value>
+    <value>Benutzer haben Zugriff auf das Repository. Mit Lesezugriff können sie clone, pull ausführen und es durchsuchen, mit Schreibzugriff zusätzlich push.</value>
   </data>
   <data name="Validation_FileName" xml:space="preserve">
     <value>"{0}" beinhaltet Zeichen die nicht in einer Datei oder einem Ordner vorkommen dürfen.</value>
@@ -1147,5 +1147,17 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   </data>
   <data name="CloneToolGroup_Custom" xml:space="preserve">
     <value>Weitere</value>
+  </data>
+  <data name="Repository_AccessLevel_Pull" xml:space="preserve">
+    <value>Lesen</value>
+  </data>
+  <data name="Repository_AccessLevel_Push" xml:space="preserve">
+    <value>Schreiben</value>
+  </data>
+  <data name="Repository_AccessLevel_Title" xml:space="preserve">
+    <value>Zugriffsstufe</value>
+  </data>
+  <data name="Repository_AccessLevel_ReadOnly" xml:space="preserve">
+    <value>nur lesen</value>
   </data>
 </root>

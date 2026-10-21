@@ -653,7 +653,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private RepositoryCloneModel CreateCloneModel(string name, string branch)
     {
         var (gitUrl, personalGitUrl) = GetGitUrls(name);
-        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch };
+        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch, CanPush = _repositoryPermissionService.HasPermission(User.Id(), name, RepositoryAccessLevel.Push) };
     }
 
     private (string GitUrl, string PersonalGitUrl) GetGitUrls(string name)
@@ -706,6 +706,8 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             Users = model.Users,
             Administrators = model.Administrators,
             Teams = model.Teams,
+            UserAccessLevels = model.UserAccessLevels,
+            TeamAccessLevels = model.TeamAccessLevels,
             IsCurrentUserAdministrator = model.Administrators.Select(x => x.Id).Contains(user.Id()),
             AllowAnonymous = model.AnonymousAccess,
             AllowAnonymousPush = model.AllowAnonymousPush,
@@ -783,6 +785,8 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             Users = model.PostedSelectedUsers != null ? model.PostedSelectedUsers.Select(x => _userService.GetUserModel(x)).ToArray() : [],
             Administrators = model.PostedSelectedAdministrators != null ? model.PostedSelectedAdministrators.Select(x => _userService.GetUserModel(x)).ToArray() : [],
             Teams = model.PostedSelectedTeams != null ? model.PostedSelectedTeams.Select(x => _teamRepository.GetTeam(x)).ToArray() : [],
+            UserAccessLevels = model.UserAccessLevels ?? [],
+            TeamAccessLevels = model.TeamAccessLevels ?? [],
             AnonymousAccess = model.AllowAnonymous,
             Logo = model.Logo?.BinaryData,
             AllowAnonymousPush = model.AllowAnonymousPush,

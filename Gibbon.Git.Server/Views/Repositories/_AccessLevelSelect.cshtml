@@ -1,0 +1,6 @@
+@model AccessLevelSelectModel
+@using Gibbon.Git.Server.Repositories
+<select name="@Model.Name" class="access-level" title="@Resources.Repository_AccessLevel_Title">
+    <option value="@RepositoryAccessLevel.Push" selected="@(Model.Level == RepositoryAccessLevel.Push)">@Resources.Repository_AccessLevel_Push</option>
+    <option value="@RepositoryAccessLevel.Pull" selected="@(Model.Level == RepositoryAccessLevel.Pull)">@Resources.Repository_AccessLevel_Pull</option>
+</select>
