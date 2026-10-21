@@ -52,23 +52,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Update="App_Resources\Resources.Designer.cs">
-			<DependentUpon>Resources.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
+		<!-- The Resources class is generated during the build, so no Designer.cs is checked in. -->
 		<EmbeddedResource Update="App_Resources\Resources.resx">
-			<SubType>Designer</SubType>
-			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
-			<Generator>PublicResXFileCodeGenerator</Generator>
+			<StronglyTypedLanguage>CSharp</StronglyTypedLanguage>
+			<StronglyTypedNamespace>Gibbon.Git.Server.App_Resources</StronglyTypedNamespace>
+			<StronglyTypedClassName>Resources</StronglyTypedClassName>
+			<StronglyTypedFileName>$(IntermediateOutputPath)Resources.Designer.cs</StronglyTypedFileName>
+			<PublicClass>true</PublicClass>
 		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Helpers\Components\" />
 	</ItemGroup>
 
 	<ItemGroup>
