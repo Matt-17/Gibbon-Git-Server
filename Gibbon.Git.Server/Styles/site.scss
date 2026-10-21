@@ -938,3 +938,25 @@ details.dropdown {
         margin: 0.25em 0 0 1em;
     }
 }
+
+.pure-form .checkboxlist select.access-level {
+    margin-left: 0.6em;
+    padding: 0 0.3em;
+    height: 1.8em;
+    font-size: 0.85em;
+}
+
+.access-badge {
+    margin-left: 0.3em;
+    padding: 0 0.4em;
+    font-size: 0.75em;
+    color: #6a737d;
+    border: 1px solid #d1d5da;
+    border-radius: 2em;
+    white-space: nowrap;
+}
+
+.access-badge-manage {
+    color: #0366d6;
+    border-color: #c8e1ff;
+}

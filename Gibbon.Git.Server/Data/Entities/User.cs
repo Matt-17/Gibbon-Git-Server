@@ -12,8 +12,6 @@ public class User
     public string PasswordSalt { get; set; }
     public string Email { get; set; }
 
-    public virtual ICollection<Repository> AdministratedRepositories { get; set; } = new HashSet<Repository>();
-
     public virtual ICollection<Repository> Repositories { get; set; } = new HashSet<Repository>();
 
     public virtual ICollection<Role> Roles { get; set; } = new HashSet<Role>();

@@ -315,45 +315,42 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
 
             modelBuilder.Entity("TeamRepository_Permission", b =>
                 {
-                    b.Property<int>("Repository_Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("RepositoryId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Repository_Id");
 
-                    b.Property<int>("Team_Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("TeamId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Team_Id");
 
-                    b.HasKey("Repository_Id", "Team_Id");
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("AccessLevel");
 
-                    b.HasIndex("Team_Id");
+                    b.HasKey("RepositoryId", "TeamId");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("TeamRepository_Permission");
                 });
 
-            modelBuilder.Entity("UserRepository_Administrator", b =>
-                {
-                    b.Property<int>("Repository_Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("User_Id")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Repository_Id", "User_Id");
-
-                    b.HasIndex("User_Id");
-
-                    b.ToTable("UserRepository_Administrator");
-                });
-
             modelBuilder.Entity("UserRepository_Permission", b =>
                 {
-                    b.Property<int>("Repository_Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("RepositoryId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("Repository_Id");
 
-                    b.Property<int>("User_Id")
-                        .HasColumnType("INTEGER");
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("User_Id");
 
-                    b.HasKey("Repository_Id", "User_Id");
+                    b.Property<int>("AccessLevel")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("AccessLevel");
 
-                    b.HasIndex("User_Id");
+                    b.HasKey("RepositoryId", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserRepository_Permission");
                 });
@@ -398,29 +395,14 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
             modelBuilder.Entity("TeamRepository_Permission", b =>
                 {
                     b.HasOne("Gibbon.Git.Server.Data.Entities.Repository", null)
-                        .WithMany()
-                        .HasForeignKey("Repository_Id")
+                        .WithMany("TeamPermissions")
+                        .HasForeignKey("RepositoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Gibbon.Git.Server.Data.Entities.Team", null)
                         .WithMany()
-                        .HasForeignKey("Team_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("UserRepository_Administrator", b =>
-                {
-                    b.HasOne("Gibbon.Git.Server.Data.Entities.Repository", null)
-                        .WithMany()
-                        .HasForeignKey("Repository_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Gibbon.Git.Server.Data.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("User_Id")
+                        .HasForeignKey("TeamId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -428,14 +410,14 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
             modelBuilder.Entity("UserRepository_Permission", b =>
                 {
                     b.HasOne("Gibbon.Git.Server.Data.Entities.Repository", null)
-                        .WithMany()
-                        .HasForeignKey("Repository_Id")
+                        .WithMany("UserPermissions")
+                        .HasForeignKey("RepositoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Gibbon.Git.Server.Data.Entities.User", null)
                         .WithMany()
-                        .HasForeignKey("User_Id")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -468,6 +450,13 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                         .HasForeignKey("User_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Gibbon.Git.Server.Data.Entities.Repository", b =>
+                {
+                    b.Navigation("TeamPermissions");
+
+                    b.Navigation("UserPermissions");
                 });
 #pragma warning restore 612, 618
         }

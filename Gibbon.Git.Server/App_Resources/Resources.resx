@@ -420,7 +420,7 @@
     <value>Repository Detail</value>
   </data>
   <data name="Repository_Detail_Users" xml:space="preserve">
-    <value>Contributors</value>
+    <value>Members</value>
   </data>
   <data name="Repository_Detail_Yes" xml:space="preserve">
     <value>Yes</value>
@@ -429,7 +429,7 @@
     <value>Back</value>
   </data>
   <data name="Repository_Edit_CantRemoveYourself" xml:space="preserve">
-    <value>You can't remove yourself from administrators.</value>
+    <value>You can't remove your own manage access.</value>
   </data>
   <data name="Repository_Edit_Fail" xml:space="preserve">
     <value>Repository update was unsuccessful. Please correct the errors and try again.</value>
@@ -604,10 +604,10 @@
     <value>"Name" shouldn't contain only whitespace characters.</value>
   </data>
   <data name="Repository_TeamsHint" xml:space="preserve">
-    <value>Teams have access to the repository. They can clone, push or pull and view repository metadata. All users in the team can access this repository.</value>
+    <value>Teams have access to the repository. All users in the team get the selected level. Read: clone, pull and browse. Write: also push. Manage: also change the repository settings and members.</value>
   </data>
   <data name="Repository_UsersHint" xml:space="preserve">
-    <value>Users have access to the repository. They can clone, push or pull and view repository metadata.</value>
+    <value>Users have access to the repository. Read: clone, pull and browse. Write: also push. Manage: also change the repository settings and members.</value>
   </data>
   <data name="Validation_FileName" xml:space="preserve">
     <value>"{0}" contains characters that can't be in a file or directory name.</value>
@@ -1206,5 +1206,23 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   </data>
   <data name="CloneToolGroup_Custom" xml:space="preserve">
     <value>More</value>
+  </data>
+  <data name="Repository_AccessLevel_Pull" xml:space="preserve">
+    <value>Read</value>
+  </data>
+  <data name="Repository_AccessLevel_Push" xml:space="preserve">
+    <value>Write</value>
+  </data>
+  <data name="Repository_AccessLevel_Title" xml:space="preserve">
+    <value>Access level</value>
+  </data>
+  <data name="Repository_AccessLevel_ReadOnly" xml:space="preserve">
+    <value>read only</value>
+  </data>
+  <data name="Repository_AccessLevel_Administer" xml:space="preserve">
+    <value>Manage</value>
+  </data>
+  <data name="Repository_AccessLevel_Manages" xml:space="preserve">
+    <value>manages</value>
   </data>
 </root>

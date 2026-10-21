@@ -2,6 +2,7 @@
 
 using Gibbon.Git.Server.Data.Entities;
 using Gibbon.Git.Server.Models;
+using Gibbon.Git.Server.Repositories;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,7 +19,6 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
     {
         return _context.Repositories
             .AsNoTracking()
-            .Include(repo => repo.Administrators)
             .Include(repo => repo.Teams)
             .Include(repo => repo.Users)
             .AsSplitQuery()
@@ -51,14 +51,8 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
                         Email = user.Email
                     }).ToArray()
                 }).ToArray(),
-                Administrators = repo.Administrators.Select(admin => new UserModel
-                {
-                    Id = admin.Id,
-                    Username = admin.Username,
-                    GivenName = admin.GivenName,
-                    Surname = admin.Surname,
-                    Email = admin.Email
-                }).ToArray(),
+                UserAccessLevels = new Dictionary<int, RepositoryAccessLevel>(repo.UserPermissions.Select(p => new KeyValuePair<int, RepositoryAccessLevel>(p.UserId, p.AccessLevel)).ToList()),
+                TeamAccessLevels = new Dictionary<int, RepositoryAccessLevel>(repo.TeamPermissions.Select(p => new KeyValuePair<int, RepositoryAccessLevel>(p.TeamId, p.AccessLevel)).ToList()),
                 AllowAnonymousPush = repo.AllowAnonymousPush,
                 Logo = repo.Logo,
                 LinksRegex = repo.LinksRegex,
@@ -85,7 +79,6 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
     {
         return _context.Repositories
             .AsNoTracking()
-            .Include(repo => repo.Administrators)
             .Include(repo => repo.Teams)
                 .ThenInclude(team => team.Users)
             .Include(repo => repo.Users)
@@ -120,14 +113,8 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
                         Email = user.Email
                     }).ToArray()
                 }).ToArray(),
-                Administrators = repo.Administrators.Select(admin => new UserModel
-                {
-                    Id = admin.Id,
-                    Username = admin.Username,
-                    GivenName = admin.GivenName,
-                    Surname = admin.Surname,
-                    Email = admin.Email
-                }).ToArray(),
+                UserAccessLevels = new Dictionary<int, RepositoryAccessLevel>(repo.UserPermissions.Select(p => new KeyValuePair<int, RepositoryAccessLevel>(p.UserId, p.AccessLevel)).ToList()),
+                TeamAccessLevels = new Dictionary<int, RepositoryAccessLevel>(repo.TeamPermissions.Select(p => new KeyValuePair<int, RepositoryAccessLevel>(p.TeamId, p.AccessLevel)).ToList()),
                 AllowAnonymousPush = repo.AllowAnonymousPush,
                 Logo = repo.Logo,
                 LinksRegex = repo.LinksRegex,
@@ -142,7 +129,6 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
         var repo = _context.Repositories.FirstOrDefault(i => i.Id == id);
         if (repo != null)
         {
-            repo.Administrators.Clear();
             repo.Users.Clear();
             repo.Teams.Clear();
             _context.Repositories.Remove(repo);
@@ -184,7 +170,7 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
             LinksRegex = model.LinksRegex
         };
         _context.Repositories.Add(repository);
-        AddMembers(model.Users.Select(x => x.Id), model.Administrators.Select(x => x.Id), model.Teams.Select(x => x.Id), repository, _context);
+        SyncMembers(model, repository, _context);
         try
         {
             _context.SaveChanges();
@@ -208,9 +194,8 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
         ArgumentNullException.ThrowIfNull(model.Name, nameof(model.Name));
 
         var repo = _context.Repositories
-            .Include(x => x.Administrators)
-            .Include(x => x.Teams)
-            .Include(x => x.Users)
+            .Include(x => x.TeamPermissions)
+            .Include(x => x.UserPermissions)
             .AsSplitQuery()
             .First(i => i.Id.Equals(model.Id));
         if (repo != null)
@@ -229,43 +214,40 @@ public class RepositoryService(ILogger<RepositoryService> logger, GibbonGitServe
             if (model.RemoveLogo)
                 repo.Logo = null;
 
-            repo.Users.Clear();
-            repo.Teams.Clear();
-            repo.Administrators.Clear();
-
-            AddMembers(model.Users.Select(x => x.Id), model.Administrators.Select(x => x.Id), model.Teams.Select(x => x.Id), repo, _context);
+            SyncMembers(model, repo, _context);
 
             _context.SaveChanges();
         }
     }
 
-    private static void AddMembers(IEnumerable<int> users, IEnumerable<int> admins, IEnumerable<int> teams, Repository repo, GibbonGitServerContext database)
+    private static void SyncMembers(RepositoryModel model, Repository repo, GibbonGitServerContext database)
     {
-        if (admins != null)
+        var userIds = model.Users.Select(x => x.Id).ToList();
+        var users = database.Users.Where(i => userIds.Contains(i.Id)).Select(i => i.Id).ToList();
+        SyncPermissions(repo.UserPermissions, users, id => new RepositoryUserPermission { UserId = id }, model.GetUserAccessLevel);
+
+        var teamIds = model.Teams.Select(x => x.Id).ToList();
+        var teams = database.Teams.Where(i => teamIds.Contains(i.Id)).Select(i => i.Id).ToList();
+        SyncPermissions(repo.TeamPermissions, teams, id => new RepositoryTeamPermission { TeamId = id }, model.GetTeamAccessLevel);
+    }
+
+    private static void SyncPermissions<T>(ICollection<T> permissions, List<int> ids, Func<int, T> create, Func<int, RepositoryAccessLevel> getLevel)
+        where T : IRepositoryPermission
+    {
+        foreach (var permission in permissions.Where(p => !ids.Contains(p.MemberId)).ToList())
         {
-            var administrators = database.Users.Where(i => admins.Contains(i.Id));
-            foreach (var item in administrators)
-            {
-                repo.Administrators.Add(item);
-            }
+            permissions.Remove(permission);
         }
 
-        if (users != null)
+        foreach (var id in ids)
         {
-            var permittedUsers = database.Users.Where(i => users.Contains(i.Id));
-            foreach (var item in permittedUsers)
+            var permission = permissions.FirstOrDefault(p => p.MemberId == id);
+            if (permission == null)
             {
-                repo.Users.Add(item);
+                permission = create(id);
+                permissions.Add(permission);
             }
-        }
-
-        if (teams != null)
-        {
-            var permittedTeams = database.Teams.Where(i => teams.Contains(i.Id));
-            foreach (var item in permittedTeams)
-            {
-                repo.Teams.Add(item);
-            }
+            permission.AccessLevel = getLevel(id);
         }
     }
 

@@ -99,7 +99,6 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             return View(model);
         }
 
-        model.IsCurrentUserAdministrator = _repositoryPermissionService.HasPermission(User.Id(), model.Id, RepositoryAccessLevel.Administer);
         SetGitUrls(model);
 
         using (var browser = _repositoryBrowserFactory.Create(model.Name))
@@ -133,10 +132,9 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             return View(model);
         }
 
-        var currentUserIsInAdminList = model.PostedSelectedAdministrators != null && model.PostedSelectedAdministrators.Contains(User.Id());
-        if (currentUserIsInAdminList || User.IsInRole(Roles.Admin))
+        var repoModel = ConvertRepositoryDetailModel(model);
+        if (_repositoryPermissionService.HasPermission(User.Id(), repoModel, RepositoryAccessLevel.Administer))
         {
-            var repoModel = ConvertRepositoryDetailModel(model);
             try
             {
                 _repositoryService.Update(repoModel);
@@ -144,7 +142,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             catch (DbUpdateException ex)
             {
                 _logger.LogError(ex, "Failed to update repo {RepoName}", model.Name);
-                ModelState.AddModelError("Administrators", Resources.Repository_Edit_CantRemoveYourself);
+                ModelState.AddModelError("Users", Resources.Repository_Edit_CantRemoveYourself);
                 PopulateCheckboxListData(ref model);
                 return View(model);
             }
@@ -153,7 +151,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         }
         else
         {
-            ModelState.AddModelError("Administrators", Resources.Repository_Edit_CantRemoveYourself);
+            ModelState.AddModelError("Users", Resources.Repository_Edit_CantRemoveYourself);
             PopulateCheckboxListData(ref model);
             return View(model);
         }
@@ -172,7 +170,8 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
         var model = new RepositoryDetailModel
         {
-            Administrators = [_userService.GetUserModel(User.Id())],
+            Users = [_userService.GetUserModel(User.Id())],
+            UserAccessLevels = new() { [User.Id()] = RepositoryAccessLevel.Administer },
         };
         PopulateCheckboxListData(ref model);
         return View(model);
@@ -653,7 +652,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private RepositoryCloneModel CreateCloneModel(string name, string branch)
     {
         var (gitUrl, personalGitUrl) = GetGitUrls(name);
-        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch };
+        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch, CanPush = _repositoryPermissionService.HasPermission(User.Id(), name, RepositoryAccessLevel.Push) };
     }
 
     private (string GitUrl, string PersonalGitUrl) GetGitUrls(string name)
@@ -704,9 +703,10 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             Group = model.Group,
             Description = model.Description,
             Users = model.Users,
-            Administrators = model.Administrators,
             Teams = model.Teams,
-            IsCurrentUserAdministrator = model.Administrators.Select(x => x.Id).Contains(user.Id()),
+            UserAccessLevels = model.UserAccessLevels,
+            TeamAccessLevels = model.TeamAccessLevels,
+            IsCurrentUserAdministrator = _repositoryPermissionService.HasPermission(user.Id(), model, RepositoryAccessLevel.Administer),
             AllowAnonymous = model.AnonymousAccess,
             AllowAnonymousPush = model.AllowAnonymousPush,
             Status = GetRepositoryStatus(model),
@@ -720,7 +720,6 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private void PopulateCheckboxListData(ref RepositoryDetailModel model)
     {
         model = model.Id != 0 ? ConvertRepositoryModel(_repositoryService.GetRepository(model.Id), User) : model;
-        model.AllAdministrators = _userService.GetAllUsers().ToArray();
         model.AllUsers = _userService.GetAllUsers().ToArray();
         model.AllTeams = _teamRepository.GetAllTeams().ToArray();
         if (model.PostedSelectedUsers != null && model.PostedSelectedUsers.Any())
@@ -730,10 +729,6 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         if (model.PostedSelectedTeams != null && model.PostedSelectedTeams.Any())
         {
             model.Teams = model.PostedSelectedTeams.Select(x => _teamRepository.GetTeam(x)).ToArray();
-        }
-        if (model.PostedSelectedAdministrators != null && model.PostedSelectedAdministrators.Any())
-        {
-            model.Administrators = model.PostedSelectedAdministrators.Select(x => _userService.GetUserModel(x)).ToArray();
         }
     }
 
@@ -781,8 +776,9 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             Group = model.Group,
             Description = model.Description,
             Users = model.PostedSelectedUsers != null ? model.PostedSelectedUsers.Select(x => _userService.GetUserModel(x)).ToArray() : [],
-            Administrators = model.PostedSelectedAdministrators != null ? model.PostedSelectedAdministrators.Select(x => _userService.GetUserModel(x)).ToArray() : [],
             Teams = model.PostedSelectedTeams != null ? model.PostedSelectedTeams.Select(x => _teamRepository.GetTeam(x)).ToArray() : [],
+            UserAccessLevels = model.UserAccessLevels ?? [],
+            TeamAccessLevels = model.TeamAccessLevels ?? [],
             AnonymousAccess = model.AllowAnonymous,
             Logo = model.Logo?.BinaryData,
             AllowAnonymousPush = model.AllowAnonymousPush,

@@ -10,7 +10,8 @@ internal static class RepositoryTestHelper
         var postData = new Dictionary<string, string>(await GetAntiForgeryToken(client, "/Repositories/Create"))
         {
             { "Name", name },
-            { "PostedSelectedAdministrators", "1" }
+            { "PostedSelectedUsers", "1" },
+            { "UserAccessLevels[1]", "Administer" }
         };
         foreach (var (key, value) in fields)
         {

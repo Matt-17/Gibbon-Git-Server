@@ -5,6 +5,7 @@ using System.Text;
 using Gibbon.Git.Server.Data;
 using Gibbon.Git.Server.Data.Entities;
 using Gibbon.Git.Server.Models;
+using Gibbon.Git.Server.Repositories;
 using Gibbon.Git.Server.Security;
 using Gibbon.Git.Server.Tests.TestHelper;
 
@@ -133,14 +134,15 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
     public void RespositoryWithAdministratorCanBeAdded()
     {
         var newRepo = MakeRepo("Repo1");
-        newRepo.Administrators =
-        [
-            AddUserFred()
-        ];
+        var fred = AddUserFred();
+        newRepo.Users = [fred];
+        newRepo.UserAccessLevels = new() { [fred.Id] = RepositoryAccessLevel.Administer };
 
         _repositoryService.Create(newRepo);
 
-        Assert.AreEqual("Blogs, Fred", _repositoryService.GetAllRepositories().Single().Administrators.Single().DisplayName);
+        var repo = _repositoryService.GetAllRepositories().Single();
+        Assert.AreEqual("Blogs, Fred", repo.Users.Single().DisplayName);
+        Assert.AreEqual(RepositoryAccessLevel.Administer, repo.UserAccessLevels[fred.Id]);
     }
 
     [TestMethod]
@@ -317,7 +319,6 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
             Name = repo.Name,
             Logo = null,
             Users = [],
-            Administrators = [],
             Teams = []
         };
         _repositoryService.Update(updateRepo);
@@ -332,7 +333,6 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
     {
         _repositoryService.Create(MakeRepo("Repo1"));
 
-        Assert.AreEqual(0, _repositoryService.GetRepository("Repo1").Administrators.Length);
         Assert.AreEqual(0, _repositoryService.GetRepository("Repo1").Teams.Length);
         Assert.AreEqual(0, _repositoryService.GetRepository("Repo1").Users.Length);
     }
@@ -364,6 +364,73 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
         _repositoryService.Create(repoWithoutTeam2);
 
         Assert.AreEqual(0, _repositoryService.GetTeamRepositories(team.Id).Count);
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.RepositoryService)]
+    [Description("Verify that members get write access unless a level is given.")]
+    public void MembersDefaultToWriteAccess()
+    {
+        var newRepo = MakeRepo("Repo1");
+        var user = AddUserFred();
+        var team = AddTeam();
+        newRepo.Users = [user];
+        newRepo.Teams = [team];
+
+        _repositoryService.Create(newRepo);
+
+        var repo = _repositoryService.GetRepository("Repo1");
+        Assert.AreEqual(RepositoryAccessLevel.Push, repo.UserAccessLevels[user.Id]);
+        Assert.AreEqual(RepositoryAccessLevel.Push, repo.TeamAccessLevels[team.Id]);
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.RepositoryService)]
+    [Description("Verify that read-only member levels are saved on create.")]
+    public void MemberAccessLevelsAreSavedOnCreate()
+    {
+        var newRepo = MakeRepo("Repo1");
+        var user = AddUserFred();
+        var team = AddTeam();
+        newRepo.Users = [user];
+        newRepo.Teams = [team];
+        newRepo.UserAccessLevels = new() { [user.Id] = RepositoryAccessLevel.Pull };
+        newRepo.TeamAccessLevels = new() { [team.Id] = RepositoryAccessLevel.Pull };
+
+        _repositoryService.Create(newRepo);
+
+        var repo = _repositoryService.GetAllRepositories().Single();
+        Assert.AreEqual(RepositoryAccessLevel.Pull, repo.UserAccessLevels[user.Id]);
+        Assert.AreEqual(RepositoryAccessLevel.Pull, repo.TeamAccessLevels[team.Id]);
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.RepositoryService)]
+    [Description("Verify that member levels can be changed and members removed on update.")]
+    public void MemberAccessLevelsCanBeChangedOnUpdate()
+    {
+        var newRepo = MakeRepo("Repo1");
+        var user = AddUserFred();
+        var team = AddTeam();
+        newRepo.Users = [user];
+        newRepo.Teams = [team];
+        _repositoryService.Create(newRepo);
+
+        var repo = _repositoryService.GetRepository("Repo1");
+        repo.UserAccessLevels = new() { [user.Id] = RepositoryAccessLevel.Pull };
+        _repositoryService.Update(repo);
+
+        repo = _repositoryService.GetRepository("Repo1");
+        Assert.AreEqual(RepositoryAccessLevel.Pull, repo.UserAccessLevels[user.Id]);
+        Assert.AreEqual(RepositoryAccessLevel.Push, repo.TeamAccessLevels[team.Id]);
+
+        repo.Teams = [];
+        _repositoryService.Update(repo);
+
+        repo = _repositoryService.GetRepository("Repo1");
+        Assert.AreEqual(RepositoryAccessLevel.Pull, repo.UserAccessLevels[user.Id]);
+        Assert.AreEqual(0, repo.Teams.Length);
+        Assert.AreEqual(0, repo.TeamAccessLevels.Count);
     }
 
     private static RepositoryModel MakeRepo(string name)

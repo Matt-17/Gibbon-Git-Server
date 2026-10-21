@@ -14,6 +14,7 @@ public class Repository
     public bool LinksUseGlobal { get; set; } = true;
 
     public virtual ICollection<Team> Teams { get; set; } = new HashSet<Team>();
-    public virtual ICollection<User> Administrators { get; set; } = new HashSet<User>();
     public virtual ICollection<User> Users { get; set; } = new HashSet<User>();
+    public virtual ICollection<RepositoryUserPermission> UserPermissions { get; set; } = new HashSet<RepositoryUserPermission>();
+    public virtual ICollection<RepositoryTeamPermission> TeamPermissions { get; set; } = new HashSet<RepositoryTeamPermission>();
 }

@@ -28,7 +28,12 @@ public class RepositoryPermissionService(IRepositoryService repository, IRolePro
         {
             throw new InvalidOperationException("Repository not found.");
         }
-        return HasPermission(userId, _teamService.GetTeamsForUser(userId), repositoryModel, requiredLevel);
+        return HasPermission(userId, repositoryModel, requiredLevel);
+    }
+
+    public bool HasPermission(int userId, RepositoryModel repository, RepositoryAccessLevel requiredLevel)
+    {
+        return HasPermission(userId, _teamService.GetTeamsForUser(userId), repository, requiredLevel);
     }
 
     public bool HasCreatePermission(int userId)
@@ -92,19 +97,22 @@ public class RepositoryPermissionService(IRepositoryService repository, IRolePro
     {
         ArgumentOutOfRangeException.ThrowIfEqual(userId, 0, nameof(userId));
 
-        if (IsSystemAdministrator(userId) || repository.Administrators.Any(x => x.Id == userId))
+        if (IsSystemAdministrator(userId))
         {
             return true;
         }
 
         _logger.LogTrace("Checking user {UserId} has permission {Permission} on repo {RepositoryName}", userId, requiredLevel, repository.Name);
 
-        return requiredLevel is RepositoryAccessLevel.Push or RepositoryAccessLevel.Pull && UserHasAccess(userId, userTeams, repository);
+        return GetMemberAccessLevel(userId, userTeams, repository) >= requiredLevel;
     }
 
-    private static bool UserHasAccess(int userId, List<TeamModel> userTeams, RepositoryModel repository)
+    private static RepositoryAccessLevel? GetMemberAccessLevel(int userId, List<TeamModel> userTeams, RepositoryModel repository)
     {
-        return repository.Users.Any(x => x.Id == userId) || userTeams.Any(team => repository.Teams.Any(t => t.Id == team.Id));
+        var levels = repository.Users.Where(x => x.Id == userId).Select(x => repository.GetUserAccessLevel(x.Id))
+            .Concat(repository.Teams.Where(t => userTeams.Any(team => team.Id == t.Id)).Select(t => repository.GetTeamAccessLevel(t.Id)))
+            .ToList();
+        return levels.Count == 0 ? null : levels.Max();
     }
 
     private bool IsSystemAdministrator(int userId)

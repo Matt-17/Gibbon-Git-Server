@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Gibbon.Git.Server.Data.Entities;
+using Gibbon.Git.Server.Repositories;
 using Gibbon.Git.Server.Tests.TestHelper;
 
 using Microsoft.EntityFrameworkCore;
@@ -127,14 +128,16 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         };
 
         // Act
-        repository.Administrators.Add(admin);
+        repository.Users.Add(admin);
         Context.Repositories.Add(repository);
+        Context.SaveChanges();
+        repository.UserPermissions.Single().AccessLevel = RepositoryAccessLevel.Administer;
         Context.SaveChanges();
 
         // Assert
-        var savedRepo = Context.Repositories.Include(r => r.Administrators).FirstOrDefault(r => r.Name == "AdminRepo");
+        var savedRepo = Context.Repositories.Include(r => r.UserPermissions).FirstOrDefault(r => r.Name == "AdminRepo");
         Assert.IsNotNull(savedRepo);
-        Assert.IsTrue(savedRepo.Administrators.Any(a => a.Username == "AdminUser"));
+        Assert.IsTrue(savedRepo.UserPermissions.Any(p => p.UserId == admin.Id && p.AccessLevel == RepositoryAccessLevel.Administer));
     }
 
     [TestMethod]
@@ -214,7 +217,7 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         var admin = new User {  Username = "AdminUser", GivenName = "Admin", Surname = "User", Email = "admin@example.com", Password = "password", PasswordSalt = "salt" };
         var team = new Team {  Name = "RelationTestTeam" };
 
-        repository.Administrators.Add(admin);
+        repository.Users.Add(admin);
         repository.Teams.Add(team);
 
         Context.Repositories.Add(repository);
@@ -233,10 +236,10 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         Assert.IsNotNull(existingAdmin);
         Assert.IsNotNull(existingTeam);
 
-        var remainingAdminRelation = Context.Set<Dictionary<string, object>>("UserRepository_Administrator")
-            .FirstOrDefault(relation => relation["User_Id"].Equals(admin.Id));
-        var remainingTeamRelation = Context.Set<Dictionary<string, object>>("TeamRepository_Permission")
-            .FirstOrDefault(relation => relation["Team_Id"].Equals(team.Id));
+        var remainingAdminRelation = Context.Set<RepositoryUserPermission>("UserRepository_Permission")
+            .FirstOrDefault(relation => relation.UserId == admin.Id);
+        var remainingTeamRelation = Context.Set<RepositoryTeamPermission>("TeamRepository_Permission")
+            .FirstOrDefault(relation => relation.TeamId == team.Id);
 
         Assert.IsNull(remainingAdminRelation);
         Assert.IsNull(remainingTeamRelation);
@@ -266,10 +269,10 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         var remainingRepo = Context.Repositories.FirstOrDefault(r => r.Name == "TestRepo");
         Assert.IsNotNull(remainingRepo);
 
-        var remainingUserRelation = Context.Set<Dictionary<string, object>>("UserRepository_Permission")
-            .FirstOrDefault(relation => relation["User_Id"].Equals(user.Id));
-        var remainingTeamRelation = Context.Set<Dictionary<string, object>>("TeamRepository_Permission")
-            .FirstOrDefault(relation => relation["Team_Id"].Equals(team.Id));
+        var remainingUserRelation = Context.Set<RepositoryUserPermission>("UserRepository_Permission")
+            .FirstOrDefault(relation => relation.UserId == user.Id);
+        var remainingTeamRelation = Context.Set<RepositoryTeamPermission>("TeamRepository_Permission")
+            .FirstOrDefault(relation => relation.TeamId == team.Id);
 
         Assert.IsNull(remainingUserRelation);
         Assert.IsNull(remainingTeamRelation);
@@ -286,26 +289,28 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
 
         repository.Users.Add(user);
         repository.Teams.Add(team);
-        repository.Administrators.Add(admin);
+        repository.Users.Add(admin);
 
         Context.Repositories.Add(repository);
+        Context.SaveChanges();
+        repository.UserPermissions.Single(p => p.UserId == admin.Id).AccessLevel = RepositoryAccessLevel.Administer;
         Context.SaveChanges();
 
         // Act
         var savedRepo = Context.Repositories
             .Include(r => r.Users)
             .Include(r => r.Teams)
-            .Include(r => r.Administrators)
+            .Include(r => r.UserPermissions)
             .FirstOrDefault(r => r.Name == "DataIntegrityRepo");
 
         // Assert
         Assert.IsNotNull(savedRepo);
-        Assert.AreEqual(1, savedRepo.Users.Count);
+        Assert.AreEqual(2, savedRepo.Users.Count);
         Assert.AreEqual(1, savedRepo.Teams.Count);
-        Assert.AreEqual(1, savedRepo.Administrators.Count);
         Assert.IsTrue(savedRepo.Users.Any(u => u.Username == "DataUser"));
         Assert.IsTrue(savedRepo.Teams.Any(t => t.Name == "DataTeam"));
-        Assert.IsTrue(savedRepo.Administrators.Any(a => a.Username == "AdminUser"));
+        Assert.AreEqual(RepositoryAccessLevel.Push, savedRepo.UserPermissions.Single(p => p.UserId == user.Id).AccessLevel);
+        Assert.AreEqual(RepositoryAccessLevel.Administer, savedRepo.UserPermissions.Single(p => p.UserId == admin.Id).AccessLevel);
     }
     [TestMethod]
     public void CompleteRepositoryLifecycleTest()
@@ -317,7 +322,7 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         var team = new Team {  Name = "LifecycleTeam" };
 
         // Act: Create
-        repository.Administrators.Add(admin);
+        repository.Users.Add(admin);
         repository.Users.Add(user);
         repository.Teams.Add(team);
 
@@ -325,10 +330,10 @@ public class SqliteRepositoryDbTests : GibbonDbContextTestsBase<SqliteConnection
         Context.SaveChanges();
 
         // Assert
-        var savedRepo = Context.Repositories.Include(r => r.Users).Include(r => r.Teams).Include(r => r.Administrators).FirstOrDefault(r => r.Name == "LifecycleRepo");
+        var savedRepo = Context.Repositories.Include(r => r.Users).Include(r => r.Teams).FirstOrDefault(r => r.Name == "LifecycleRepo");
         Assert.IsNotNull(savedRepo);
         Assert.IsTrue(savedRepo.Users.Any(u => u.Username == "UserLifecycle"));
-        Assert.IsTrue(savedRepo.Administrators.Any(a => a.Username == "AdminLifecycle"));
+        Assert.IsTrue(savedRepo.Users.Any(u => u.Username == "AdminLifecycle"));
         Assert.IsTrue(savedRepo.Teams.Any(t => t.Name == "LifecycleTeam"));
 
         // Act: Update

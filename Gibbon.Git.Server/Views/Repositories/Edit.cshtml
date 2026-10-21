@@ -1,4 +1,5 @@
-﻿@using Gibbon.Git.Server.Data
+﻿@using Gibbon.Git.Server.Repositories
+@using Gibbon.Git.Server.Data
 @model RepositoryDetailModel
 
 @{
@@ -119,26 +120,12 @@
                     <div>
                         <input type="checkbox" name="PostedSelectedUsers" value="@user.Id" checked="@Model.Users.Any(u => u.Id == user.Id)" />
                         <label>@NameFormatter.GetDisplayName(user)</label>
+                        @await Html.PartialAsync("_AccessLevelSelect", new AccessLevelSelectModel($"UserAccessLevels[{user.Id}]", Model.UserAccessLevels.GetValueOrDefault(user.Id, RepositoryAccessLevel.Push)))
                     </div>
                 }
             </span>
             <i class="fa fa-info-circle" title="@Resources.Repository_UsersHint"></i>
-        </div>
-
-        <!-- Administratoren-Auswahl -->
-        <div class="pure-control-group checkboxlist">
-            @Html.LabelFor(m => m.Administrators)
-            <span>
-                @foreach (var admin in NameFormatter.Sort(Model.AllAdministrators))
-                {
-                    <div>
-                        <input type="checkbox" name="PostedSelectedAdministrators" value="@admin.Id" checked="@Model.Administrators.Any(a => a.Id == admin.Id)" />
-                        <label>@NameFormatter.GetDisplayName(admin)</label>
-                    </div>
-                }
-            </span>
-            <i class="fa fa-info-circle" title="@Resources.Repository_AdministratorsHint"></i>
-            @Html.ValidationMessageFor(m => m.Administrators)
+            @Html.ValidationMessageFor(m => m.Users)
         </div>
 
         <!-- Teams-Auswahl -->
@@ -150,6 +137,7 @@
                     <div>
                         <input type="checkbox" name="PostedSelectedTeams" value="@team.Id" checked="@Model.Teams.Any(t => t.Id == team.Id)" />
                         <label>@team.DisplayName</label>
+                        @await Html.PartialAsync("_AccessLevelSelect", new AccessLevelSelectModel($"TeamAccessLevels[{team.Id}]", Model.TeamAccessLevels.GetValueOrDefault(team.Id, RepositoryAccessLevel.Push)))
                     </div>
                 }
             </span>
