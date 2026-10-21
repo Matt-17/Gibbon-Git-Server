@@ -13,7 +13,6 @@ public class RepositoryModel
     public bool AnonymousAccess { get; set; }
     public RepositoryPushMode AllowAnonymousPush { get; set; } = RepositoryPushMode.Global;
     public UserModel[] Users { get; set; } = [];
-    public UserModel[] Administrators { get; set; } = [];
     public TeamModel[] Teams { get; set; } = [];
     public Dictionary<int, RepositoryAccessLevel> UserAccessLevels { get; set; } = [];
     public Dictionary<int, RepositoryAccessLevel> TeamAccessLevels { get; set; } = [];

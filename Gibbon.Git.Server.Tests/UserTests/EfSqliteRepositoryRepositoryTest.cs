@@ -134,14 +134,15 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
     public void RespositoryWithAdministratorCanBeAdded()
     {
         var newRepo = MakeRepo("Repo1");
-        newRepo.Administrators =
-        [
-            AddUserFred()
-        ];
+        var fred = AddUserFred();
+        newRepo.Users = [fred];
+        newRepo.UserAccessLevels = new() { [fred.Id] = RepositoryAccessLevel.Administer };
 
         _repositoryService.Create(newRepo);
 
-        Assert.AreEqual("Blogs, Fred", _repositoryService.GetAllRepositories().Single().Administrators.Single().DisplayName);
+        var repo = _repositoryService.GetAllRepositories().Single();
+        Assert.AreEqual("Blogs, Fred", repo.Users.Single().DisplayName);
+        Assert.AreEqual(RepositoryAccessLevel.Administer, repo.UserAccessLevels[fred.Id]);
     }
 
     [TestMethod]
@@ -318,7 +319,6 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
             Name = repo.Name,
             Logo = null,
             Users = [],
-            Administrators = [],
             Teams = []
         };
         _repositoryService.Update(updateRepo);
@@ -333,7 +333,6 @@ public class EfSqliteRepositoryRepositoryTest : DbTestBase<SqliteConnectionFacto
     {
         _repositoryService.Create(MakeRepo("Repo1"));
 
-        Assert.AreEqual(0, _repositoryService.GetRepository("Repo1").Administrators.Length);
         Assert.AreEqual(0, _repositoryService.GetRepository("Repo1").Teams.Length);
         Assert.AreEqual(0, _repositoryService.GetRepository("Repo1").Users.Length);
     }

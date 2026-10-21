@@ -190,11 +190,13 @@ public class EfSqlitePermissionServiceTest : DbTestBase<SqliteConnectionFactory>
     {
         var userId = 1;
         var repoId = 1;
-        var repositoryModel = new RepositoryModel { Id = repoId, Administrators = [new UserModel { Id = userId }] };
+        var repositoryModel = new RepositoryModel { Id = repoId, Users = [new UserModel { Id = userId }], UserAccessLevels = new() { [userId] = RepositoryAccessLevel.Administer } };
         _repositoryService.GetRepository(repoId).Returns(repositoryModel);
+        _teamsService.GetTeamsForUser(userId).Returns([]);
 
-        var hasPermission = _service.HasPermission(userId, repoId, RepositoryAccessLevel.Pull);
-        Assert.IsTrue(hasPermission);
+        Assert.IsTrue(_service.HasPermission(userId, repoId, RepositoryAccessLevel.Pull));
+        Assert.IsTrue(_service.HasPermission(userId, repoId, RepositoryAccessLevel.Push));
+        Assert.IsTrue(_service.HasPermission(userId, repoId, RepositoryAccessLevel.Administer));
     }
 
     [TestMethod]
@@ -463,5 +465,34 @@ public class EfSqlitePermissionServiceTest : DbTestBase<SqliteConnectionFactory>
         _teamsService.GetTeamsForUser(userId).Returns([]);
 
         Assert.IsTrue(_service.HasPermission(userId, repoId, RepositoryAccessLevel.Push));
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.RepositoryPermission)]
+    [Description("Verify that members of a team with manage access can administer the repository.")]
+    public void ManagingTeamMemberCanAdminister()
+    {
+        const int userId = 1;
+        const int repoId = 1;
+        var team = new TeamModel { Id = 5, Members = [new UserModel { Id = userId }] };
+        var repositoryModel = new RepositoryModel { Id = repoId, Teams = [team], TeamAccessLevels = new() { [team.Id] = RepositoryAccessLevel.Administer } };
+        _repositoryService.GetRepository(repoId).Returns(repositoryModel);
+        _teamsService.GetTeamsForUser(userId).Returns([team]);
+
+        Assert.IsTrue(_service.HasPermission(userId, repoId, RepositoryAccessLevel.Administer));
+    }
+
+    [TestMethod]
+    [TestCategory(TestCategories.RepositoryPermission)]
+    [Description("Verify that a member with write access cannot administer the repository.")]
+    public void WritingMemberCannotAdminister()
+    {
+        const int userId = 1;
+        const int repoId = 1;
+        var repositoryModel = new RepositoryModel { Id = repoId, Users = [new UserModel { Id = userId }] };
+        _repositoryService.GetRepository(repoId).Returns(repositoryModel);
+        _teamsService.GetTeamsForUser(userId).Returns([]);
+
+        Assert.IsFalse(_service.HasPermission(userId, repoId, RepositoryAccessLevel.Administer));
     }
 }

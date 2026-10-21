@@ -403,7 +403,7 @@
     <value>Repositorydetail</value>
   </data>
   <data name="Repository_Detail_Users" xml:space="preserve">
-    <value>Beitragende</value>
+    <value>Mitglieder</value>
   </data>
   <data name="Repository_Detail_Yes" xml:space="preserve">
     <value>Ja</value>
@@ -412,7 +412,7 @@
     <value>Zurück zur Liste</value>
   </data>
   <data name="Repository_Edit_CantRemoveYourself" xml:space="preserve">
-    <value>Sie können sich nicht selbst von der Administratoren-Gruppe entfernen.</value>
+    <value>Sie können sich die Verwalten-Stufe nicht selbst entziehen.</value>
   </data>
   <data name="Repository_Edit_Fail" xml:space="preserve">
     <value>Repository Aktualisierung war nicht erfolgreich. Bitte korrigieren und versuchen Sie es erneut.</value>
@@ -571,10 +571,10 @@
     <value>Name sollte nicht nur Leerzeichen beinhalten.</value>
   </data>
   <data name="Repository_TeamsHint" xml:space="preserve">
-    <value>Teams haben Zugriff auf das Repository. Alle Benutzer des Teams erhalten die gewählte Stufe: Lesen (clone, pull, durchsuchen) oder Schreiben (zusätzlich push).</value>
+    <value>Teams haben Zugriff auf das Repository. Alle Benutzer des Teams erhalten die gewählte Stufe. Lesen: clone, pull und durchsuchen. Schreiben: zusätzlich push. Verwalten: zusätzlich Einstellungen und Mitglieder ändern.</value>
   </data>
   <data name="Repository_UsersHint" xml:space="preserve">
-    <value>Benutzer haben Zugriff auf das Repository. Mit Lesezugriff können sie clone, pull ausführen und es durchsuchen, mit Schreibzugriff zusätzlich push.</value>
+    <value>Benutzer haben Zugriff auf das Repository. Lesen: clone, pull und durchsuchen. Schreiben: zusätzlich push. Verwalten: zusätzlich Einstellungen und Mitglieder ändern.</value>
   </data>
   <data name="Validation_FileName" xml:space="preserve">
     <value>"{0}" beinhaltet Zeichen die nicht in einer Datei oder einem Ordner vorkommen dürfen.</value>
@@ -1159,5 +1159,11 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   </data>
   <data name="Repository_AccessLevel_ReadOnly" xml:space="preserve">
     <value>nur lesen</value>
+  </data>
+  <data name="Repository_AccessLevel_Administer" xml:space="preserve">
+    <value>Verwalten</value>
+  </data>
+  <data name="Repository_AccessLevel_Manages" xml:space="preserve">
+    <value>verwaltet</value>
   </data>
 </root>

@@ -125,22 +125,7 @@
                 }
             </span>
             <i class="fa fa-info-circle" title="@Resources.Repository_UsersHint"></i>
-        </div>
-
-        <!-- Administratoren-Auswahl -->
-        <div class="pure-control-group checkboxlist">
-            @Html.LabelFor(m => m.Administrators)
-            <span>
-                @foreach (var admin in NameFormatter.Sort(Model.AllAdministrators))
-                {
-                    <div>
-                        <input type="checkbox" name="PostedSelectedAdministrators" value="@admin.Id" checked="@Model.Administrators.Any(a => a.Id == admin.Id)" />
-                        <label>@NameFormatter.GetDisplayName(admin)</label>
-                    </div>
-                }
-            </span>
-            <i class="fa fa-info-circle" title="@Resources.Repository_AdministratorsHint"></i>
-            @Html.ValidationMessageFor(m => m.Administrators)
+            @Html.ValidationMessageFor(m => m.Users)
         </div>
 
         <!-- Teams-Auswahl -->

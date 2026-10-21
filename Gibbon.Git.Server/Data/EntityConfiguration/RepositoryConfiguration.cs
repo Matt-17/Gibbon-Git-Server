@@ -62,13 +62,6 @@ public class RepositoryConfiguration : IEntityTypeConfiguration<Repository>
                     j.Property(p => p.AccessLevel).HasColumnName("AccessLevel");
                 });
 
-        builder.HasMany(t => t.Administrators)
-            .WithMany(t => t.AdministratedRepositories)
-            .UsingEntity<Dictionary<string, object>>(
-                "UserRepository_Administrator",
-                j => j.HasOne<User>().WithMany().HasForeignKey("User_Id").OnDelete(DeleteBehavior.Cascade), 
-                j => j.HasOne<Repository>().WithMany().HasForeignKey("Repository_Id").OnDelete(DeleteBehavior.Cascade)); 
-
         builder.HasMany(t => t.Users)
             .WithMany(t => t.Repositories)
             .UsingEntity<RepositoryUserPermission>(

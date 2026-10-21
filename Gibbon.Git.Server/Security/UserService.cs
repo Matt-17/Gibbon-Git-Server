@@ -156,7 +156,6 @@ public class UserService(ILogger<UserService> logger, IMemoryCache memoryCache, 
         var user = _context.Users.FirstOrDefault(u => u.Id == id);
         if (user != null)
         {
-            user.AdministratedRepositories.Clear();
             user.Roles.Clear();
             user.Repositories.Clear();
             user.Teams.Clear();

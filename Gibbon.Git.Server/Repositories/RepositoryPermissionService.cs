@@ -28,7 +28,12 @@ public class RepositoryPermissionService(IRepositoryService repository, IRolePro
         {
             throw new InvalidOperationException("Repository not found.");
         }
-        return HasPermission(userId, _teamService.GetTeamsForUser(userId), repositoryModel, requiredLevel);
+        return HasPermission(userId, repositoryModel, requiredLevel);
+    }
+
+    public bool HasPermission(int userId, RepositoryModel repository, RepositoryAccessLevel requiredLevel)
+    {
+        return HasPermission(userId, _teamService.GetTeamsForUser(userId), repository, requiredLevel);
     }
 
     public bool HasCreatePermission(int userId)
@@ -92,14 +97,14 @@ public class RepositoryPermissionService(IRepositoryService repository, IRolePro
     {
         ArgumentOutOfRangeException.ThrowIfEqual(userId, 0, nameof(userId));
 
-        if (IsSystemAdministrator(userId) || repository.Administrators.Any(x => x.Id == userId))
+        if (IsSystemAdministrator(userId))
         {
             return true;
         }
 
         _logger.LogTrace("Checking user {UserId} has permission {Permission} on repo {RepositoryName}", userId, requiredLevel, repository.Name);
 
-        return requiredLevel is RepositoryAccessLevel.Push or RepositoryAccessLevel.Pull && GetMemberAccessLevel(userId, userTeams, repository) >= requiredLevel;
+        return GetMemberAccessLevel(userId, userTeams, repository) >= requiredLevel;
     }
 
     private static RepositoryAccessLevel? GetMemberAccessLevel(int userId, List<TeamModel> userTeams, RepositoryModel repository)

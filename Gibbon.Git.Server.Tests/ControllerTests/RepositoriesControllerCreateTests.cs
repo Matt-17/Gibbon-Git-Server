@@ -75,13 +75,13 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
     }
 
     [TestMethod]
-    public void Create_StoresSelectedUsersAdministratorsAndTeams()
+    public void Create_StoresSelectedUsersAccessLevelsAndTeams()
     {
         var model = new RepositoryDetailModel
         {
             Name = "demo",
-            PostedSelectedUsers = [2, 3],
-            PostedSelectedAdministrators = [1],
+            PostedSelectedUsers = [1, 2, 3],
+            UserAccessLevels = new() { [1] = RepositoryAccessLevel.Administer, [3] = RepositoryAccessLevel.Pull },
             PostedSelectedTeams = [7]
         };
 
@@ -90,8 +90,10 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         Assert.IsInstanceOfType<RedirectToActionResult>(result);
         _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r =>
             r.Name == "demo" &&
-            r.Users.Select(u => u.Id).SequenceEqual(new[] { 2, 3 }) &&
-            r.Administrators.Select(u => u.Id).SequenceEqual(new[] { 1 }) &&
+            r.Users.Select(u => u.Id).SequenceEqual(new[] { 1, 2, 3 }) &&
+            r.GetUserAccessLevel(1) == RepositoryAccessLevel.Administer &&
+            r.GetUserAccessLevel(2) == RepositoryAccessLevel.Push &&
+            r.GetUserAccessLevel(3) == RepositoryAccessLevel.Pull &&
             r.Teams.Select(t => t.Id).SequenceEqual(new[] { 7 })));
         Assert.IsTrue(Directory.Exists(Path.Combine(_repositoriesPath, "demo")));
     }
@@ -104,9 +106,9 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
             User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "5"), new Claim(ClaimTypes.Name, "user5")], "Test"))
         };
 
-        Controller.Create(new RepositoryDetailModel { Name = "mine", PostedSelectedAdministrators = [5] });
+        Controller.Create(new RepositoryDetailModel { Name = "mine", PostedSelectedUsers = [5], UserAccessLevels = new() { [5] = RepositoryAccessLevel.Administer } });
 
-        _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Administrators.Single().Id == 5));
+        _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Users.Single().Id == 5 && r.GetUserAccessLevel(5) == RepositoryAccessLevel.Administer));
     }
 
     [TestMethod]
@@ -123,11 +125,11 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
     {
         _repositoryService.GetRepository("source").Returns(new RepositoryModel { Name = "source" });
 
-        var result = await Controller.Clone("source", new RepositoryDetailModel { Name = "copy", PostedSelectedUsers = [2], PostedSelectedAdministrators = [1] });
+        var result = await Controller.Clone("source", new RepositoryDetailModel { Name = "copy", PostedSelectedUsers = [1, 2], UserAccessLevels = new() { [1] = RepositoryAccessLevel.Administer } });
 
         Assert.IsInstanceOfType<RedirectToActionResult>(result);
         await _repositoryCopier.Received(1).CopyAsync(Path.Combine(_repositoriesPath, "source"), Path.Combine(_repositoriesPath, "copy"));
-        _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Name == "copy" && r.Users.Single().Id == 2 && r.Administrators.Single().Id == 1));
+        _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Name == "copy" && r.Users.Length == 2 && r.GetUserAccessLevel(1) == RepositoryAccessLevel.Administer && r.GetUserAccessLevel(2) == RepositoryAccessLevel.Push));
     }
 
     [TestMethod]

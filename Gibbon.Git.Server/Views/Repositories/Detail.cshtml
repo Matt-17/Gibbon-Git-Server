@@ -97,31 +97,7 @@
                         {
                             title = user.Username
                         })
-                    @if (Model.UserAccessLevels.GetValueOrDefault(user.Id, RepositoryAccessLevel.Push) == RepositoryAccessLevel.Pull)
-                    {
-                        <span class="access-badge">@Resources.Repository_AccessLevel_ReadOnly</span>
-                    }
-                }
-            </span>
-        </div>
-
-        <div class="pure-control-group">
-            @Html.LabelFor(m => m.Administrators)
-            <span>
-                @{ var sortedAdministrators = NameFormatter.Sort(Model.Administrators).ToList(); }
-                @foreach (var admin in sortedAdministrators)
-                {
-                    if (admin != sortedAdministrators.First())
-                    {
-                        @Html.Raw(" &bull; ")
-                    }
-                    @Html.ActionLink(NameFormatter.GetDisplayName(admin), "Detail", "Users", new
-                        {
-                            username = admin.Username
-                        }, new
-                        {
-                            title = admin.Username
-                        })
+                    @await Html.PartialAsync("_AccessLevelBadge", Model.UserAccessLevels.GetValueOrDefault(user.Id, RepositoryAccessLevel.Push))
                 }
             </span>
         </div>
@@ -139,10 +115,7 @@
                         {
                             teamname = team.Name
                         }, null)
-                    @if (Model.TeamAccessLevels.GetValueOrDefault(team.Id, RepositoryAccessLevel.Push) == RepositoryAccessLevel.Pull)
-                    {
-                        <span class="access-badge">@Resources.Repository_AccessLevel_ReadOnly</span>
-                    }
+                    @await Html.PartialAsync("_AccessLevelBadge", Model.TeamAccessLevels.GetValueOrDefault(team.Id, RepositoryAccessLevel.Push))
                 }
             </span>
         </div>

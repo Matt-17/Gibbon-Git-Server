@@ -1,0 +1,10 @@
+@model Gibbon.Git.Server.Repositories.RepositoryAccessLevel
+@using Gibbon.Git.Server.Repositories
+@if (Model == RepositoryAccessLevel.Pull)
+{
+    <span class="access-badge">@Resources.Repository_AccessLevel_ReadOnly</span>
+}
+else if (Model == RepositoryAccessLevel.Administer)
+{
+    <span class="access-badge access-badge-manage">@Resources.Repository_AccessLevel_Manages</span>
+}

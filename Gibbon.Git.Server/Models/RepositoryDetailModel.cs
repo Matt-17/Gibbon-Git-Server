@@ -37,11 +37,6 @@ public class RepositoryDetailModel
     public TeamModel[] AllTeams { get; set; } = [];
     public Dictionary<int, RepositoryAccessLevel> TeamAccessLevels { get; set; } = [];
 
-    [Display(ResourceType = typeof(Resources), Name = "Repository_Detail_Administrators")]
-    public UserModel[] Administrators { get; set; } = [];
-    public int[] PostedSelectedAdministrators { get; set; } = [];
-    public UserModel[] AllAdministrators { get; set; } = [];
-
     [Display(ResourceType = typeof(Resources), Name = "Repository_Detail_IsCurrentUserAdmin")]
     public bool IsCurrentUserAdministrator { get; set; }
 

@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 
+using Gibbon.Git.Server.Data;
 using Gibbon.Git.Server.Security;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -48,6 +50,83 @@ internal class RepositoriesMemberAccessTests : IntegrationTestBase
         StringAssert.Contains(detail, "access-badge");
         StringAssert.Contains(edit, $"name=\"UserAccessLevels[{userId}]\"");
         StringAssert.Contains(edit, "<option value=\"Pull\" selected=\"selected\">");
+    }
+
+    [TestMethod]
+    public async Task Manager_CanEditButCannotRemoveOwnManageAccess()
+    {
+        var admin = await CreateClientAsync(true);
+        var (username, userId) = await CreateMember(admin);
+        var name = await CreateRepository(admin, ("PostedSelectedUsers", userId.ToString()), ($"UserAccessLevels[{userId}]", "Administer"));
+        var manager = await CreateMemberClient(username);
+
+        Assert.AreEqual(HttpStatusCode.OK, (await manager.GetAsync($"/Repositories/{name}/Edit")).StatusCode);
+
+        var postData = new Dictionary<string, string>(await GetAntiForgeryToken(manager, $"/Repositories/{name}/Edit"))
+        {
+            { "Id", GetRepositoryId(name).ToString() },
+            { "Name", name },
+            { "PostedSelectedUsers", userId.ToString() },
+            { $"UserAccessLevels[{userId}]", "Push" }
+        };
+        var response = await manager.PostAsync($"/Repositories/{name}/Edit", new FormUrlEncodedContent(postData));
+
+        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
+        StringAssert.Contains(await response.Content.ReadAsStringAsync(), "field-validation-error");
+        Assert.AreEqual(HttpStatusCode.OK, await GetInfoRefs(name, "git-receive-pack", username));
+        Assert.AreEqual(HttpStatusCode.OK, (await manager.GetAsync($"/Repositories/{name}/Edit")).StatusCode);
+    }
+
+    [TestMethod]
+    public async Task WritingMember_CannotEdit()
+    {
+        var admin = await CreateClientAsync(true);
+        var (username, userId) = await CreateMember(admin);
+        var name = await CreateRepository(admin, ("PostedSelectedUsers", userId.ToString()));
+        var member = await CreateMemberClient(username);
+
+        Assert.AreEqual(HttpStatusCode.Forbidden, (await member.GetAsync($"/Repositories/{name}/Edit")).StatusCode);
+    }
+
+    [TestMethod]
+    public async Task ManagingTeamMember_CanEdit()
+    {
+        var admin = await CreateClientAsync(true);
+        var (username, userId) = await CreateMember(admin);
+        var teamId = await CreateTeam(admin, userId);
+        var name = await CreateRepository(admin, ("PostedSelectedTeams", teamId.ToString()), ($"TeamAccessLevels[{teamId}]", "Administer"));
+        var member = await CreateMemberClient(username);
+
+        Assert.AreEqual(HttpStatusCode.OK, (await member.GetAsync($"/Repositories/{name}/Edit")).StatusCode);
+    }
+
+    private async Task<HttpClient> CreateMemberClient(string username)
+    {
+        var client = Application.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
+        await AuthenticateUserAsync(client, username, MemberPassword);
+
+        return client;
+    }
+
+    private int GetRepositoryId(string name)
+    {
+        using var scope = Application.Services.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<IRepositoryService>().GetRepository(name).Id;
+    }
+
+    private async Task<int> CreateTeam(HttpClient admin, int memberId)
+    {
+        var teamName = "team" + Guid.NewGuid().ToString("N")[..6];
+        var postData = new Dictionary<string, string>(await GetAntiForgeryToken(admin, "/Teams/Create"))
+        {
+            { "Name", teamName },
+            { "PostedSelectedUsers", memberId.ToString() }
+        };
+        var response = await admin.PostAsync("/Teams/Create", new FormUrlEncodedContent(postData));
+        Assert.IsTrue(response.StatusCode is HttpStatusCode.OK or HttpStatusCode.Redirect, response.StatusCode.ToString());
+
+        using var scope = Application.Services.CreateScope();
+        return scope.ServiceProvider.GetRequiredService<ITeamService>().GetAllTeams().Single(t => t.Name == teamName).Id;
     }
 
     private async Task<HttpStatusCode> GetInfoRefs(string name, string service, string username)
