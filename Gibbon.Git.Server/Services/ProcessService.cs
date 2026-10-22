@@ -13,18 +13,25 @@ public class ProcessService : IProcessService
         {
             using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("Failed to start process.");
 
-            if (inStream != null)
+            try
             {
-                await inStream.CopyToAsync(process.StandardInput.BaseStream, bufferSize);
-            }
+                if (inStream != null)
+                {
+                    await inStream.CopyToAsync(process.StandardInput.BaseStream, bufferSize);
+                }
 
-            if (endStreamWithClose)
-            {
-                process.StandardInput.Close();
+                if (endStreamWithClose)
+                {
+                    process.StandardInput.Close();
+                }
+                else
+                {
+                    await process.StandardInput.WriteAsync('\0');
+                }
             }
-            else
+            catch (IOException)
             {
-                await process.StandardInput.WriteAsync('\0');
+                // the process may exit without reading its input (git --advertise-refs), its output is still needed
             }
 
             await process.StandardOutput.BaseStream.CopyToAsync(outStream, bufferSize);
