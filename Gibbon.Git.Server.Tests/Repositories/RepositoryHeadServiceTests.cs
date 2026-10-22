@@ -171,7 +171,6 @@ public class RepositoryHeadServiceTests
             RedirectStandardError = true,
             UseShellExecute = false
         };
-        // committer date decides which branch is the newest
         var date = Array.IndexOf(arguments, "--date");
         if (date >= 0)
         {

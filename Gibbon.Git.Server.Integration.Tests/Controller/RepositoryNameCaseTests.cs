@@ -5,7 +5,6 @@ namespace Gibbon.Git.Server.Integration.Tests.Controller;
 [TestClass]
 internal class RepositoryNameCaseTests : IntegrationTestBase
 {
-    // the in-memory provider compares case-sensitively, the real databases do not
     protected override string DatabaseProvider => "Sqlite";
 
     [TestMethod]

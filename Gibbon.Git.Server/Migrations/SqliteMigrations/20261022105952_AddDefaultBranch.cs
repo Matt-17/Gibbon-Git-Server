@@ -18,8 +18,7 @@ namespace Gibbon.Git.Server.Migrations.SqliteMigrations
                 nullable: false,
                 defaultValue: "master");
 
-            // installations that existed before this setting keep the branch git used for them;
-            // without a settings row they never saved settings, but already have repositories
+            // existing installations keep master, also those that never saved settings
             migrationBuilder.Sql("""
                 INSERT INTO ServerSettings (AllowAnonymousPush, AllowUserRepositoryCreation, AllowAnonymousRegistration, DefaultLanguage, IsCommitAuthorAvatarVisible,
                     DisplayNameFormat, SortNameFormat, DateFormat, TimeFormat, DefaultRepositoryView, DefaultBranch)

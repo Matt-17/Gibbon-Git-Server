@@ -20,7 +20,6 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
     public async Task<bool> InitAsync(string repositoryName, string defaultBranch)
     {
         var path = GetPath(repositoryName);
-        // a fresh installation has no repository folder yet, and git runs in it
         Directory.CreateDirectory(_pathResolver.GetRepositories());
         var result = await RunGit(_pathResolver.GetRepositories(), "init", "--bare", "--quiet", path);
         if (result.IsSuccess && !string.IsNullOrWhiteSpace(defaultBranch))
@@ -65,7 +64,6 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
     {
         var path = GetPath(repositoryName);
 
-        // newest commit first, the branch HEAD points to is marked with *
         var branches = await RunGit(path, "for-each-ref", "--sort=refname", "--sort=-committerdate", "--format=%(HEAD)%(refname)", "refs/heads");
         if (!branches.IsSuccess)
         {
@@ -78,7 +76,6 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
             return false;
         }
 
-        // a detached HEAD is left alone, only a branch that does not exist is replaced
         var head = await RunGit(path, "symbolic-ref", "-q", "HEAD");
         if (!head.IsSuccess)
         {
