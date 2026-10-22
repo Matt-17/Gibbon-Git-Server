@@ -145,7 +145,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     public IActionResult RedirectUploadPack(string repositoryName)
     {
         var newPath = $"{HttpContext.Request.PathBase}/{repositoryName}.git/git-upload-pack";
-        return Redirect(newPath);
+        return RedirectPreserveMethod(newPath);
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     public IActionResult RedirectReceivePack(string repositoryName)
     {
         var newPath = $"{HttpContext.Request.PathBase}/{repositoryName}.git/git-receive-pack";
-        return Redirect(newPath);
+        return RedirectPreserveMethod(newPath);
     }
 
     private bool RepositoryIsValid(string repositoryName)
