@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -17,6 +18,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
 
 using NSubstitute;
 
@@ -40,8 +43,9 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         _userService = services.AddSubstitute<IUserService>();
         var permissionService = services.AddSubstitute<IRepositoryPermissionService>();
         services.AddSubstitute<IRepositorySynchronizer>();
-        services.AddSingleton(new ServerSettings());
+        services.AddSingleton(new ServerSettings { DefaultBranch = "trunk" });
         var pathResolver = services.AddSubstitute<IPathResolver>();
+        services.AddSingleton<IRepositoryHeadService>(new RepositoryHeadService(NullLogger<RepositoryHeadService>.Instance, Options.Create(new GitSettings()), new ProcessService(), pathResolver));
         services.AddSubstitute<IRepositoryBrowserFactory>();
         services.AddSubstitute<IRepositoryLogoService>();
         _repositoryCopier = services.AddSubstitute<IRepositoryCopier>();
@@ -50,6 +54,9 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
         _repositoriesPath = Path.Combine(Path.GetTempPath(), "gibbon-create-" + Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(_repositoriesPath);
         pathResolver.GetRepositories().Returns(_repositoriesPath);
+        pathResolver.GetRepositoryPath(Arg.Any<string>()).Returns(x => Path.Combine(_repositoriesPath, x.Arg<string>()));
+        pathResolver.ResolveExecutable(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        pathResolver.ResolveRoot(Arg.Any<string>()).Returns(_repositoriesPath);
         permissionService.HasCreatePermission(Arg.Any<int>()).Returns(true);
 
         _repositoryService.NameIsUnique(Arg.Any<string>(), Arg.Any<int>()).Returns(true);
@@ -75,7 +82,7 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
     }
 
     [TestMethod]
-    public void Create_StoresSelectedUsersAccessLevelsAndTeams()
+    public async Task Create_StoresSelectedUsersAccessLevelsAndTeams()
     {
         var model = new RepositoryDetailModel
         {
@@ -85,7 +92,7 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
             PostedSelectedTeams = [7]
         };
 
-        var result = Controller.Create(model);
+        var result = await Controller.Create(model);
 
         Assert.IsInstanceOfType<RedirectToActionResult>(result);
         _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r =>
@@ -99,14 +106,25 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
     }
 
     [TestMethod]
-    public void Create_ByRegularUser_KeepsCreatorAsAdministrator()
+    public async Task Create_StartsRepositoryWithServerDefaultBranch()
+    {
+        await Controller.Create(new RepositoryDetailModel { Name = "demo", PostedSelectedUsers = [1], UserAccessLevels = new() { [1] = RepositoryAccessLevel.Administer } });
+
+        using var git = Process.Start(new ProcessStartInfo("git", ["-C", Path.Combine(_repositoriesPath, "demo"), "symbolic-ref", "HEAD"]) { RedirectStandardOutput = true, UseShellExecute = false })!;
+        var head = git.StandardOutput.ReadToEnd().Trim();
+        git.WaitForExit();
+        Assert.AreEqual("refs/heads/trunk", head);
+    }
+
+    [TestMethod]
+    public async Task Create_ByRegularUser_KeepsCreatorAsAdministrator()
     {
         Controller.ControllerContext.HttpContext = new DefaultHttpContext
         {
             User = new ClaimsPrincipal(new ClaimsIdentity([new Claim(ClaimTypes.NameIdentifier, "5"), new Claim(ClaimTypes.Name, "user5")], "Test"))
         };
 
-        Controller.Create(new RepositoryDetailModel { Name = "mine", PostedSelectedUsers = [5], UserAccessLevels = new() { [5] = RepositoryAccessLevel.Administer } });
+        await Controller.Create(new RepositoryDetailModel { Name = "mine", PostedSelectedUsers = [5], UserAccessLevels = new() { [5] = RepositoryAccessLevel.Administer } });
 
         _repositoryService.Received(1).Create(Arg.Is<RepositoryModel>(r => r.Users.Single().Id == 5 && r.GetUserAccessLevel(5) == RepositoryAccessLevel.Administer));
     }
@@ -145,11 +163,11 @@ public class RepositoriesControllerCreateTests : ControllerTestBase<Repositories
     }
 
     [TestMethod]
-    public void Create_InvalidModel_ShowsSelectionAgain()
+    public async Task Create_InvalidModel_ShowsSelectionAgain()
     {
         _repositoryService.NameIsUnique("taken", Arg.Any<int>()).Returns(false);
 
-        var result = Controller.Create(new RepositoryDetailModel { Name = "taken", PostedSelectedUsers = [2] }) as ViewResult;
+        var result = await Controller.Create(new RepositoryDetailModel { Name = "taken", PostedSelectedUsers = [2] }) as ViewResult;
 
         Assert.IsNotNull(result);
         var model = (RepositoryDetailModel)result.Model!;

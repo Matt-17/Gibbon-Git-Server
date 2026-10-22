@@ -60,6 +60,12 @@
             @Html.DropDownListFor(m => m.DefaultRepositoryView, Html.GetEnumSelectList<RepositoryView>(), new { @class = "medium" })
             <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultRepositoryView_Hint"></i>
         </div>
+        <div class="pure-control-group">
+            @Html.LabelFor(m => m.DefaultBranch)
+            @Html.TextBoxFor(m => m.DefaultBranch, new { @class = "medium" })
+            <i class="fa fa-info-circle" title="@Resources.Settings_Global_DefaultBranch_Hint"></i>
+            @Html.ValidationMessageFor(m => m.DefaultBranch)
+        </div>
         <div class="pure-control-group clone-tool-settings">
             @Html.LabelFor(m => m.EnabledCloneTools)
             <input type="hidden" name="EnabledCloneTools" value="" />

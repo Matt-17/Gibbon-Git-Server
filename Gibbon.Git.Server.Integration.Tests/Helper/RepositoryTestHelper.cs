@@ -46,6 +46,11 @@ internal static class RepositoryTestHelper
         RunGit(workingDirectory, "push", "-q", repositoryPath, branch, "v1");
     }
 
+    public static string GetDefaultBranch(string repositoryPath)
+    {
+        return RunGit(repositoryPath, "symbolic-ref", "--short", "HEAD").Trim();
+    }
+
     public static string RunGit(string workingDirectory, params string[] arguments)
     {
         using var process = Process.Start(new ProcessStartInfo("git", arguments)

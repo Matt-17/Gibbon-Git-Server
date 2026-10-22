@@ -16,7 +16,7 @@ internal class RepositoriesPermissionTests : IntegrationTestBase
         var admin = await CreateClientAsync(true);
         var name = await CreateRepository(admin, ("AllowAnonymous", "true"));
         var repositoryPath = GetRepositoryPath(TestContext, name);
-        PushCommit(TestContext, repositoryPath, "master", "readable content", "readme.txt");
+        PushCommit(TestContext, repositoryPath, GetDefaultBranch(repositoryPath), "readable content", "readme.txt");
         var commit = RunGit(repositoryPath, "rev-parse", "HEAD").Trim();
         var reader = await CreateReaderClient(admin);
 
@@ -52,7 +52,7 @@ internal class RepositoriesPermissionTests : IntegrationTestBase
     {
         var admin = await CreateClientAsync(true);
         var name = await CreateRepository(admin);
-        PushCommit(TestContext, GetRepositoryPath(TestContext, name), "master", "secret", "readme.txt");
+        PushCommit(TestContext, GetRepositoryPath(TestContext, name), GetDefaultBranch(GetRepositoryPath(TestContext, name)), "secret", "readme.txt");
         var reader = await CreateReaderClient(admin);
 
         foreach (var page in new[] { "", "Detail", "Tree", "Raw/readme.txt", "Commits", "Download", "Clone" })

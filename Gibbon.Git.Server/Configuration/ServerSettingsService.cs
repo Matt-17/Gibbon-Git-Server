@@ -38,6 +38,12 @@ public class ServerSettingsService(IMemoryCache memoryCache, GibbonGitServerCont
         entity.DateFormat = settings.DateFormat;
         entity.TimeFormat = settings.TimeFormat;
         entity.DefaultRepositoryView = settings.DefaultRepositoryView;
+        if (!string.IsNullOrWhiteSpace(settings.DefaultBranch))
+        {
+            entity.DefaultBranch = settings.DefaultBranch;
+        }
+        entity.DefaultBranch ??= GetDefaultSettings().DefaultBranch;
+        settings.DefaultBranch = entity.DefaultBranch;
         entity.EnabledCloneTools = settings.EnabledCloneTools;
         entity.CustomCloneTools = settings.CustomCloneTools;
 
@@ -66,6 +72,7 @@ public class ServerSettingsService(IMemoryCache memoryCache, GibbonGitServerCont
                 DateFormat = entity.DateFormat,
                 TimeFormat = entity.TimeFormat,
                 DefaultRepositoryView = entity.DefaultRepositoryView,
+                DefaultBranch = entity.DefaultBranch,
                 EnabledCloneTools = entity.EnabledCloneTools,
                 CustomCloneTools = entity.CustomCloneTools
             })
@@ -87,6 +94,7 @@ public class ServerSettingsService(IMemoryCache memoryCache, GibbonGitServerCont
         {
             AllowUserRepositoryCreation = true,
             DefaultLanguage = "en",
+            DefaultBranch = "main",
         };
     }
 

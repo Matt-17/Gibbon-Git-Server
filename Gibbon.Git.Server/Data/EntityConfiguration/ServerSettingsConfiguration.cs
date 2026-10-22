@@ -66,6 +66,10 @@ public class ServerSettingsConfiguration : IEntityTypeConfiguration<ServerSettin
             .HasConversion<int>()
             .IsRequired();
 
+        builder.Property(s => s.DefaultBranch)
+            .IsRequired()
+            .HasMaxLength(250);
+
         builder.Property(s => s.EnabledCloneTools)
             .HasMaxLength(500);
 

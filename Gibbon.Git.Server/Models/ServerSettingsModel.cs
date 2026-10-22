@@ -36,6 +36,10 @@ public class ServerSettingsModel
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DefaultRepositoryView")]
     public RepositoryView DefaultRepositoryView { get; set; }
 
+    [BranchName]
+    [Display(ResourceType = typeof(Resources), Name = "Settings_Global_DefaultBranch")]
+    public string DefaultBranch { get; set; }
+
     [Display(ResourceType = typeof(Resources), Name = "Settings_Global_CloneTools")]
     public List<string> EnabledCloneTools { get; set; }
 

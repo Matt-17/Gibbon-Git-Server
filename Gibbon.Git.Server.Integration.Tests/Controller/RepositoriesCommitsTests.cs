@@ -31,19 +31,19 @@ internal class RepositoriesCommitsTests : IntegrationTestBase
     }
 
     [TestMethod]
-    public async Task DefaultBranchOtherThanMaster_CommitsShowsHeadBranch()
+    public async Task CustomDefaultBranch_CommitsShowsHeadBranch()
     {
         var client = await CreateClientAsync(true);
         var name = await CreateRepository(client);
         var repositoryPath = GetRepositoryPath(TestContext, name);
-        RunGit(repositoryPath, "symbolic-ref", "HEAD", "refs/heads/main");
-        PushCommit(TestContext, repositoryPath, "main", "first commit on main");
+        RunGit(repositoryPath, "symbolic-ref", "HEAD", "refs/heads/trunk");
+        PushCommit(TestContext, repositoryPath, "trunk", "first commit on trunk");
 
         var response = await client.GetAsync($"/Repositories/{name}/Commits");
         var content = await response.Content.ReadAsStringAsync();
 
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-        Assert.Contains("first commit on main", content);
+        Assert.Contains("first commit on trunk", content);
         Assert.MatchesRegex($"""<span class="tag">\s*<a href="/Repositories/{name}/Commits\?branch=v1">v1</a>""", content);
     }
 
@@ -52,7 +52,7 @@ internal class RepositoriesCommitsTests : IntegrationTestBase
     {
         var client = await CreateClientAsync(true);
         var name = await CreateRepository(client);
-        PushCommit(TestContext, GetRepositoryPath(TestContext, name), "master", "tagged");
+        PushCommit(TestContext, GetRepositoryPath(TestContext, name), GetDefaultBranch(GetRepositoryPath(TestContext, name)), "tagged");
 
         var content = await client.GetStringAsync($"/Repositories/{name}/Tags");
 

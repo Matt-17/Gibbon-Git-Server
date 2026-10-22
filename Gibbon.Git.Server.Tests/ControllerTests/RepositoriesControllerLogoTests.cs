@@ -1,4 +1,5 @@
 using System.IO;
+using System.Threading.Tasks;
 
 using Gibbon.Git.Server.Configuration;
 using Gibbon.Git.Server.Controllers;
@@ -39,17 +40,18 @@ public class RepositoriesControllerLogoTests : ControllerTestBase<RepositoriesCo
         _logoService = services.AddSubstitute<IRepositoryLogoService>();
         services.AddSubstitute<IRepositoryCopier>();
         services.AddSubstitute<IUserSettingsService>();
+        services.AddSubstitute<IRepositoryHeadService>().InitAsync(Arg.Any<string>(), Arg.Any<string>()).Returns(true);
     }
 
     [TestMethod]
     [TestCategory(TestCategories.UnitTest)]
-    public void Create_ValidLogo_StoresProcessedLogo()
+    public async Task Create_ValidLogo_StoresProcessedLogo()
     {
         var processed = new byte[] { 1, 2, 3 };
         _logoService.CreateLogo(Arg.Any<Stream>()).Returns(processed);
         var model = CreateModelWithLogo();
 
-        Controller.Create(model);
+        await Controller.Create(model);
 
         Assert.AreSame(processed, model.Logo.BinaryData);
         Assert.IsFalse(Controller.ModelState.ContainsKey("Logo.PostedFile"));
@@ -57,13 +59,13 @@ public class RepositoriesControllerLogoTests : ControllerTestBase<RepositoriesCo
 
     [TestMethod]
     [TestCategory(TestCategories.UnitTest)]
-    public void Create_InvalidLogo_AddsModelErrorAndDoesNotCreate()
+    public async Task Create_InvalidLogo_AddsModelErrorAndDoesNotCreate()
     {
         _logoService.CreateLogo(Arg.Any<Stream>()).Returns((byte[])null!);
         _repositoryService.NameIsUnique(Arg.Any<string>(), Arg.Any<int>()).Returns(true);
         var model = CreateModelWithLogo();
 
-        var result = Controller.Create(model) as ViewResult;
+        var result = await Controller.Create(model) as ViewResult;
 
         Assert.IsNotNull(result);
         Assert.IsTrue(Controller.ModelState.ContainsKey("Logo.PostedFile"));
@@ -72,12 +74,12 @@ public class RepositoriesControllerLogoTests : ControllerTestBase<RepositoriesCo
 
     [TestMethod]
     [TestCategory(TestCategories.UnitTest)]
-    public void Create_WithoutLogo_DoesNotCallLogoService()
+    public async Task Create_WithoutLogo_DoesNotCallLogoService()
     {
         var model = new RepositoryDetailModel { Name = "repo", Logo = new RepositoryLogoDetailModel() };
         _permissionService.HasCreatePermission(Arg.Any<int>()).Returns(true);
 
-        Controller.Create(model);
+        await Controller.Create(model);
 
         _logoService.DidNotReceive().CreateLogo(Arg.Any<Stream>());
         Assert.IsNull(model.Logo.BinaryData);

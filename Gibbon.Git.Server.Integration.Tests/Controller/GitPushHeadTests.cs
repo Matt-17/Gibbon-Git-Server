@@ -15,7 +15,6 @@ internal class GitPushHeadTests : IntegrationTestBase
     [TestMethod]
     public async Task PushOfOtherBranchOnly_PointsHeadToIt()
     {
-        // git needs a real HTTP server
         Application.UseKestrel(0);
         Application.StartServer();
         var address = Application.Services.GetRequiredService<IServer>().Features.GetRequiredFeature<IServerAddressesFeature>().Addresses.First();

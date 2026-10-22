@@ -35,7 +35,7 @@ public class RepositoryHeadRepairService(ILogger<RepositoryHeadRepairService> lo
         }
         catch (OperationCanceledException)
         {
-            // the server is stopping
+            // stopping
         }
         catch (Exception ex)
         {

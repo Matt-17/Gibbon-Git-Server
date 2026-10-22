@@ -47,6 +47,14 @@
             @Html.LabelFor(m => m.Description)
             @Html.TextAreaFor(m => m.Description, new { @class = "medium" })
         </div>
+        @if (Model.Branches.Count > 0)
+        {
+            <div class="pure-control-group">
+                @Html.LabelFor(m => m.DefaultBranch)
+                @Html.DropDownListFor(m => m.DefaultBranch, new SelectList(Model.Branches, Model.DefaultBranch), new { @class = "medium" })
+                <i class="fa fa-info-circle" title="@Resources.Repository_Edit_DefaultBranch_Hint"></i>
+            </div>
+        }
 
         <div class="pure-control-group">
             @Html.LabelFor(m => m.Logo.PostedFile)

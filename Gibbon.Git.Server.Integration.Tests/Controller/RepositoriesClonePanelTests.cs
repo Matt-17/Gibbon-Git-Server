@@ -10,7 +10,7 @@ internal class RepositoriesClonePanelTests : IntegrationTestBase
     {
         var client = await CreateClientAsync(true);
         var name = await CreateRepository(client);
-        PushCommit(TestContext, GetRepositoryPath(TestContext, name), "master", "content", "readme.txt");
+        PushCommit(TestContext, GetRepositoryPath(TestContext, name), GetDefaultBranch(GetRepositoryPath(TestContext, name)), "content", "readme.txt");
         var encodedUrl = Uri.EscapeDataString($"http://admin@localhost/{name}.git");
 
         foreach (var page in new[] { "Detail", "Tree" })

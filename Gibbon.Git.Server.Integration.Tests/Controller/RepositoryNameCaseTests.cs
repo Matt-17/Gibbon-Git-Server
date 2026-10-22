@@ -5,7 +5,6 @@ namespace Gibbon.Git.Server.Integration.Tests.Controller;
 [TestClass]
 internal class RepositoryNameCaseTests : IntegrationTestBase
 {
-    // the in-memory provider compares case-sensitively, the real databases do not
     protected override string DatabaseProvider => "Sqlite";
 
     [TestMethod]
@@ -14,7 +13,7 @@ internal class RepositoryNameCaseTests : IntegrationTestBase
         var admin = await CreateClientAsync(true);
         var name = await CreateRepository(admin, ("AllowAnonymous", "true"));
         var repositoryPath = GetRepositoryPath(TestContext, name);
-        PushCommit(TestContext, repositoryPath, "master", "case test", "readme.txt");
+        PushCommit(TestContext, repositoryPath, GetDefaultBranch(repositoryPath), "case test", "readme.txt");
         var commit = RunGit(repositoryPath, "rev-parse", "HEAD").Trim();
         var git = Application.CreateClient(new WebApplicationFactoryClientOptions { AllowAutoRedirect = false });
 
