@@ -117,6 +117,7 @@ public class GitControllerTests : TestBase
         Assert.IsInstanceOfType(result, typeof(RedirectResult));
         var redirectResult = (RedirectResult)result;
         Assert.AreEqual($"/{repositoryName}.git/git-upload-pack", redirectResult.Url);
+        Assert.IsTrue(redirectResult.PreserveMethod);
     }
 
     [TestMethod]
@@ -132,6 +133,7 @@ public class GitControllerTests : TestBase
         Assert.IsInstanceOfType(result, typeof(RedirectResult));
         var redirectResult = (RedirectResult)result;
         Assert.AreEqual($"/{repositoryName}.git/git-receive-pack", redirectResult.Url);
+        Assert.IsTrue(redirectResult.PreserveMethod);
     }
 
     [TestMethod]
