@@ -1181,4 +1181,25 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   <data name="Repository_Edit_DefaultBranch_Hint" xml:space="preserve">
     <value>Branch, den ein Clone auscheckt und den die Weboberfläche zuerst zeigt.</value>
   </data>
+  <data name="Repository_RenameBranch_Title" xml:space="preserve">
+    <value>Branch umbenennen</value>
+  </data>
+  <data name="Repository_RenameBranch_Branch" xml:space="preserve">
+    <value>Branch</value>
+  </data>
+  <data name="Repository_RenameBranch_NewName" xml:space="preserve">
+    <value>Neuer Name</value>
+  </data>
+  <data name="Repository_RenameBranch_Submit" xml:space="preserve">
+    <value>Umbenennen</value>
+  </data>
+  <data name="Repository_RenameBranch_Success" xml:space="preserve">
+    <value>Der Branch {0} wurde in {1} umbenannt. Bestehende Clones lassen sich so anpassen:</value>
+  </data>
+  <data name="Repository_RenameBranch_Exists" xml:space="preserve">
+    <value>Ein Branch mit diesem Namen existiert bereits.</value>
+  </data>
+  <data name="Repository_RenameBranch_Failed" xml:space="preserve">
+    <value>Der Branch konnte nicht umbenannt werden.</value>
+  </data>
 </root>

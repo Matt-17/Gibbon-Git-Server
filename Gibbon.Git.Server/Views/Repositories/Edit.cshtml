@@ -158,3 +158,43 @@
         </div>
     </fieldset>
 }
+
+@if (Model.Branches.Count > 0)
+{
+    <h2 id="rename-branch">@Resources.Repository_RenameBranch_Title</h2>
+    @if (TempData["RenamedBranch"] is string renamedBranch && TempData["RenamedBranchTo"] is string renamedBranchTo)
+    {
+        <div class="summary-success">
+            <p>@string.Format(Resources.Repository_RenameBranch_Success, renamedBranch, renamedBranchTo)</p>
+            <pre>git branch -m @renamedBranch @renamedBranchTo
+git fetch origin
+git branch -u origin/@renamedBranchTo @renamedBranchTo
+git remote set-head origin -a</pre>
+        </div>
+    }
+    @if (TempData["RenameBranchError"] is string renameBranchError)
+    {
+        <div class="summary-error"><p>@renameBranchError</p></div>
+    }
+    using (Html.BeginForm("RenameBranch", "Repositories", new { name = Model.Name }, FormMethod.Post, true, new { @class = "pure-form pure-form-aligned" }))
+    {
+        <fieldset>
+            <div class="pure-control-group">
+                <label for="branch">@Resources.Repository_RenameBranch_Branch</label>
+                <select id="branch" name="branch" class="medium">
+                    @foreach (var branch in Model.Branches)
+                    {
+                        <option selected="@(branch == Model.DefaultBranch)">@branch</option>
+                    }
+                </select>
+            </div>
+            <div class="pure-control-group">
+                <label for="newName">@Resources.Repository_RenameBranch_NewName</label>
+                <input type="text" id="newName" name="newName" class="medium" required />
+            </div>
+            <div class="pure-controls">
+                <button type="submit" class="pure-button"><i class="fa fa-pencil"></i> @Resources.Repository_RenameBranch_Submit</button>
+            </div>
+        </fieldset>
+    }
+}

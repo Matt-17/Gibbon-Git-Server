@@ -143,6 +143,27 @@ public class RepositoryHeadServiceTests
     }
 
     [TestMethod]
+    public async Task RenameBranch_DefaultBranch_HeadFollows()
+    {
+        Push("initial", "2024-01-01T10:00:00");
+
+        Assert.IsTrue(await _service.RenameBranchAsync(Name, "initial", "renamed"));
+
+        Assert.AreEqual("refs/heads/renamed", Head());
+    }
+
+    [TestMethod]
+    public async Task RenameBranch_ToExistingName_Fails()
+    {
+        Push("initial", "2024-01-01T10:00:00");
+        Push("develop", "2024-06-01T10:00:00");
+
+        Assert.IsFalse(await _service.RenameBranchAsync(Name, "develop", "initial"));
+
+        CollectionAssert.AreEqual(new[] { "develop", "initial" }, (await _service.GetBranchesAsync(Name)).Branches.ToArray());
+    }
+
+    [TestMethod]
     public async Task SetDefaultBranch_MissingBranch_KeepsHead()
     {
         Push("initial", "2024-01-01T10:00:00");

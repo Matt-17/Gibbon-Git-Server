@@ -23,6 +23,11 @@ public interface IRepositoryHeadService
     Task<bool> SetDefaultBranchAsync(string repositoryName, string branch);
 
     /// <summary>
+    /// Renames a branch; HEAD follows when it points to that branch.
+    /// </summary>
+    Task<bool> RenameBranchAsync(string repositoryName, string branch, string newName);
+
+    /// <summary>
     /// Points HEAD to an existing branch when it refers to a branch that does not exist.
     /// </summary>
     Task<bool> RepairHeadAsync(string repositoryName);

@@ -1240,4 +1240,25 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   <data name="Repository_Edit_DefaultBranch_Hint" xml:space="preserve">
     <value>Branch that a clone checks out and the web view shows first.</value>
   </data>
+  <data name="Repository_RenameBranch_Title" xml:space="preserve">
+    <value>Rename branch</value>
+  </data>
+  <data name="Repository_RenameBranch_Branch" xml:space="preserve">
+    <value>Branch</value>
+  </data>
+  <data name="Repository_RenameBranch_NewName" xml:space="preserve">
+    <value>New name</value>
+  </data>
+  <data name="Repository_RenameBranch_Submit" xml:space="preserve">
+    <value>Rename</value>
+  </data>
+  <data name="Repository_RenameBranch_Success" xml:space="preserve">
+    <value>Branch {0} was renamed to {1}. Existing clones are updated with:</value>
+  </data>
+  <data name="Repository_RenameBranch_Exists" xml:space="preserve">
+    <value>A branch with this name already exists.</value>
+  </data>
+  <data name="Repository_RenameBranch_Failed" xml:space="preserve">
+    <value>The branch could not be renamed.</value>
+  </data>
 </root>
