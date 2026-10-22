@@ -20,6 +20,8 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
     public async Task<bool> InitAsync(string repositoryName, string defaultBranch)
     {
         var path = GetPath(repositoryName);
+        // a fresh installation has no repository folder yet, and git runs in it
+        Directory.CreateDirectory(_pathResolver.GetRepositories());
         var result = await RunGit(_pathResolver.GetRepositories(), "init", "--bare", "--quiet", path);
         if (result.IsSuccess && !string.IsNullOrWhiteSpace(defaultBranch))
         {

@@ -104,6 +104,22 @@ public class RepositoryHeadServiceTests
     }
 
     [TestMethod]
+    public async Task Init_RepositoryFolderMissing_CreatesIt()
+    {
+        var repositories = Path.Combine(_directory, "fresh");
+        var pathResolver = Substitute.For<IPathResolver>();
+        pathResolver.ResolveExecutable(Arg.Any<string>()).Returns(x => x.Arg<string>());
+        pathResolver.ResolveRoot(Arg.Any<string>()).Returns(_directory);
+        pathResolver.GetRepositories().Returns(repositories);
+        pathResolver.GetRepositoryPath(Arg.Any<string>()).Returns(x => Path.Combine(repositories, x.Arg<string>()));
+        var service = new RepositoryHeadService(NullLogger<RepositoryHeadService>.Instance, Options.Create(new GitSettings()), new ProcessService(), pathResolver);
+
+        Assert.IsTrue(await service.InitAsync("created", "trunk"));
+
+        Assert.AreEqual("refs/heads/trunk", Git(Path.Combine(repositories, "created"), "symbolic-ref", "HEAD").Trim());
+    }
+
+    [TestMethod]
     public async Task GetBranches_ReturnsHeadAndSortedBranches()
     {
         Push("initial", "2024-01-01T10:00:00");
