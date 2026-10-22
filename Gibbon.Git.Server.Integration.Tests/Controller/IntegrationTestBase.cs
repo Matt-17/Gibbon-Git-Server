@@ -24,7 +24,8 @@ internal class IntegrationTestBase
     {
         WebApplicationFactoryClientOptions options = new()
         {
-            AllowAutoRedirect = allowRedirect
+            AllowAutoRedirect = allowRedirect,
+            BaseAddress = Application.ClientOptions.BaseAddress
         };
         var client = Application.CreateClient(options);
         if (authenticated)
