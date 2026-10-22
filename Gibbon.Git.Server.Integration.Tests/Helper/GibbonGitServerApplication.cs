@@ -12,11 +12,13 @@ namespace Gibbon.Git.Server.Integration.Tests.Helper;
 internal class GibbonGitServerApplication : WebApplicationFactory<Program>
 {
     private readonly string _fileName;
+    private readonly string _databaseProvider;
     public IMailService MailService { get; init; }
     public IGitDownloadService GitDownloadService { get; set; }
 
-    public GibbonGitServerApplication(TestContext testContext)
+    public GibbonGitServerApplication(TestContext testContext, string databaseProvider = "Memory")
     {
+        _databaseProvider = databaseProvider;
         Debug.Assert(testContext.TestRunDirectory != null, "TestContext.TestRunDirectory != null");
         _fileName = Path.Combine(testContext.TestRunDirectory, "Databases", testContext.TestName + ".db");
         Debug.WriteLine($"Database file: {_fileName}");
@@ -42,9 +44,9 @@ internal class GibbonGitServerApplication : WebApplicationFactory<Program>
             var inMemorySettings = new Dictionary<string, string?>
             {
                 { "Application:DataPath", Path.GetDirectoryName(_fileName) },
-                { "Database:Provider", "Memory" },
+                { "Database:Provider", _databaseProvider },
                 { "Database:AllowMigration", "true" },
-                { "Database:ConnectionStrings:Memory", $"Data Source={_fileName}" }
+                { $"Database:ConnectionStrings:{_databaseProvider}", $"Data Source={_fileName}" }
             };
             config.AddInMemoryCollection(inMemorySettings);
 

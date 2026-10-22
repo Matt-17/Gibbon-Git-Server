@@ -31,6 +31,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     [HttpGet("{repositoryName}.git/info/refs")]
     public IActionResult SecureGetInfoRefs(string repositoryName, string service)
     {
+        repositoryName = _repositoryService.NormalizeRepositoryName(repositoryName);
         if (!RepositoryIsValid(repositoryName))
         {
             return GitNotFound();
@@ -61,6 +62,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     [HttpPost("{repositoryName}.git/git-upload-pack")]
     public IActionResult SecureUploadPack(string repositoryName)
     {
+        repositoryName = _repositoryService.NormalizeRepositoryName(repositoryName);
         if (!RepositoryIsValid(repositoryName))
         {
             return GitNotFound();
@@ -86,6 +88,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     [HttpPost("{repositoryName}.git/git-receive-pack")]
     public IActionResult SecureReceivePack(string repositoryName)
     {
+        repositoryName = _repositoryService.NormalizeRepositoryName(repositoryName);
         if (!RepositoryIsValid(repositoryName))
         {
             return GitNotFound();

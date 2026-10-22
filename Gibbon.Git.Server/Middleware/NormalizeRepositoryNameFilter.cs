@@ -38,7 +38,7 @@ public class NormalizeRepositoryNameFilter(IRepositoryService repositoryService,
 
                 var newUrl = urlHelper.Action(action, controller, routeValues, context.HttpContext.Request.Scheme);
 
-                context.Result = new RedirectResult(newUrl, permanent: true);
+                context.Result = new RedirectResult(newUrl, permanent: false);
                 return;
             }
         }
