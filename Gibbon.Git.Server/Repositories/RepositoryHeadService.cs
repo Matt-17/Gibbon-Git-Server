@@ -60,6 +60,16 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
         return result.IsSuccess;
     }
 
+    public async Task<bool> RenameBranchAsync(string repositoryName, string branch, string newName)
+    {
+        var result = await RunGit(GetPath(repositoryName), "branch", "-m", branch, newName);
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Could not rename branch {Branch} of {RepositoryName} to {NewName}: {Error}", branch, repositoryName, newName, result.Error);
+        }
+        return result.IsSuccess;
+    }
+
     public async Task<bool> RepairHeadAsync(string repositoryName)
     {
         var path = GetPath(repositoryName);

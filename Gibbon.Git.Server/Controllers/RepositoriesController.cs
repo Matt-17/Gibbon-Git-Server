@@ -8,6 +8,7 @@ using Gibbon.Git.Server.Data;
 using Gibbon.Git.Server.Extensions;
 using Gibbon.Git.Server.Helpers;
 using Gibbon.Git.Server.Middleware;
+using Gibbon.Git.Server.Middleware.Attributes;
 using Gibbon.Git.Server.Models;
 using Gibbon.Git.Server.Repositories;
 using Gibbon.Git.Server.Security;
@@ -168,6 +169,34 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
         PopulateCheckboxListData(ref model);
         return RedirectToAction("Edit", new { model.Id });
+    }
+
+    [HttpPost("Repositories/{name}/RenameBranch")]
+    [Authorize(Policy = Policies.RepositoryAdmin)]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RenameBranch(string name, string branch, string newName)
+    {
+        newName = newName?.Trim();
+        var branches = (await _repositoryHeadService.GetBranchesAsync(name)).Branches;
+        if (!branches.Contains(branch) || !BranchNameAttribute.IsValidBranchName(newName))
+        {
+            TempData["RenameBranchError"] = Resources.Validation_Invalid_BranchName;
+        }
+        else if (branches.Contains(newName))
+        {
+            TempData["RenameBranchError"] = Resources.Repository_RenameBranch_Exists;
+        }
+        else if (!await _repositoryHeadService.RenameBranchAsync(name, branch, newName))
+        {
+            TempData["RenameBranchError"] = Resources.Repository_RenameBranch_Failed;
+        }
+        else
+        {
+            TempData["RenamedBranch"] = branch;
+            TempData["RenamedBranchTo"] = newName;
+        }
+
+        return RedirectToAction("Edit", new { name });
     }
 
     [HttpGet("Repositories/Create")]
