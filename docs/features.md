@@ -23,9 +23,9 @@ Gibbon Git Server is a web-based application designed for easy self-hosting on y
 - **Detailed diffs**: Easily compare changes between commits with intuitive diff views.
 - **Browse content**: Dive into the specifics of each commit, file by file.
 
-### Optional Active Directory Integration
-- **Streamlined setup**: Use your existing Active Directory users, teams, and roles for Gibbon Git Server access.
-- **Flexible authentication**: Supports Windows, Cookies, and ADFS authentication modes for seamless integration.
+### Authentication
+- **Built-in users**: Users log in to the web interface with a form; Git clients use HTTP Basic Authentication.
+- **Anonymous access**: Repositories can be opened for anonymous pull and, optionally, push.
 
 ### Localization
 - **Multi-language support**: Gibbon Git Server is available in multiple languages for global teams.

@@ -1,52 +1,21 @@
 ---
 title: Authentication
 ---
-Gibbon Git Server currently supports **Cookie Authentication**, providing a simple and familiar login experience for users. This method uses an authentication cookie to maintain session persistence after the user has successfully logged in via a username and password form.
+Gibbon Git Server manages its own users. There is no external identity provider such as Active Directory or LDAP yet; LDAP support is planned ([#35](https://github.com/Matt-17/Gibbon-Git-Server/issues/35)). Authentication has no settings in `appsettings.json`.
 
-### 1. Cookie Authentication
+## Web interface
 
-Cookie Authentication allows users to log in using a web form where they provide their username and password. Once authenticated, the server creates a secure cookie that validates the user's identity for subsequent requests, eliminating the need to re-enter credentials.
+Users log in with their user name and password on the login page. The server then sets a login cookie:
 
-#### How to Configure Cookie Authentication
+- It is valid for 3 days and is renewed while the user is active.
+- It is protected with keys stored in the `DataProtection-Keys` folder of the [data directory](documentation/data-directory), so users stay logged in when the server restarts. Deleting the folder logs out all users.
 
-To enable Cookie Authentication in Gibbon Git Server, you'll need to adjust the configuration in `appsettings.json`. Unlike the previous **Bonobo Git Server** setup, Gibbon no longer uses `web.config`. Instead, you can configure authentication directly in `appsettings.json`.
+## Git clients
 
-Here’s how to set it up:
+Git sends the user name and password with every request (HTTP Basic Authentication). Use a credential manager, such as Git Credential Manager on Windows, to avoid typing them again.
 
-1. Open the `appsettings.json` file located in the root of the published application.
-2. Find the **Authentication** section and ensure the following settings are configured for Cookie Authentication:
+Repositories can allow anonymous access. Pulling is then possible without credentials; pushing additionally needs anonymous push, per repository or globally in the server settings.
 
-   ```json
-   {
-     "Authentication": {
-       "DefaultScheme": "Cookies",
-       "Schemes": {
-         "Cookies": {
-           "LoginPath": "/Account/Login",
-           "LogoutPath": "/Account/Logout",
-           "ExpireTimeSpan": "00:30:00",  // Adjust the session expiration time if needed
-           "SlidingExpiration": true       // Optional: extend session if user is active
-         }
-       }
-     }
-   }
-```
+## HTTPS
 
-3. Save the file and restart the application.
-
-#### Security Considerations
-
-Since **Git** communicates with the server using the **Basic Authentication** protocol, user credentials are sent with each request. To ensure security, it's recommended to enable **SSL** (HTTPS) in your IIS or Kestrel server to encrypt the communication.
-
-##### Enabling SSL (HTTPS) in IIS
-
-1. Obtain an SSL certificate for your server.
-2. In **IIS Manager**, select your website, then click on **Bindings**.
-3. Add a new binding for **https** and select your SSL certificate.
-4. Restart your site.
-
-Once SSL is enabled, your application will enforce secure communication, protecting user credentials during transmission.
-
----
-
-This authentication mechanism is simple, secure (when combined with HTTPS), and well-suited for most environments. For more advanced authentication methods, stay tuned for future updates in Gibbon Git Server's feature set.
+Basic Authentication sends the credentials unencrypted unless the connection uses HTTPS. Always run the server behind HTTPS, either with an HTTPS binding in IIS or a reverse proxy in front of Kestrel.
