@@ -41,6 +41,12 @@
 		</EmbeddedResource>
 	</ItemGroup>
 
+	<!-- appsettings.json belongs to the installation, only the example is shipped -->
+	<ItemGroup>
+		<Content Update="appsettings.json;appsettings.*.json" CopyToPublishDirectory="Never" />
+		<Content Update="appsettings.example.json" CopyToPublishDirectory="PreserveNewest" />
+	</ItemGroup>
+
 	<!-- Native packages such as SkiaSharp ship debug symbols of about 90 MB per platform; they are not needed at runtime. -->
 	<Target Name="RemoveNativeDebugSymbolsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
 		<ItemGroup>

@@ -5,7 +5,7 @@ namespace Gibbon.Git.Server.Integration.Tests.Controller;
 [TestClass]
 internal class RepositoryNameCaseTests : IntegrationTestBase
 {
-    protected override string DatabaseProvider => "Sqlite";
+    protected override string? DatabaseProvider => "Sqlite";
 
     [TestMethod]
     public async Task GitUrl_WithDifferentCase_ServesRepository()

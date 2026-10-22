@@ -6,7 +6,7 @@ internal class IntegrationTestBase
 
     public TestContext TestContext { get; set; } = null!;
 
-    protected virtual string DatabaseProvider => "Memory";
+    protected virtual string? DatabaseProvider => "Memory";
 
     [TestInitialize]
     public async Task Setup()

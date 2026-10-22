@@ -27,22 +27,9 @@ Once you have the code on your machine, you need to publish the application. Thi
 
 ### 3. Configure the Application
 
-Now that the application is published, you'll need to adjust the configuration settings to match your environment.
+Without any configuration the server uses **SQLite** in the [data directory](documentation/data-directory) (`App_Data`), which is enough for a simple setup.
 
-1. Open the `appsettings.json` file in the `publish` folder.
-    
-2. Configure the database. For a simple setup use **SQLite**; with an empty connection string the database is stored in the [data directory](documentation/data-directory):
-
-```json
-"Database": {
-  "Provider": "Sqlite",
-  "ConnectionStrings": {
-    "Default": ""
-  }
-}
-```
-
-3. Optionally, adjust other configuration settings such as the data directory, logging levels, etc.
+To change settings, copy `appsettings.example.json` in the `publish` folder to `appsettings.json` and adjust it, e.g. for SQL Server, the data directory or the mail settings. See [Configuration Settings](documentation/appsettings) for all keys.
     
 ### 4. Deploy the Application
 

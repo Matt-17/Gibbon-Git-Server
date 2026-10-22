@@ -29,11 +29,10 @@ Welcome to the Gibbon Git Server! Follow these steps to get your server up and r
    Ensure that the application pool has the necessary permissions to read/write to the directory where the repositories and configuration files are stored.
 
 5. **Database Setup**:
-   - Set `Database:Provider` to `Sqlite` in `appsettings.json` for a lightweight SQLite database.
-   - Run the server for the first time to automatically set up the database using EF Migrations.
+   - Nothing to do for SQLite: the database is created in `App_Data` on the first start.
 
-6. **Update `appsettings.json`**:
-   Customize your configuration by modifying the `appsettings.json` file, including repository paths, server options, and email settings (if notifications are used).
+6. **Configuration (optional)**:
+   Copy `appsettings.example.json` to `appsettings.json` to change settings such as the database, repository paths or email settings. See [Configuration Settings](documentation/appsettings).
 
 ## 2. Initial Setup
 

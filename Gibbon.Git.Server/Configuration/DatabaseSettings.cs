@@ -3,5 +3,5 @@
 public sealed record DatabaseSettings
 {
     public DatabaseProviderTypes DatabaseProvider { get; set; }
-    public bool AllowMigration { get; set; }
+    public bool AllowMigration { get; set; } = true;
 }
