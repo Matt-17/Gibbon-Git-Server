@@ -17,6 +17,7 @@ public sealed class ServerSettings
     public DateFormat DateFormat { get; set; }
     public TimeFormat TimeFormat { get; set; }
     public RepositoryView DefaultRepositoryView { get; set; }
+    public string DefaultBranch { get; set; }
     public string EnabledCloneTools { get; set; }
     public string CustomCloneTools { get; set; }
 

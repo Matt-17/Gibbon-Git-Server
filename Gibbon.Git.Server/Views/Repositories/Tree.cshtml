@@ -27,7 +27,7 @@
             {
                 <p>@Resources.Repository_Empty_Hint</p>
                 <pre>git remote add origin @pushUrl
-git push -u origin @(Model.Clone.Branch ?? "master")</pre>
+git push -u origin @Model.Clone.Branch</pre>
             }
         </div>
     }

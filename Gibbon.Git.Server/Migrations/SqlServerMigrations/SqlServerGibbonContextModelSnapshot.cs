@@ -139,6 +139,11 @@ namespace Gibbon.Git.Server.Migrations.SqlServerMigrations
                     b.Property<int>("DateFormat")
                         .HasColumnType("int");
 
+                    b.Property<string>("DefaultBranch")
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
                     b.Property<string>("DefaultLanguage")
                         .IsRequired()
                         .HasMaxLength(10)

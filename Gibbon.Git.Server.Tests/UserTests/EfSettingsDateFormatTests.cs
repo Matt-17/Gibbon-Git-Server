@@ -70,5 +70,36 @@ public class EfSettingsDateFormatTests : DbTestBase<SqliteConnectionFactory>
         Assert.AreEqual(RepositoryView.Tree, _serverSettingsService.GetSettings().DefaultRepositoryView);
     }
 
+    [TestMethod]
+    public async Task ServerSettings_DefaultBranch_IsStored()
+    {
+        await _serverSettingsService.SaveSettings(new ServerSettings { DefaultLanguage = "en", DefaultBranch = "trunk" });
+        ClearCache();
+
+        Assert.AreEqual("trunk", _serverSettingsService.GetSettings().DefaultBranch);
+    }
+
+    [TestMethod]
+    public async Task ServerSettings_EmptyDefaultBranch_KeepsCurrentOne()
+    {
+        await _serverSettingsService.SaveSettings(new ServerSettings { DefaultLanguage = "en", DefaultBranch = "trunk" });
+        var settings = new ServerSettings { DefaultLanguage = "en" };
+
+        await _serverSettingsService.SaveSettings(settings);
+        ClearCache();
+
+        Assert.AreEqual("trunk", settings.DefaultBranch);
+        Assert.AreEqual("trunk", _serverSettingsService.GetSettings().DefaultBranch);
+    }
+
+    [TestMethod]
+    public async Task ServerSettings_FirstSaveWithoutDefaultBranch_UsesDefault()
+    {
+        await _serverSettingsService.SaveSettings(new ServerSettings { DefaultLanguage = "en" });
+        ClearCache();
+
+        Assert.AreEqual(_serverSettingsService.GetDefaultSettings().DefaultBranch, _serverSettingsService.GetSettings().DefaultBranch);
+    }
+
     private void ClearCache() => ((MemoryCache)ServiceProvider.GetRequiredService<IMemoryCache>()).Clear();
 }

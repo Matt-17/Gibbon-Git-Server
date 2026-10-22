@@ -26,7 +26,7 @@ namespace Gibbon.Git.Server.Controllers;
 
 [Authorize]
 [TypeFilter(typeof(NormalizeRepositoryNameFilter))]
-public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService, IRepositoryCopier repositoryCopier, IUserSettingsService userSettingsService)
+public class RepositoriesController(ILogger<RepositoriesController> logger, ITeamService teamRepository, IRepositoryService repositoryService, IUserService userService, IRepositoryPermissionService repositoryPermissionService, IRepositorySynchronizer repositorySynchronizer, ServerSettings serverSettings, IPathResolver pathResolver, IRepositoryBrowserFactory repositoryBrowserFactory, IRepositoryLogoService repositoryLogoService, IRepositoryCopier repositoryCopier, IUserSettingsService userSettingsService, IRepositoryHeadService repositoryHeadService)
     : Controller
 {
     private readonly ServerSettings _serverSettings = serverSettings;
@@ -40,6 +40,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private readonly IRepositoryBrowserFactory _repositoryBrowserFactory = repositoryBrowserFactory;
     private readonly IRepositoryLogoService _repositoryLogoService = repositoryLogoService;
     private readonly IRepositoryCopier _repositoryCopier = repositoryCopier;
+    private readonly IRepositoryHeadService _repositoryHeadService = repositoryHeadService;
     private readonly IUserSettingsService _userSettingsService = userSettingsService;
     private const int _pageSize = 10;
 
@@ -113,22 +114,24 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
     [HttpGet("Repositories/{name}/Edit")]
     [Authorize(Policy = Policies.RepositoryAdmin)]
-    public IActionResult Edit(string name)
+    public async Task<IActionResult> Edit(string name)
     {
         var model = ConvertRepositoryModel(_repositoryService.GetRepository(name), User);
         PopulateCheckboxListData(ref model);
+        await PopulateBranches(model);
         return View(model);
     }
 
     [HttpPost("Repositories/{name}/Edit")]
     [Authorize(Policy = Policies.RepositoryAdmin)]
     [ValidateAntiForgeryToken]
-    public IActionResult Edit(RepositoryDetailModel model)
+    public async Task<IActionResult> Edit(RepositoryDetailModel model)
     {
         ProcessPostedLogo(model);
         if (!ModelState.IsValid)
         {
             PopulateCheckboxListData(ref model);
+            await PopulateBranches(model);
             return View(model);
         }
 
@@ -144,7 +147,13 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
                 _logger.LogError(ex, "Failed to update repo {RepoName}", model.Name);
                 ModelState.AddModelError("Users", Resources.Repository_Edit_CantRemoveYourself);
                 PopulateCheckboxListData(ref model);
+                await PopulateBranches(model);
                 return View(model);
+            }
+
+            if (!string.IsNullOrEmpty(model.DefaultBranch))
+            {
+                await _repositoryHeadService.SetDefaultBranchAsync(model.Name, model.DefaultBranch);
             }
 
             ViewBag.UpdateSuccess = true;
@@ -153,6 +162,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
         {
             ModelState.AddModelError("Users", Resources.Repository_Edit_CantRemoveYourself);
             PopulateCheckboxListData(ref model);
+            await PopulateBranches(model);
             return View(model);
         }
 
@@ -179,7 +189,7 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
 
     [HttpPost("Repositories/Create")]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(RepositoryDetailModel model)
+    public async Task<IActionResult> Create(RepositoryDetailModel model)
     {
         ArgumentNullException.ThrowIfNull(model, nameof(model));
         _logger.LogInformation("Create repository {0}", model.Name);
@@ -225,7 +235,13 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
             return View(model);
         }
 
-        Repository.Init(path, true);
+        if (!await _repositoryHeadService.InitAsync(model.Name, _serverSettings.DefaultBranch))
+        {
+            _repositoryService.Delete(repoModel.Id);
+            ModelState.AddModelError("", Resources.Repository_Create_Failure);
+            return View(model);
+        }
+
         TempData["CreateSuccess"] = true;
         TempData["SuccessfullyCreatedRepositoryName"] = model.Name;
         return RedirectToAction("Index");
@@ -652,7 +668,14 @@ public class RepositoriesController(ILogger<RepositoriesController> logger, ITea
     private RepositoryCloneModel CreateCloneModel(string name, string branch)
     {
         var (gitUrl, personalGitUrl) = GetGitUrls(name);
-        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch, CanPush = _repositoryPermissionService.HasPermission(User.Id(), name, RepositoryAccessLevel.Push) };
+        return new RepositoryCloneModel { Name = name, GitUrl = gitUrl, PersonalGitUrl = personalGitUrl, Branch = branch ?? _serverSettings.DefaultBranch, CanPush = _repositoryPermissionService.HasPermission(User.Id(), name, RepositoryAccessLevel.Push) };
+    }
+
+    private async Task PopulateBranches(RepositoryDetailModel model)
+    {
+        var branches = await _repositoryHeadService.GetBranchesAsync(model.Name);
+        model.Branches = branches.Branches;
+        model.DefaultBranch = branches.DefaultBranch;
     }
 
     private (string GitUrl, string PersonalGitUrl) GetGitUrls(string name)

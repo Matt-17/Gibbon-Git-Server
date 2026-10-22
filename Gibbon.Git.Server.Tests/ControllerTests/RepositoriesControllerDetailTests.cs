@@ -40,6 +40,7 @@ public class RepositoriesControllerDetailTests : ControllerTestBase<Repositories
         _browserFactory = services.AddSubstitute<IRepositoryBrowserFactory>();
         services.AddSubstitute<IRepositoryLogoService>();
         services.AddSubstitute<IRepositoryCopier>();
+        services.AddSubstitute<IRepositoryHeadService>();
         _userSettingsService = services.AddSubstitute<IUserSettingsService>();
         _userSettingsService.GetSettings(Arg.Any<int>()).Returns(new UserSettings());
     }

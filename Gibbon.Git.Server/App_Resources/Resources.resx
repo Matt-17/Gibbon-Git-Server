@@ -1225,4 +1225,19 @@ The regular C# string formatting rules apply: To get {} in your link you need to
   <data name="Repository_AccessLevel_Manages" xml:space="preserve">
     <value>manages</value>
   </data>
+  <data name="Settings_Global_DefaultBranch" xml:space="preserve">
+    <value>Default branch</value>
+  </data>
+  <data name="Settings_Global_DefaultBranch_Hint" xml:space="preserve">
+    <value>Branch that new repositories start with. Existing repositories keep their default branch.</value>
+  </data>
+  <data name="Validation_Invalid_BranchName" xml:space="preserve">
+    <value>This is not a valid branch name.</value>
+  </data>
+  <data name="Repository_Detail_DefaultBranch" xml:space="preserve">
+    <value>Default branch</value>
+  </data>
+  <data name="Repository_Edit_DefaultBranch_Hint" xml:space="preserve">
+    <value>Branch that a clone checks out and the web view shows first.</value>
+  </data>
 </root>

@@ -17,9 +17,51 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
     private readonly IProcessService _processService = processService;
     private readonly IPathResolver _pathResolver = pathResolver;
 
+    public async Task<bool> InitAsync(string repositoryName, string defaultBranch)
+    {
+        var path = GetPath(repositoryName);
+        var result = await RunGit(_pathResolver.GetRepositories(), "init", "--bare", "--quiet", path);
+        if (result.IsSuccess && !string.IsNullOrWhiteSpace(defaultBranch))
+        {
+            result = await RunGit(path, "symbolic-ref", "HEAD", "refs/heads/" + defaultBranch);
+        }
+
+        if (!result.IsSuccess)
+        {
+            _logger.LogError("Could not create repository {RepositoryName}: {Error}", repositoryName, result.Error);
+        }
+        return result.IsSuccess;
+    }
+
+    public async Task<RepositoryBranches> GetBranchesAsync(string repositoryName)
+    {
+        var path = GetPath(repositoryName);
+        var head = await RunGit(path, "symbolic-ref", "-q", "--short", "HEAD");
+        var branches = await RunGit(path, "for-each-ref", "--sort=refname", "--format=%(refname:short)", "refs/heads");
+
+        return new RepositoryBranches(
+            head.IsSuccess ? head.Output.Trim() : null,
+            branches.IsSuccess ? branches.Output.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries) : []);
+    }
+
+    public async Task<bool> SetDefaultBranchAsync(string repositoryName, string branch)
+    {
+        if (!(await GetBranchesAsync(repositoryName)).Branches.Contains(branch))
+        {
+            return false;
+        }
+
+        var result = await RunGit(GetPath(repositoryName), "symbolic-ref", "HEAD", "refs/heads/" + branch);
+        if (!result.IsSuccess)
+        {
+            _logger.LogWarning("Could not point HEAD of {RepositoryName} to {Branch}: {Error}", repositoryName, branch, result.Error);
+        }
+        return result.IsSuccess;
+    }
+
     public async Task<bool> RepairHeadAsync(string repositoryName)
     {
-        var path = Path.GetFullPath(_pathResolver.GetRepositoryPath(repositoryName));
+        var path = GetPath(repositoryName);
 
         // newest commit first, the branch HEAD points to is marked with *
         var branches = await RunGit(path, "for-each-ref", "--sort=refname", "--sort=-committerdate", "--format=%(HEAD)%(refname)", "refs/heads");
@@ -53,6 +95,8 @@ public class RepositoryHeadService(ILogger<RepositoryHeadService> logger, IOptio
         _logger.LogWarning("HEAD of {RepositoryName} pointed to the missing branch {OldHead}, now points to {Branch}", repositoryName, head.Output.Trim(), branch);
         return true;
     }
+
+    private string GetPath(string repositoryName) => Path.GetFullPath(_pathResolver.GetRepositoryPath(repositoryName));
 
     private async Task<ProcessResult> RunGit(string repositoryPath, params string[] arguments)
     {

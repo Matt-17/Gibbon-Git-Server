@@ -1166,4 +1166,19 @@ Die regulären C# String-Formatierungsregeln gelten: Um {} in Ihrem Link zu erha
   <data name="Repository_AccessLevel_Manages" xml:space="preserve">
     <value>verwaltet</value>
   </data>
+  <data name="Settings_Global_DefaultBranch" xml:space="preserve">
+    <value>Standard-Branch</value>
+  </data>
+  <data name="Settings_Global_DefaultBranch_Hint" xml:space="preserve">
+    <value>Branch, mit dem neue Repositories starten. Bestehende Repositories behalten ihren Standard-Branch.</value>
+  </data>
+  <data name="Validation_Invalid_BranchName" xml:space="preserve">
+    <value>Das ist kein gültiger Branch-Name.</value>
+  </data>
+  <data name="Repository_Detail_DefaultBranch" xml:space="preserve">
+    <value>Standard-Branch</value>
+  </data>
+  <data name="Repository_Edit_DefaultBranch_Hint" xml:space="preserve">
+    <value>Branch, den ein Clone auscheckt und den die Weboberfläche zuerst zeigt.</value>
+  </data>
 </root>

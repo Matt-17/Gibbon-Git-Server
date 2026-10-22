@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Gibbon.Git.Server.Configuration;
@@ -36,7 +37,7 @@ public class RepositoryHeadServiceTests
         pathResolver.ResolveExecutable(Arg.Any<string>()).Returns(x => x.Arg<string>());
         pathResolver.ResolveRoot(Arg.Any<string>()).Returns(_directory);
         pathResolver.GetRepositories().Returns(_directory);
-        pathResolver.GetRepositoryPath(Name).Returns(_repository);
+        pathResolver.GetRepositoryPath(Arg.Any<string>()).Returns(x => Path.Combine(_directory, x.Arg<string>()));
         _service = new RepositoryHeadService(NullLogger<RepositoryHeadService>.Instance, Options.Create(new GitSettings()), new ProcessService(), pathResolver);
     }
 
@@ -90,6 +91,47 @@ public class RepositoryHeadServiceTests
     public async Task Repair_EmptyRepository_KeepsHead()
     {
         Assert.IsFalse(await _service.RepairHeadAsync(Name));
+
+        Assert.AreEqual("refs/heads/initial", Head());
+    }
+
+    [TestMethod]
+    public async Task Init_PointsHeadToGivenBranch()
+    {
+        Assert.IsTrue(await _service.InitAsync("created", "trunk"));
+
+        Assert.AreEqual("refs/heads/trunk", Git(Path.Combine(_directory, "created"), "symbolic-ref", "HEAD").Trim());
+    }
+
+    [TestMethod]
+    public async Task GetBranches_ReturnsHeadAndSortedBranches()
+    {
+        Push("initial", "2024-01-01T10:00:00");
+        Push("develop", "2024-06-01T10:00:00");
+
+        var branches = await _service.GetBranchesAsync(Name);
+
+        Assert.AreEqual("initial", branches.DefaultBranch);
+        CollectionAssert.AreEqual(new[] { "develop", "initial" }, branches.Branches.ToArray());
+    }
+
+    [TestMethod]
+    public async Task SetDefaultBranch_ExistingBranch_ChangesHead()
+    {
+        Push("initial", "2024-01-01T10:00:00");
+        Push("develop", "2024-06-01T10:00:00");
+
+        Assert.IsTrue(await _service.SetDefaultBranchAsync(Name, "develop"));
+
+        Assert.AreEqual("refs/heads/develop", Head());
+    }
+
+    [TestMethod]
+    public async Task SetDefaultBranch_MissingBranch_KeepsHead()
+    {
+        Push("initial", "2024-01-01T10:00:00");
+
+        Assert.IsFalse(await _service.SetDefaultBranchAsync(Name, "missing"));
 
         Assert.AreEqual("refs/heads/initial", Head());
     }

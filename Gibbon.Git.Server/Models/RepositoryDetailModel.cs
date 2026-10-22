@@ -25,6 +25,10 @@ public class RepositoryDetailModel
     [StringLength(255, ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "Validation_StringLength")]
     public string Description { get; set; }
 
+    [Display(ResourceType = typeof(Resources), Name = "Repository_Detail_DefaultBranch")]
+    public string DefaultBranch { get; set; }
+    public IReadOnlyList<string> Branches { get; set; } = [];
+
     [Display(ResourceType = typeof(Resources), Name = "Repository_Detail_Users")]
     public UserModel[] Users { get; set; } = [];
     public int[] PostedSelectedUsers { get; set; } = [];
