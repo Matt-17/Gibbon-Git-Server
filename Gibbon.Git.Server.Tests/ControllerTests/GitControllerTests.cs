@@ -3,6 +3,7 @@ using Gibbon.Git.Server.Configuration;
 using Gibbon.Git.Server.Controllers;
 using Gibbon.Git.Server.Data;
 using Gibbon.Git.Server.Git.GitService;
+using Gibbon.Git.Server.Repositories;
 using Gibbon.Git.Server.Security;
 using Gibbon.Git.Server.Services;
 using Gibbon.Git.Server.Tests.TestHelper;
@@ -59,7 +60,8 @@ public class GitControllerTests : TestBase
             _userService,
             _gitService,
             _serverSettings,
-            _pathResolver
+            _pathResolver,
+            Substitute.For<IRepositoryHeadService>()
         );
 
         var httpContext = new DefaultHttpContext();

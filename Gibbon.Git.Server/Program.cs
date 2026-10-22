@@ -156,6 +156,7 @@ services.AddScoped<IAvatarService, AvatarService>();
 services.AddSingleton<IRepositoryLogoService, RepositoryLogoService>();
 services.AddScoped<IRepositoryBrowserFactory, RepositoryBrowserFactory>();
 services.AddScoped<IRepositoryCopier, RepositoryCopier>();
+services.AddScoped<IRepositoryHeadService, RepositoryHeadService>();
 services.AddScoped<IAuthorizationHandler, RepositoryPermissionHandler>();
 
 services.AddScoped<IUserOutputService, UserOutputService>();
@@ -166,6 +167,7 @@ services.AddTransient<IStartupService, GitVersionStartupService>();
 
 services.AddHostedService<DatabaseMigrationService>();
 services.AddHostedService<StartupServiceRunner>();
+services.AddHostedService<RepositoryHeadRepairService>();
 
 services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 

@@ -17,7 +17,7 @@ using Repository = LibGit2Sharp.Repository;
 namespace Gibbon.Git.Server.Controllers;
 
 [GitAuthorize]
-public class GitController(ILogger<GitController> logger, IRepositoryPermissionService repositoryPermissionService, IRepositoryService repositoryService, IUserService userService, IGitService gitService, ServerSettings serverOptions, IPathResolver pathResolver)
+public class GitController(ILogger<GitController> logger, IRepositoryPermissionService repositoryPermissionService, IRepositoryService repositoryService, IUserService userService, IGitService gitService, ServerSettings serverOptions, IPathResolver pathResolver, IRepositoryHeadService repositoryHeadService)
     : ControllerBase
 {
     private readonly ServerSettings _serverSettings = serverOptions;
@@ -27,6 +27,7 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
     private readonly IUserService _userService = userService;
     private readonly IGitService _gitService = gitService;
     private readonly IPathResolver _pathResolver = pathResolver;
+    private readonly IRepositoryHeadService _repositoryHeadService = repositoryHeadService;
 
     [HttpGet("{repositoryName}.git/info/refs")]
     public IActionResult SecureGetInfoRefs(string repositoryName, string service)
@@ -101,13 +102,17 @@ public class GitController(ILogger<GitController> logger, IRepositoryPermissionS
 
         return new GitCmdResult(
             "application/x-git-receive-pack-result",
-            async outStream => await _gitService.ExecuteServiceByName(repositoryName,
-                "receive-pack",
-                new ExecutionOptions(false),
-                GetInputStream(),
-                outStream,
-                HttpContext.User.Id()
-            )
+            async outStream =>
+            {
+                await _gitService.ExecuteServiceByName(repositoryName,
+                    "receive-pack",
+                    new ExecutionOptions(false),
+                    GetInputStream(),
+                    outStream,
+                    HttpContext.User.Id()
+                );
+                await _repositoryHeadService.RepairHeadAsync(repositoryName);
+            }
         );
     }
 
