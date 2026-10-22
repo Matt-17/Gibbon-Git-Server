@@ -46,7 +46,7 @@ server solution. You can find the key changes [below](#key-changes-to-bonobo-git
 3. **Deploy** the published files on IIS (Windows) or any web server (e.g., Kestrel for Linux/macOS).
 
 4. **Database Setup**:
-   - Set <code>Database:Provider</code> in <code>appsettings.json</code> to <code>Sqlite</code>; the shipped configuration uses an in-memory database that is lost on restart.
+   - Nothing to do: without configuration the server uses SQLite in <code>App_Data</code>.
    - The database is created and migrated automatically on startup.
 
 5. **Run the Application**:
@@ -57,8 +57,8 @@ server solution. You can find the key changes [below](#key-changes-to-bonobo-git
 
 ## Configuration
 
-- Update **`appsettings.json`** to adjust application settings.
-- Use SQLite for a simple setup; SQL Server is possible by changing the provider and connection string.
+- The server runs without configuration file. To change settings, copy **`appsettings.example.json`** to **`appsettings.json`** and adjust it.
+- SQLite is the default; for SQL Server set the provider and connection string.
 - See the [documentation](https://matt-17.github.io/Gibbon-Git-Server/documentation) for all settings and the data directory.
   
 ## Update
@@ -67,7 +67,7 @@ Before each update please read carefully the information about **compatibility i
 
 - **Backup** your data.
 - **Stop the server**.
-- Delete all the files in the installation folder **except App_Data, appsettings.json and web.config**.
+- Delete all the files in the installation folder **except App_Data, appsettings.json and web.config**. Releases contain only `appsettings.example.json`, so your configuration is not overwritten.
 - Copy the files from the downloaded archive to the server location.
 - **Start the server**.
 

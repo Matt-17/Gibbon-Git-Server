@@ -287,5 +287,6 @@ Gits/
 
 !**/note.txt
 appsettings.Development.json
+Gibbon.Git.Server/appsettings.json
 
 **/wwwroot/css

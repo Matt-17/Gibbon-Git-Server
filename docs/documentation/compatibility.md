@@ -17,6 +17,7 @@ title: Compatibility
 ## Updating existing installations
 
 - Existing `appsettings.json` files keep working. Explicitly configured paths (`RepositoryPath`, `Git:HomePath`, SQLite `Data Source`) keep their meaning; see [Data Directory](documentation/data-directory).
+- Releases no longer contain an `appsettings.json`, only `appsettings.example.json`. Without a configuration file, or without `Database:Provider`, the server uses SQLite in the data directory. Earlier releases shipped an `appsettings.json` with the in-memory database; an installation that still ran with it had no persistent data before.
 - Stored passwords stay valid.
 - After updating to a version that stores the keys for login cookies in the data directory, all users have to log in once.
 

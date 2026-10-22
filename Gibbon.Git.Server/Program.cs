@@ -43,10 +43,16 @@ var services = builder.Services;
 var config = builder.Configuration;
 var env = builder.Environment;
 
-config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+config.AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
     .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: false)
     .AddEnvironmentVariables()
     .AddCommandLine(args);
+
+if (!config.GetSection("Logging").Exists())
+{
+    builder.Logging.SetMinimumLevel(LogLevel.Warning);
+    builder.Logging.AddFilter("Microsoft.Hosting", LogLevel.Information);
+}
 
 var databaseSection = config.GetSection("Database");
 services.Configure<DatabaseSettings>(databaseSection);
@@ -85,6 +91,10 @@ if (OperatingSystem.IsWindows())
 services.AddScoped(serviceProvider => serviceProvider.GetRequiredService<IServerSettingsService>().GetSettings());
 
 var databaseProvider = databaseSection.GetValue<DatabaseProviderTypes>("Provider");
+if (databaseProvider == DatabaseProviderTypes.Unknown)
+{
+    databaseProvider = DatabaseProviderTypes.Sqlite;
+}
 var connectionString = databaseSection.GetConnectionString($"{databaseProvider}") ?? databaseSection.GetConnectionString("Default");
 
 DbContextOptionsBuilder ConfigureOptions(DbContextOptionsBuilder options)
